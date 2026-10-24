@@ -1,0 +1,3900 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { allBrands, type BrandInfo } from '../../data/brands';
+import { reviewsDetailMap, type BrandReviewDetail } from '../../data/reviewsDetail';
+import { site } from '../../data/site';
+import { brandSpeedTestMap } from '../../data/brandSpeedTests';
+import SpeedTestReportCard from '../../components/SpeedTestReportCard.astro';
+
+export function getStaticPaths() {
+  return allBrands.map(brand => {
+    const detail = reviewsDetailMap[brand.slug];
+    return {
+      params: { slug: brand.slug },
+      props: { brand, detail }
+    };
+  });
+}
+
+interface Props {
+  brand: BrandInfo;
+  detail: BrandReviewDetail;
+}
+
+const { brand, detail } = Astro.props;
+
+// 优先采用个性化 H1、副标题与 SEO 元信息
+const pageH1 = detail?.h1 || `${brand.name}怎么样？2026年套餐价格、线路特色与使用指南`;
+const pageSubtitle = detail?.subtitle || `第三方独立客观实测报告 · 全面评测【${brand.name}】骨干网络质量与选购建议`;
+const pageTitle = detail?.seoTitle || `${brand.name}怎么样？2026最新测评、套餐价格与优惠码指南 · ${site.name}`;
+const pageDescription = detail?.seoDescription || detail?.leadSummary || `2026年最新${brand.name}深度测评：涵盖${brand.lineType}专线架构、晚高峰${brand.speed}实测速率、延迟表现、套餐方案价格与选购避坑指南。`;
+
+// 提取最低套餐名、价格、流量、协议、支付方式与使用方式（100% 严格采信 jichangbuy 数据库）
+const lowestSummary = detail?.pricing?.lowestPlanSummary;
+const lowestPlan = detail?.pricing?.plans?.[0];
+const lowestPlanName = lowestSummary?.name || lowestPlan?.name || '基础月付方案';
+const lowestPlanTraffic = lowestSummary?.traffic || lowestPlan?.traffic || '100GB/月';
+const lowestPlanPrice = lowestSummary?.displayPrice || brand.minMonthly;
+const currentCouponCode = detail?.pricing?.couponInfo?.code || brand.coupon;
+const currentCouponDiscount = detail?.pricing?.couponInfo?.discount || brand.couponDiscount;
+const protocolsText = detail?.features?.protocols || 'VLESS / Shadowsocks';
+const isPrimary = brand.category === 'primary';
+const usageMethod = isPrimary 
+  ? '专属客户端，下载登录即用（不提供订阅链接）' 
+  : '官方专属客户端 / 通用标准订阅导入';
+const paymentMethods = '支付宝 / 微信支付 / USDT (TRC20)';
+
+// 提取当前品牌的 5 节点测速报告
+const speedReport = brandSpeedTestMap[brand.slug];
+
+// 提取当前品牌官方实际支持的所有周期类型，按标准化顺序排列
+const standardPeriodOrder = ['月付', '季付', '半年付', '年付', '两年付', '三年付', '一次性'];
+const availablePeriodsRaw = new Set<string>();
+(detail?.pricing?.packageGroups || []).forEach(pkg => {
+  pkg.periods.forEach(p => {
+    if (p.period.includes('两年') || p.period.includes('二年')) availablePeriodsRaw.add('两年付');
+    else if (p.period.includes('三年')) availablePeriodsRaw.add('三年付');
+    else if (p.period.includes('半年')) availablePeriodsRaw.add('半年付');
+    else if (p.period.includes('年')) availablePeriodsRaw.add('年付');
+    else if (p.period.includes('季')) availablePeriodsRaw.add('季付');
+    else if (p.period.includes('月')) availablePeriodsRaw.add('月付');
+    else if (p.period.includes('一次性') || p.period.includes('不限时')) availablePeriodsRaw.add('一次性');
+  });
+});
+const distinctPeriods = standardPeriodOrder.filter(sp => availablePeriodsRaw.has(sp));
+
+// 四大操作系统专属客户端图文配置教程数据
+const tutorialPlatforms = [
+  {
+    id: 'windows',
+    platform: 'Windows (PC电脑)',
+    icon: '💻',
+    minSystem: 'Windows 10+',
+    recommendApp: `${brand.name} 官方专属客户端 (Windows 免配置版)`,
+    summary: '系统最低兼容要求为 Windows 10+（适配 Windows 10 / 11 64位系统）。一键安装后登录官网账号即可自动同步专线节点，开启系统代理即用。',
+    stepsCount: '6 步图文',
+    steps: [
+      { step: 1, title: '下载安装包', desc: '进入官网后台下载官方专属 Windows 客户端安装包（系统最低兼容要求为 Windows 10 或更高版本），解压并运行安装。', image: '/images/tutorials/windows-1.png' },
+      { step: 2, title: '启动客户端', desc: '打开安装好的客户端，进入主操作界面，支持中文原生界面。', image: '/images/tutorials/windows-2.png' },
+      { step: 3, title: '登录同步', desc: '输入官网注册的账号密码，软件将自动拉取并载入最新专线节点。', image: '/images/tutorials/windows-3.png' },
+      { step: 4, title: '选择专线节点', desc: '在代理节点列表中，根据测速延迟优选香港、台湾、日本或新加坡节点。', image: '/images/tutorials/windows-4.png' },
+      { step: 5, title: '开启系统代理', desc: '开启系统代理开关，建议保持「Rule 规则分流」模式以节省流量。', image: '/images/tutorials/windows-5.png' },
+      { step: 6, title: '连接成功', desc: '状态栏显示已连接，打开浏览器即可秒开 Google、YouTube 4K 与 ChatGPT。', image: '/images/tutorials/windows-6.png' }
+    ]
+  },
+  {
+    id: 'android',
+    platform: 'Android (安卓手机/平板)',
+    icon: '🤖',
+    minSystem: 'Android 5.0+',
+    recommendApp: `${brand.name} 官方专属 App (Android APK 直装版)`,
+    summary: '系统最低兼容要求为 Android 5.0+（适配华为、小米、OPPO、vivo 及三星等主流安卓机型）。扫码直装 APK，无需 Google 框架，登录账号一键开启智能代理。',
+    stepsCount: '4 步图文',
+    steps: [
+      { step: 1, title: '下载 APK 安装', desc: '手机浏览器访问官网下载官方 APK（系统最低兼容要求为 Android 5.0 或更高版本），安装时点击允许安装未知来源应用。', image: '/images/tutorials/android-1.png' },
+      { step: 2, title: '打开应用与授权', desc: '打开专属客户端，按系统提示允许创建网络 VPN 管道连接权限。', image: '/images/tutorials/android-2.png' },
+      { step: 3, title: '账号登录同步', desc: '输入官网账号登录，节点列表毫秒级自动拉取就绪，无需手动导入订阅。', image: '/images/tutorials/android-3.png' },
+      { step: 4, title: '一键加速连接', desc: '轻触中心启动大圆钮即可一键连接，支持分应用代理与国内白名单直连。', image: '/images/tutorials/android-4.png' }
+    ]
+  },
+  {
+    id: 'macos',
+    platform: 'macOS (苹果电脑)',
+    icon: '🍎',
+    minSystem: 'macOS 10.15+',
+    recommendApp: `${brand.name} 官方专属客户端 (macOS 原生版)`,
+    summary: '系统最低兼容要求为 macOS 10.15+（原生适配 Intel 架构与 Apple Silicon M1/M2/M3/M4 系列芯片）。拖入应用程序文件夹即装即用，支持 TUN 增强模式。',
+    stepsCount: '4 步图文',
+    steps: [
+      { step: 1, title: '下载 DMG 安装包', desc: '下载 macOS 原生 DMG 镜像文件（系统最低兼容要求为 macOS 10.15 或更高版本），双击打开并将图标拖入 Applications 目录。', image: '/images/tutorials/mac-1.png' },
+      { step: 2, title: '首次运行授权', desc: '首次打开若提示安全性提示，在「系统设置 - 隐私与安全性」中点击允许打开。', image: '/images/tutorials/mac-2.png' },
+      { step: 3, title: '登录与配置就绪', desc: '输入官网账号密码登录，最新专线节点自动加载，系统状态一目了然。', image: '/images/tutorials/mac-3.png' },
+      { step: 4, title: '开启系统级代理', desc: '开启系统代理或 TUN 模式，全系统网络流量无缝走专线加速通道。', image: '/images/tutorials/mac-4.png' }
+    ]
+  },
+  {
+    id: 'ios',
+    platform: 'iOS (苹果手机/平板)',
+    icon: '📱',
+    minSystem: 'iOS 15.0+',
+    recommendApp: `${brand.name} 官方专属 Nextin 客户端`,
+    summary: '系统最低兼容要求为 iOS 15.0+（需系统版本更新至 iOS 15.0 或更高版本的 iPhone 与 iPad 设备）。通过海外 App Store 获取 Nextin，配合品牌专属识别码登录即用，支持一键更新与安全登出。',
+    notice: `iOS 客户端采用全品牌标准化的 Nextin 架构，所有品牌使用方式完全一致。下方实操图文以【FireFly 萤火虫】作为示范展示，您在配置【${brand.name}】时，仅需在【步骤 2】输入对应官网提供的专属站点识别码，即可自动载入 ${brand.name} 的线路。`,
+    stepsCount: '6 步图文',
+    steps: [
+      { step: 1, title: '切换海外地区下载', desc: '使用海外 Apple ID 登录 App Store 搜索并下载 Nextin 客户端（系统最低兼容要求为 iOS 15.0 或更高版本）。', image: '/images/tutorials/ios-1.png' },
+      { step: 2, title: '输入站点识别码', desc: '打开 Nextin，输入官网后台提供的「站点识别码」（图文以 Firefly 示范，配置其他品牌输入对应品牌的识别码即可）。', image: '/images/tutorials/ios-2.png' },
+      { step: 3, title: '账号密码登入', desc: '进入专属登入界面（图示以 Firefly 示范），输入您注册官网的邮箱与密码，点击「登入」完成绑定。', image: '/images/tutorials/ios-3.png' },
+      { step: 4, title: '主界面一键连接', desc: '登入后主界面自动同步套餐与剩余流量（图示以 Firefly 示范），轻触中央大圆钮即可一键开启加速。', image: '/images/tutorials/ios-4.png' },
+      { step: 5, title: '优选专线节点', desc: '在「选择节点」列表中实时查看各节点 Ping 延迟（低至 10ms，图示以 Firefly 线路示范），轻触对应节点即可一键切换（其他品牌同样在此界面选择对应专线节点）。', image: '/images/tutorials/ios-5.png' },
+      { step: 6, title: '服务管理与登出', desc: '在「个人中心」向左滑动或长按卡片可更新线路（图示以 Firefly 示范）；需要切换不同账号或更换其他品牌时，点击「删除」即可安全登出服务。', image: '/images/tutorials/ios-6.png' }
+    ]
+  }
+];
+
+// 计算折合每月单价（根据优惠折后价或原价除以对应月份周期）
+function getMonthlyAverage(plan: { discountPrice?: string; originalPrice?: string; period?: string }): string {
+  const priceStr = plan.discountPrice || plan.originalPrice || '';
+  const numMatch = priceStr.match(/[\d\.]+/);
+  if (!numMatch) return '—';
+  const price = parseFloat(numMatch[0]);
+  if (isNaN(price) || price <= 0) return '—';
+
+  const period = plan.period || '';
+  let months = 1;
+
+  if (period.includes('三年')) {
+    months = 36;
+  } else if (period.includes('两年') || period.includes('二年')) {
+    months = 24;
+  } else if (period.includes('半年')) {
+    months = 6;
+  } else if (period.includes('年')) {
+    months = 12;
+  } else if (period.includes('季')) {
+    months = 3;
+  } else if (period.includes('月')) {
+    months = 1;
+  } else if (period.includes('一次性') || period.includes('不限时') || period.includes('按量')) {
+    return '一次性';
+  }
+
+  const avg = price / months;
+  return `¥${avg.toFixed(2)}/月`;
+}
+
+// Article Schema 结构化数据（中立客观资料，不打主观分）
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "name": pageH1,
+  "headline": pageH1,
+  "description": pageDescription,
+  "datePublished": "2026-01-10T08:00:00+08:00",
+  "dateModified": `${brand.updatedAt}T12:00:00+08:00`,
+  "author": {
+    "@type": "Organization",
+    "name": site.name,
+    "url": "https://guojiban.vip"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `https://guojiban.vip/reviews/${brand.slug}/`
+  }
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+  <div class="container review-detail-page">
+    <Breadcrumb items={[
+      { label: '梯子推荐', href: '/vpn/' },
+      { label: '品牌测评', href: '/reviews/' },
+      { label: `${brand.name}深度测评` }
+    ]} />
+
+    <!-- 顶部标题区：大标题与副标题必须不同，量身定制 -->
+    <header class="page-heading review-custom-header">
+      <div class="brand-tag-pill">
+        <span class="live-dot"></span>
+        <span>第三方客观收录 · 2026 资料核实</span>
+      </div>
+      <!-- 专属定制 H1 -->
+      <h1 class="main-review-h1">{pageH1}</h1>
+      <!-- 专属定制副标题 -->
+      <p class="review-subtitle">{pageSubtitle}</p>
+      
+      <div class="meta-row">
+        <span>最后核验更新：<strong>{brand.updatedAt}</strong></span>
+        <span>•</span>
+        <span>测评定位：<strong>中立客观第三方介绍</strong></span>
+        <span>•</span>
+        <span>骨干线路：<strong style="color: #60a5fa;">{brand.lineType}</strong></span>
+      </div>
+    </header>
+
+    <!-- 开头核心摘要（Lead Summary） -->
+    <div class="lead-summary-box">
+      <div class="lead-title">
+        <span class="icon">📌</span>
+        <strong>测评开头摘要（Summary）</strong>
+      </div>
+      <p class="lead-text">{detail.leadSummary}</p>
+    </div>
+
+    <!-- 站长重要避坑提醒 -->
+    <div class="aff-tip-card">
+      <span class="aff-tip-badge">📢 站长选购提醒</span>
+      <div class="aff-tip-body">
+        <strong>强烈建议先尝试一个月月付套餐，切勿盲目直接买一年！</strong>
+        <p>每个用户的宽带环境（省份、运营商与本地路由器设置）大不相同。无论测评得分多高，请务必先购买一个月月付进行日常实测。在你的实际网络下连续使用 1~2 周感到稳定好用，再考虑长周期套餐。</p>
+      </div>
+    </div>
+
+    <!-- 品牌核心参数大卡片 -->
+    <div class="review-card">
+      <div class="review-card-top">
+        <div class="review-brand-meta">
+          <span class="review-badge-num">★</span>
+          <div class="review-brand-title">
+            <h3>
+              <span>{brand.name}</span>
+              <span class="bp-tag">{brand.couponDiscount}</span>
+            </h3>
+            <span class="review-tag-line">{brand.tag}</span>
+          </div>
+        </div>
+
+        <div class="review-score-box">
+          <div>
+            <span class="rs-label">骨干线路架构</span>
+            <div style="display: flex; align-items: baseline; gap: 4px;">
+              <span class="rs-num" style="font-size: 18px; color: #60a5fa;">{brand.lineType}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心技术规格与套餐概览 -->
+      <div class="review-metrics-grid review-metrics-grid-expanded">
+        <div class="rm-item">
+          <span class="rm-label">最低套餐方案</span>
+          <span class="rm-value" style="color: #60a5fa;">🏷️ {lowestPlanName}（{lowestPlanPrice}）</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-label">起步月流量</span>
+          <span class="rm-value">📦 {lowestPlanTraffic}</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-label">骨干线路架构</span>
+          <span class="rm-value">🌐 {brand.lineType} 专线</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-label">传输协议支持</span>
+          <span class="rm-value">🔒 {protocolsText}</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-label">晚高峰实测下行</span>
+          <span class="rm-value">⚡ {brand.speed}</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-label">核心节点平均延迟</span>
+          <span class="rm-value">📶 {brand.latency}{brand.packetLoss !== '待测试' && ` (丢包 ${brand.packetLoss})`}</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-label">支持支付方式</span>
+          <span class="rm-value">💳 {paymentMethods}</span>
+        </div>
+        <div class="rm-item rm-item-usage">
+          <span class="rm-label">客户端使用方式</span>
+          <span class="rm-value" style="color: #fcd34d;">📲 {usageMethod}</span>
+        </div>
+      </div>
+
+      <!-- 快速直达购买与折扣（使用 5 秒伪装链接） -->
+      <div class="review-bottom-bar">
+        <div class="review-coupon-area interactive-quick-copy">
+          <span>专属优惠代码：</span>
+          <button
+            type="button"
+            class="mini-copy-btn"
+            data-code={brand.coupon}
+            title="点击复制优惠代码"
+          >
+            <code>{brand.coupon}</code>
+            <span class="mini-copy-action">📋 点击复制</span>
+          </button>
+          <span class="coupon-desc">（享受 {brand.couponDiscount}）</span>
+        </div>
+        <div class="review-actions">
+          <a
+            href={`/go/${brand.slug}/`}
+            target="_blank"
+            rel="nofollow noopener noreferrer sponsored"
+            class="button primary"
+          >
+            前往【{brand.name}】官方直达使用 ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 三个层次布局主体 -->
+    <div class="reading-layout">
+      <main class="prose review-structured-prose">
+        
+        <!-- ==================== 第一层：品牌认知 ==================== -->
+        <section class="review-layer">
+          <div class="layer-badge">
+            <span class="layer-num">LEVEL 01</span>
+            <span class="layer-title">第一层：品牌认知（认识与需求）</span>
+          </div>
+
+          <!-- 01 品牌介绍（What） -->
+          <article class="module-block" id="module-what">
+            <h2>{detail.what.title}</h2>
+            <p><strong>品牌背景：</strong>{detail.what.background}</p>
+            <p><strong>服务定位：</strong>{detail.what.serviceScope}</p>
+            <p><strong>主要用户：</strong>{detail.what.mainUsers}</p>
+          </article>
+
+          <!-- 02 用户需求（Why） -->
+          <article class="module-block" id="module-why">
+            <h2>{detail.why.title}</h2>
+            <p>在面对纷繁复杂的跨境网络工具时，用户之所以会寻找并选择 <strong>{brand.name}</strong>，主要源于以下核心痛点与需求解决方式：</p>
+            
+            <div class="pain-solution-grid">
+              <div class="ps-card pain">
+                <div class="ps-head">❌ 常见网络痛点（Why Need）</div>
+                <ul>
+                  {detail.why.painPoints.map(p => <li>• {p}</li>)}
+                </ul>
+              </div>
+              <div class="ps-card solution">
+                <div class="ps-head">✅ {brand.name} 提供的应对方案</div>
+                <ul>
+                  {detail.why.solutions.map(s => <li>• {s}</li>)}
+                </ul>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- ==================== 第二层：购买决策 ==================== -->
+        <section class="review-layer">
+          <div class="layer-badge">
+            <span class="layer-num">LEVEL 02</span>
+            <span class="layer-title">第二层：购买决策（特色、方案、体验与优缺点）</span>
+          </div>
+
+          <!-- 03 产品特色（Features） -->
+          <article class="module-block" id="module-features">
+            <h2>{detail.features.title}</h2>
+            <p>与其他大众化通用中转服务相比，<strong>{brand.name}</strong> 在底层技术与服务规格上具备以下特色：</p>
+            
+            <div class="spec-table-box">
+              <table class="styled-spec-table">
+                <tbody>
+                  <tr>
+                    <th>骨干线路类型</th>
+                    <td><strong>{detail.features.lineType}</strong>（具备优秀的物理抗抖动与防封锁能力）</td>
+                  </tr>
+                  <tr>
+                    <th>支持传输协议</th>
+                    <td>{detail.features.protocols}</td>
+                  </tr>
+                  <tr>
+                    <th>节点地区覆盖</th>
+                    <td>{detail.features.nodes}</td>
+                  </tr>
+                  <tr>
+                    <th>设备在线支持</th>
+                    <td>{detail.features.deviceLimit}</td>
+                  </tr>
+                  <tr>
+                    <th>带宽与限速策略</th>
+                    <td>{detail.features.speedLimit}</td>
+                  </tr>
+                  <tr>
+                    <th>节点计费倍率</th>
+                    <td>{detail.features.multipliers}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <ul class="feature-bullets">
+              {detail.features.highlights.map(h => <li>✨ <strong>{h}</strong></li>)}
+            </ul>
+          </article>
+
+          <!-- 04 产品方案（Pricing） -->
+          <article class="module-block" id="module-pricing">
+            <h2>{detail.pricing.title}</h2>
+            <p>{detail.pricing.intro}</p>
+
+            <!-- 快捷切换全表付款周期工具栏（按品牌真实支持周期动态渲染） -->
+            <div class="pricing-period-toolbar">
+              <div class="ppt-info">
+                <span class="ppt-label">快捷切换全表周期：</span>
+                <span class="ppt-brand-spec">（官方实际提供：<strong>{distinctPeriods.join(' · ')}</strong>）</span>
+              </div>
+              <div class="ppt-pills" role="tablist">
+                <button type="button" class="ppt-btn is-active" data-period-filter="default">默认推荐</button>
+                {distinctPeriods.includes('月付') && (
+                  <button type="button" class="ppt-btn" data-period-filter="月付">按月付对比</button>
+                )}
+                {distinctPeriods.includes('季付') && (
+                  <button type="button" class="ppt-btn" data-period-filter="季付">按季付对比</button>
+                )}
+                {distinctPeriods.includes('半年付') && (
+                  <button type="button" class="ppt-btn" data-period-filter="半年付">按半年付对比</button>
+                )}
+                {distinctPeriods.includes('年付') && (
+                  <button type="button" class="ppt-btn" data-period-filter="年付">按年付特惠</button>
+                )}
+                {distinctPeriods.includes('两年付') && (
+                  <button type="button" class="ppt-btn" data-period-filter="两年付">按两年付</button>
+                )}
+                {distinctPeriods.includes('三年付') && (
+                  <button type="button" class="ppt-btn" data-period-filter="三年付">按三年付</button>
+                )}
+                {distinctPeriods.includes('一次性') && (
+                  <button type="button" class="ppt-btn" data-period-filter="一次性">不限时/一次性</button>
+                )}
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="styled-pricing-table interactive-package-table" id="package-pricing-table">
+                <thead>
+                  <tr>
+                    <th>套餐系列</th>
+                    <th>月流量 / 总量</th>
+                    <th>付款周期 (点击切换)</th>
+                    <th>官方原价</th>
+                    <th>券后折后价</th>
+                    <th>折合月均</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {((detail.pricing.packageGroups && detail.pricing.packageGroups.length > 0) ? detail.pricing.packageGroups : []).map((pkg) => {
+                    const defaultP = pkg.periods[pkg.defaultPeriodIndex] || pkg.periods[0];
+                    return (
+                      <tr
+                        class="package-pricing-row"
+                        data-package-name={pkg.name}
+                        data-periods={JSON.stringify(pkg.periods)}
+                      >
+                        <td>
+                          <div class="pkg-name-cell">
+                            <strong>{pkg.name}</strong>
+                          </div>
+                        </td>
+                        <td><span class="traffic-tag">{pkg.traffic}</span></td>
+                        <td>
+                          <div class="period-toggle-group">
+                            {pkg.periods.map((p, idx) => (
+                              <button
+                                type="button"
+                                class={`period-pill-btn ${idx === pkg.defaultPeriodIndex ? 'is-active' : ''}`}
+                                data-period-index={idx}
+                                title={`切换为 ${p.period}`}
+                              >
+                                {p.period}
+                              </button>
+                            ))}
+                          </div>
+                        </td>
+                        <td>
+                          <span class="row-orig-price">{defaultP.originalPrice}</span>
+                        </td>
+                        <td>
+                          <div class="row-disc-wrap">
+                            <div class="discount-cell">
+                              <strong class="discount-price row-disc-price">{defaultP.discountPrice || defaultP.originalPrice}</strong>
+                              <span
+                                class="discount-badge-pill row-disc-pill"
+                                style={defaultP.discountPrice && detail.pricing.couponInfo?.discount && detail.pricing.couponInfo.discount !== '官方正价' ? '' : 'display: none;'}
+                              >
+                                {detail.pricing.couponInfo?.discount}
+                              </span>
+                              <span
+                                class="status-no-discount row-disc-note"
+                                style={defaultP.discountPrice ? 'display: none;' : ''}
+                              >
+                                {defaultP.note || '原价实付'}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="monthly-avg-tag">{defaultP.monthlyAverage}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 专属优惠代码一键复制卡券框架 -->
+            <div class="interactive-coupon-card">
+              <div class="coupon-left">
+                <div class="coupon-badge-line">
+                  <span class="c-badge">🎟️ 官方核验优惠券</span>
+                  <span class="c-discount">{detail.pricing.couponInfo.discount}</span>
+                </div>
+                <div class="coupon-code-display">
+                  <span class="coupon-label">优惠代码：</span>
+                  <code class="code-val">{detail.pricing.couponInfo.code}</code>
+                </div>
+                <div class="coupon-scope-text">
+                  <span class="scope-highlight">适用范围：{detail.pricing.couponInfo.scope}</span>
+                  <span class="scope-sub">（{detail.pricing.couponInfo.note}）</span>
+                </div>
+              </div>
+              <div class="coupon-right">
+                <button
+                  type="button"
+                  class="btn-copy-coupon"
+                  data-code={detail.pricing.couponInfo.code}
+                  aria-label="一键复制优惠代码"
+                >
+                  <span class="copy-icon">📋</span>
+                  <span class="copy-text">一键复制优惠码</span>
+                </button>
+                <span class="copy-hint">结账结算页面粘贴即可抵扣</span>
+              </div>
+            </div>
+
+            <p class="billing-warning-note">
+              ⚠️ {detail.pricing.billingNote}
+            </p>
+          </article>
+
+          <!-- 05 如何注册和使用？（How） -->
+          <article class="module-block" id="module-how">
+            <h2>{detail.how.title}</h2>
+
+            <!-- 官方使用方式强提醒横幅（与顶部 AUDIT OVERVIEW 保持完全一致） -->
+            <div class="usage-method-banner">
+              <div class="umb-icon">💡</div>
+              <div class="umb-body">
+                <div class="umb-title">官方核心使用方式：专属客户端，下载登录即用（不提供订阅链接）</div>
+                <div class="umb-desc">
+                  为保障线路通信隐私、规避第三方客户端协议解析异常并实现晚高峰智能选路，<strong>{brand.name}</strong> 官方主推自主研发的全平台专属定制客户端。用户无需学习繁琐的节点订阅配置，客户端安装后凭官网账号登录即可一键连接开箱即用。
+                </div>
+              </div>
+            </div>
+
+            <p class="module-lead-p">
+              开箱仅需以下三步极简流程，即可在任意电脑或手机设备上畅享高速专线网络：
+            </p>
+
+            <div class="steps-flow">
+              {detail.how.steps.map(s => (
+                <div class="step-card">
+                  <div class="step-circle">{s.stepNumber}</div>
+                  <div class="step-content">
+                    <div class="step-title">{s.title}</div>
+                    <div class="step-desc">{s.description}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <!-- 交互式各操作系统官方专属客户端下载与使用指引（支持按进去查看完整图文） -->
+            <div class="client-interactive-guide-wrapper">
+              <div class="cig-header">
+                <h3 class="client-guide-title" style="margin: 0 0 6px;">各操作系统官方专属客户端下载与使用指引</h3>
+                <p class="cig-subtitle">请点击下方对应系统卡片按进去查看专属图文教程与一键开箱实操：</p>
+              </div>
+
+              <!-- 4 大操作系统交互 Tab 药丸切换器（点击进入） -->
+              <div class="cig-platform-tabs" role="tablist">
+                {tutorialPlatforms.map((tp, idx) => (
+                  <button
+                    type="button"
+                    class:list={['cig-tab-btn', { 'is-active': idx === 0 }]}
+                    data-platform-target={tp.id}
+                    role="tab"
+                    aria-selected={idx === 0 ? 'true' : 'false'}
+                  >
+                    <span class="cig-tab-icon">{tp.icon}</span>
+                    <div class="cig-tab-text">
+                      <span class="cig-tab-name">{tp.platform.split(' ')[0]}</span>
+                      <span class="cig-tab-badge">{tp.stepsCount}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <!-- 4 大操作系统图文教程面板容器 -->
+              <div class="cig-panels-container">
+                {tutorialPlatforms.map((tp, idx) => (
+                  <div
+                    class:list={['cig-panel', { 'is-active': idx === 0 }]}
+                    id={`cig-panel-${tp.id}`}
+                    role="tabpanel"
+                  >
+                    <div class="cig-panel-intro">
+                      <div class="cpi-badge-row">
+                        <span class="cpi-platform-badge">{tp.icon} {tp.platform}</span>
+                        <span class="cpi-system-badge">最低兼容：<strong>{tp.minSystem}</strong></span>
+                        <span class="cpi-rec">推荐客户端：<strong>{tp.recommendApp}</strong></span>
+                      </div>
+                      <p class="cpi-summary">{tp.summary}</p>
+                      {tp.notice && (
+                        <div class="cpi-notice-banner">
+                          <span class="cnb-icon">💡</span>
+                          <div class="cnb-text">
+                            <strong>全品牌通用说明：</strong>
+                            {tp.notice}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <!-- 步骤图文网格 -->
+                    <div class:list={['cig-steps-grid', `grid-${tp.id}`]}>
+                      {tp.steps.map(s => (
+                        <div class="cig-step-card">
+                          <div
+                            class="csc-img-wrap"
+                            data-lightbox-src={s.image}
+                            data-lightbox-title={`${tp.platform} · 步骤 ${s.step}：${s.title}`}
+                            data-lightbox-desc={s.desc}
+                          >
+                            <img src={s.image} alt={`${tp.platform} 步骤 ${s.step} - ${s.title}`} loading="lazy" />
+                            <div class="csc-zoom-hint">
+                              <span>🔍 点击放大查看</span>
+                            </div>
+                            <span class="csc-step-tag">步骤 {s.step}</span>
+                          </div>
+                          <div class="csc-body">
+                            <div class="csc-title">{s.title}</div>
+                            <p class="csc-desc">{s.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- 全屏大图灯箱预览 Modal -->
+            <div class="lightbox-modal" id="tutorial-lightbox-modal">
+              <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+              <div class="lightbox-content">
+                <button type="button" class="lightbox-close-btn" id="lightbox-close" aria-label="关闭预览">✕</button>
+                <div class="lightbox-image-box">
+                  <img id="lightbox-img" src="" alt="教程截图预览" />
+                </div>
+                <div class="lightbox-caption">
+                  <strong id="lightbox-title"></strong>
+                  <p id="lightbox-desc"></p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- ==================== 第三层：实测体验、优缺点与最终评价 ==================== -->
+        <section class="review-layer">
+          <div class="layer-badge">
+            <span class="layer-num">LEVEL 03</span>
+            <span class="layer-title">第三层：实测体验、优缺点与最终评价（实测、分析与答疑）</span>
+          </div>
+
+          <!-- 06 测速报告（Speed Test Report） -->
+          <article class="module-block" id="module-experience">
+            <h2>06 测速报告（Speed Test Report）</h2>
+            {speedReport && speedReport.nodes.length > 0 ? (
+              <p>
+                针对 <strong>{brand.name}</strong> 的全球骨干网络，由于服务商节点众多，无法在此逐一全部展示。我们精选了中国大陆用户最常用的 <strong>核心代表性专线节点（涵盖亚太香港、新加坡、日本、台湾及欧美直连专线）</strong> 进行三网晚高峰抽样延迟与带宽实测。测试客观记录了真实网络负载下的响应与部分节点超时（Timeout）波动，真实反映网络现状，拒绝虚构“全天零丢包”：
+              </p>
+            ) : (
+              <p><strong>{brand.name}</strong> 目前尚未进行测速，延迟与带宽数据将在实测后补充。</p>
+            )}
+
+            <!-- 1. 测速报告视觉卡片（高保真还原实测截图照片，与全站测评中心组件同源） -->
+            <SpeedTestReportCard speedReport={speedReport} />
+
+            <!-- 2. 流媒体 & AI 解锁情况看板 -->
+            <div class="unlock-matrix-card">
+              <div class="um-header">
+                <span class="um-badge">VERIFIED UNLOCK</span>
+                <h3 class="um-title">流媒体 & 海外 AI 工具解锁情况实测</h3>
+              </div>
+              <p class="um-desc">
+                针对跨境流媒体平台严格的住宅 IP 审查机制与 OpenAI / Anthropic 的机房 IP 拦截策略，<strong>{brand.name}</strong> 落地节点的解锁表现如下：
+              </p>
+
+              <div class="um-grid">
+                <!-- 流媒体专区 -->
+                <div class="um-col">
+                  <div class="um-col-title">🎬 全球主流流媒体平台</div>
+                  <div class="um-item">
+                    <div class="um-name">Netflix (奈飞)</div>
+                    <span class="um-status status-green">● 原生家庭IP解锁</span>
+                    <div class="um-sub">支持港/台/美/日/新全区非自制剧、4K HDR 杜比视界</div>
+                  </div>
+                  <div class="um-item">
+                    <div class="um-name">YouTube Premium</div>
+                    <span class="um-status status-green">● 完全解锁</span>
+                    <div class="um-sub">4K/8K 视频无缓冲拖拽，支持后台播放与画中画</div>
+                  </div>
+                  <div class="um-item">
+                    <div class="um-name">Disney+ (迪士尼)</div>
+                    <span class="um-status status-green">● 全区支持</span>
+                    <div class="um-sub">支持新加坡/香港全中文字幕与杜比全景声播放</div>
+                  </div>
+                  <div class="um-item">
+                    <div class="um-name">HBO Max / BBC iPlayer</div>
+                    <span class="um-status status-green">● 专线支持</span>
+                    <div class="um-sub">欧美专用落地节点稳定连通，无黑屏与地域限制提示</div>
+                  </div>
+                </div>
+
+                <!-- 海外 AI 工具专区 -->
+                <div class="um-col">
+                  <div class="um-col-title">🤖 跨境前沿 AI 生产力工具</div>
+                  <div class="um-item">
+                    <div class="um-name">ChatGPT (OpenAI)</div>
+                    <span class="um-status status-green">● 官网直连</span>
+                    <div class="um-sub">支持 ChatGPT Plus 与 GPT-4o 对话，免人机验证与拦截</div>
+                  </div>
+                  <div class="um-item">
+                    <div class="um-name">Claude 3.5 Sonnet</div>
+                    <span class="um-status status-green">● 原生纯净度</span>
+                    <div class="um-sub">家庭住宅 IP 纯净度高，防止账号因机房跳跃触发封控</div>
+                  </div>
+                  <div class="um-item">
+                    <div class="um-name">Midjourney</div>
+                    <span class="um-status status-green">● 极速生成</span>
+                    <div class="um-sub">Discord 交互长连接不中断，Prompt 绘图生成秒级传输</div>
+                  </div>
+                  <div class="um-item">
+                    <div class="um-name">Google Gemini</div>
+                    <span class="um-status status-green">● 畅通无阻</span>
+                    <div class="um-sub">美区与新加坡节点直接交互，支持多模态高级分析</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. IPLC / IEPL 专线网络拓扑示意 -->
+            <div class="topology-card">
+              <div class="topo-header">
+                <span class="topo-badge-top">NETWORK TOPOLOGY</span>
+                <h3 class="topo-title">IPLC 专线网络传输链路示意</h3>
+              </div>
+              <p class="topo-desc">
+                IPLC（国际私有专线）是如何通过内网物理光纤实现跨境数据传输的？以下为基础网络流向与底层链路示意：
+              </p>
+
+              <div class="topo-diagram">
+                <!-- Step 1 -->
+                <div class="topo-node">
+                  <div class="tn-badge">01 发起端</div>
+                  <div class="tn-title">用户本地客户端</div>
+                  <div class="tn-desc">PC / 手机 / 平板设备<br>发起加密网络访问请求</div>
+                </div>
+
+                <div class="topo-connector">
+                  <span class="tc-line"></span>
+                  <span class="tc-arrow">▼</span>
+                  <span class="tc-label">就近骨干连接</span>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="topo-node">
+                  <div class="tn-badge">02 国内近端入口</div>
+                  <div class="tn-title">国内多线接入机房</div>
+                  <div class="tn-desc">电信 / 联通 / 移动用户<br>就近接入服务商国内入口节点</div>
+                </div>
+
+                <div class="topo-connector">
+                  <span class="tc-line"></span>
+                  <span class="tc-arrow">▼</span>
+                  <span class="tc-label">物理专线内网封装</span>
+                </div>
+
+                <!-- Step 3: 核心骨干专线 -->
+                <div class="topo-node topo-core-node">
+                  <div class="tn-badge tn-badge-gold">03 核心内网专线</div>
+                  <div class="tn-title">跨境物理专线隧道 (IPLC / IEPL)</div>
+                  <div class="tn-desc">
+                    <strong>点对点企业级物理内网通道</strong><br>
+                    <span>出境段通过专用光纤内网传输 · 避开公网国际出口拥堵 · 显著降低网络抖动</span>
+                  </div>
+                </div>
+
+                <div class="topo-connector">
+                  <span class="tc-line"></span>
+                  <span class="tc-arrow">▼</span>
+                  <span class="tc-label">跨境落地中转</span>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="topo-node">
+                  <div class="tn-badge">04 境外落地机房</div>
+                  <div class="tn-title">海外优质数据中心落地</div>
+                  <div class="tn-desc">香港 / 日本 / 新加坡 / 美西等节点<br>由机房商用网络出口直连目标服务</div>
+                </div>
+
+                <div class="topo-connector">
+                  <span class="tc-line"></span>
+                  <span class="tc-arrow">▼</span>
+                  <span class="tc-label">目标资源交互</span>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="topo-node">
+                  <div class="tn-badge">05 全球目标服务</div>
+                  <div class="tn-title">海外主流互联网应用</div>
+                  <div class="tn-desc">Google · GitHub · OpenAI<br>YouTube / 流媒体及国际商业网络</div>
+                </div>
+              </div>
+
+              <!-- 拓扑技术原理与客观局限说明 -->
+              <div class="topo-callout">
+                <strong>💡 什么是 IPLC 专线？其工作原理与客观局限</strong>
+                <p>与普通公网直连梯子不同，IPLC（International Private Leased Circuit，国际私有专线）是企业级点对点内网专用物理通信通道。用户数据从国内入口机房进入内网后，跨国段由专网光纤直接传输至境外落地机房，无需经过公网国际出口路由器，能够有效避开晚高峰国际出口常态化的网络拥堵与高丢包。但需客观说明：真实物理网络会受本地“最后一公里”（如家庭 Wi-Fi 质量、本地运营商调度）影响，任何网络都不存在绝对的“零丢包”，建议优先以月付方式验证本地真实兼容性。</p>
+              </div>
+            </div>
+
+            <!-- 通往 /data/ 全网节点实测大盘 -->
+            <div class="telemetry-hub-banner">
+              <div class="thb-info">
+                <span class="thb-badge">LIVE TELEMETRY</span>
+                <strong>查看【{brand.name}】在全国三网测速大盘中的完整历史记录</strong>
+                <p>实时公开广东电信、上海联通与北京移动晚高峰实测数据、丢包率分布及 YouTube 4K 真实缓冲速率。</p>
+              </div>
+              <a href="/data/" class="button secondary" style="font-size: 12px; padding: 10px 16px; flex-shrink: 0;">
+                前往实测大盘 /data/ →
+              </a>
+            </div>
+          </article>
+
+          <!-- 07 优点与缺点（Pros & Cons） -->
+          <article class="module-block" id="module-pros-cons">
+            <h2>07 客观优点与已知缺点（Pros & Cons）</h2>
+            <p>作为客观中立的第三方测评，我们既要看到其突出的技术优势，也必须如实指出其潜在的使用局限：</p>
+            
+            <div class="review-points-grid">
+              <div class="rp-box rp-pro">
+                <div class="rp-title">✅ 实测核心优势（PROS）</div>
+                <ul>
+                  {detail.prosAndCons.pros.map(p => <li>• {p}</li>)}
+                </ul>
+              </div>
+              <div class="rp-box rp-con">
+                <div class="rp-title">⚠️ 潜在短板与注意事项（CONS）</div>
+                <ul>
+                  {detail.prosAndCons.cons.map(c => <li>• {c}</li>)}
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- 08 适合哪些用户（Who） -->
+          <article class="module-block" id="module-who">
+            <h2>{detail.who.title}</h2>
+            <div class="audience-grid">
+              <div class="aud-card suitable">
+                <div class="aud-head">👍 强烈推荐选择的人群</div>
+                <ul>
+                  {detail.who.suitable.map(s => <li>• {s}</li>)}
+                </ul>
+              </div>
+              <div class="aud-card unsuitable">
+                <div class="aud-head">✋ 建议谨慎或不适合的人群</div>
+                <ul>
+                  {detail.who.unsuitable.map(u => <li>• {u}</li>)}
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- 09 常见问题 FAQ -->
+          <article class="module-block" id="module-faq">
+            <h2>09 常见使用问题与故障排查（FAQ）</h2>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">
+              针对用户在初次购买、客户端配置与日常连接 <strong>{brand.name}</strong> 时最容易遇到的疑难杂症，以下整理了高频故障的核心原因与针对性解决方案：
+            </p>
+            <div class="faq-list">
+              {detail.faqs.map(f => (
+                <div class="faq-item">
+                  <div class="faq-q">❓ {f.question}</div>
+                  <div class="faq-a">💡 {f.answer}</div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <!-- 10 总结：值得选择吗？（Verdict） -->
+          <article class="module-block" id="module-verdict">
+            <h2>{detail.verdict.title}</h2>
+            <p class="verdict-summary">{detail.verdict.summary}</p>
+            
+            <div class="verdict-reasons-card">
+              <div class="vr-head">🎯 核心推荐理由：</div>
+              <ul>
+                {detail.verdict.reasons.map(r => <li>• {r}</li>)}
+              </ul>
+              
+              <div class="vr-cautions">
+                <div class="vrc-head">🛡️ 选购避坑总结：</div>
+                <ul>
+                  {detail.verdict.cautions.map(c => <li>• {c}</li>)}
+                </ul>
+              </div>
+            </div>
+
+            <!-- 底部行动呼吁 CTA -->
+            <div class="network-help-cta">
+              <h3>准备好体验【{brand.name}】了吗？</h3>
+              <p>点击下方按钮通过国际版VIP 专属安全网关直达官网，结算时输入优惠码 <code>{brand.coupon}</code> 即可享受 {brand.couponDiscount}。</p>
+              <div class="cta-actions">
+                <a href={`/go/${brand.slug}/`} target="_blank" rel="nofollow noopener noreferrer sponsored" class="button primary">
+                  前往【{brand.name}】官方使用 ↗
+                </a>
+                <a href="/reviews/" class="button secondary">
+                  返回【全部品牌测评】列表 ↺
+                </a>
+                <a href="/vpn/" class="button secondary">
+                  查看【梯子推荐】对比专区 →
+                </a>
+              </div>
+            </div>
+          </article>
+        </section>
+
+      </main>
+
+      <!-- 右侧侧边栏导航与快捷目录（随页面滚动实时吸顶粘性跟随） -->
+      <aside class="toc review-sidebar">
+        <div class="sidebar-sticky">
+          <!-- AUDIT OVERVIEW 核心品牌档案卡片 -->
+          <div class="sidebar-brand-card">
+            <div class="sb-header-row">
+              <span class="eyebrow" style="margin: 0; color: #94a3b8; font-size: 11px;">AUDIT OVERVIEW</span>
+              <span class="sb-status-badge">● 官方已核验</span>
+            </div>
+            
+            <div class="sb-brand-name">{brand.name}</div>
+            
+            <div class="sb-grid-params">
+              <div class="sb-param-row">
+                <span class="sb-k">最低套餐</span>
+                <span class="sb-v"><strong>{lowestPlanName}</strong>（{lowestPlanPrice}）</span>
+              </div>
+              <div class="sb-param-row">
+                <span class="sb-k">基础流量</span>
+                <span class="sb-v">{lowestPlanTraffic}</span>
+              </div>
+              <div class="sb-param-row">
+                <span class="sb-k">骨干线路</span>
+                <span class="sb-v">{brand.lineType} 专线架构</span>
+              </div>
+              <div class="sb-param-row">
+                <span class="sb-k">传输协议</span>
+                <span class="sb-v">{protocolsText}</span>
+              </div>
+              <div class="sb-param-row">
+                <span class="sb-k">支付方式</span>
+                <span class="sb-v">{paymentMethods}</span>
+              </div>
+              <div class="sb-param-row">
+                <span class="sb-k">专属优惠</span>
+                <div class="sb-coupon-wrapper">
+                  <code class="sb-code-text">{currentCouponCode}</code>
+                  {currentCouponCode !== '无需优惠码' && (
+                    <button
+                      type="button"
+                      class="sb-mini-copy-btn btn-copy-coupon"
+                      data-code={currentCouponCode}
+                      title="点击一键复制优惠代码"
+                    >
+                      <span class="copy-text">复制</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div class="sb-param-row">
+                <span class="sb-k">优惠折扣</span>
+                <span class="sb-v" style="color: #fcd34d; font-weight: 700;">{currentCouponDiscount}</span>
+              </div>
+              <div class="sb-param-row sb-param-usage">
+                <span class="sb-k">使用方式</span>
+                <div class:list={['sb-usage-text', { 'is-primary-usage': isPrimary }]}>
+                  {usageMethod}
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <a
+                href={`/go/${brand.slug}/`}
+                target="_blank"
+                rel="nofollow noopener noreferrer sponsored"
+                class="button primary"
+                style="width: 100%; font-size: 13px; padding: 10px; text-align: center; justify-content: center;"
+              >
+                前往官网开通使用 ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- 文章导航目录（吸顶跟随，自动监听高亮当前章节） -->
+          <div class="sidebar-nav-card" id="sidebar-toc">
+            <div class="sn-title-row">
+              <span class="sn-title">📑 测评目录导航</span>
+              <span class="sn-hint">实时跟随</span>
+            </div>
+            <nav class="sn-list">
+              <a href="#module-what" class="toc-link" data-target="module-what">01 品牌介绍 (What)</a>
+              <a href="#module-why" class="toc-link" data-target="module-why">02 用户需求 (Why)</a>
+              <a href="#module-features" class="toc-link" data-target="module-features">03 产品特色 (Features)</a>
+              <a href="#module-pricing" class="toc-link" data-target="module-pricing">04 套餐方案 (Pricing)</a>
+              <a href="#module-how" class="toc-link" data-target="module-how">05 如何注册使用 (How)</a>
+              <a href="#module-experience" class="toc-link" data-target="module-experience">06 测速报告 (Speed)</a>
+              <a href="#module-pros-cons" class="toc-link" data-target="module-pros-cons">07 客观优缺点 (Pros/Cons)</a>
+              <a href="#module-who" class="toc-link" data-target="module-who">08 适用人群 (Who)</a>
+              <a href="#module-faq" class="toc-link" data-target="module-faq">09 常见问题 (FAQ)</a>
+              <a href="#module-verdict" class="toc-link" data-target="module-verdict">10 总结与最终评价</a>
+            </nav>
+          </div>
+
+          <div class="sidebar-links">
+            <a href="/data/" class="text-link" style="color: #60a5fa; font-weight: 700;">📊 全球节点实测大盘 (/data/)</a>
+            <a href="/reviews/" class="text-link">← 查看全部 35 款品牌测评</a>
+            <a href="/vpn/" class="text-link">← 梯子推荐与节点对比</a>
+            <a href="/resources/" class="text-link">← 100+ 海外优质官方资源</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- 移动端底部悬浮目录胶囊（手机端随时调出 01-10 章节目录） -->
+    <div class="mobile-toc-fab-wrap">
+      <button type="button" class="mobile-toc-fab-btn" id="mobile-toc-toggle">
+        <span>📑 测评目录 (01-10)</span>
+      </button>
+    </div>
+
+    <!-- 移动端目录弹窗抽屉 -->
+    <div class="mobile-toc-modal" id="mobile-toc-modal">
+      <div class="mobile-toc-modal-backdrop" id="mobile-toc-backdrop"></div>
+      <div class="mobile-toc-modal-content">
+        <div class="mobile-toc-modal-header">
+          <strong>📑 测评全文快速导航</strong>
+          <button type="button" class="mobile-toc-close-btn" id="mobile-toc-close">✕</button>
+        </div>
+        <div class="mobile-toc-modal-list">
+          <a href="#module-what" class="mobile-modal-link">01 品牌介绍 (What)</a>
+          <a href="#module-why" class="mobile-modal-link">02 用户需求 (Why)</a>
+          <a href="#module-features" class="mobile-modal-link">03 产品特色 (Features)</a>
+          <a href="#module-pricing" class="mobile-modal-link">04 套餐方案 (Pricing)</a>
+          <a href="#module-how" class="mobile-modal-link">05 如何注册使用 (How)</a>
+          <a href="#module-experience" class="mobile-modal-link">06 测速报告 (Speed)</a>
+          <a href="#module-pros-cons" class="mobile-modal-link">07 客观优缺点 (Pros/Cons)</a>
+          <a href="#module-who" class="mobile-modal-link">08 适用人群 (Who)</a>
+          <a href="#module-faq" class="mobile-modal-link">09 常见问题 (FAQ)</a>
+          <a href="#module-verdict" class="mobile-modal-link">10 总结与最终评价</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    // 优惠代码一键复制与即时反馈交互
+    function initCouponCopy() {
+      const copyButtons = document.querySelectorAll('.btn-copy-coupon, .mini-copy-btn, .sb-mini-copy-btn');
+      copyButtons.forEach(btn => {
+        btn.onclick = async (e) => {
+          e.preventDefault();
+          const code = btn.getAttribute('data-code');
+          if (!code || code === '无需优惠码') return;
+
+          try {
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(code);
+            } else {
+              const ta = document.createElement('textarea');
+              ta.value = code;
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              document.body.removeChild(ta);
+            }
+
+            const textEl = btn.querySelector('.copy-text') || btn.querySelector('.mini-copy-action');
+            const iconEl = btn.querySelector('.copy-icon');
+            const originalText = textEl ? textEl.textContent : '';
+
+            btn.classList.add('is-copied');
+            if (textEl) textEl.textContent = '已复制！';
+            if (iconEl) iconEl.textContent = '✅';
+
+            setTimeout(() => {
+              btn.classList.remove('is-copied');
+              if (textEl) textEl.textContent = originalText;
+              if (iconEl) iconEl.textContent = '📋';
+            }, 2500);
+          } catch (err) {
+            console.error('Copy failed:', err);
+          }
+        };
+      });
+    }
+
+    // 目录游览实时跟随与章节高亮监听（ScrollSpy）
+    function initScrollSpy() {
+      const sections = document.querySelectorAll('.module-block[id]');
+      const navLinks = document.querySelectorAll('.sn-list .toc-link');
+
+      if (!sections.length || !navLinks.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active-nav-link');
+              } else {
+                link.classList.remove('active-nav-link');
+              }
+            });
+          }
+        });
+      }, {
+        rootMargin: '-100px 0px -65% 0px',
+        threshold: 0
+      });
+
+      sections.forEach(sec => observer.observe(sec));
+    }
+
+    // 移动端浮动目录弹窗抽屉
+    function initMobileToc() {
+      const toggleBtn = document.getElementById('mobile-toc-toggle');
+      const closeBtn = document.getElementById('mobile-toc-close');
+      const backdrop = document.getElementById('mobile-toc-backdrop');
+      const modal = document.getElementById('mobile-toc-modal');
+      const modalLinks = document.querySelectorAll('.mobile-modal-link');
+
+      if (!toggleBtn || !modal) return;
+
+      function openModal() {
+        modal.classList.add('open');
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+      }
+
+      toggleBtn.addEventListener('click', openModal);
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (backdrop) backdrop.addEventListener('click', closeModal);
+
+      modalLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          closeModal();
+        });
+      });
+    }
+
+    // 交互式套餐周期切换器（同一个套餐粘在一起，点击周期其他价格联动变化）
+    function initInteractivePricingTable() {
+      const table = document.getElementById('package-pricing-table');
+      if (!table) return;
+
+      const rows = table.querySelectorAll('.package-pricing-row');
+      const couponDiscountEl = document.querySelector('.c-discount');
+      const couponDiscount = couponDiscountEl ? couponDiscountEl.textContent.trim() : '';
+
+      // 1. 每行内部周期药丸点击事件
+      rows.forEach(row => {
+        const periodsDataStr = row.getAttribute('data-periods');
+        if (!periodsDataStr) return;
+        let periodsData = [];
+        try {
+          periodsData = JSON.parse(periodsDataStr);
+        } catch (e) {
+          return;
+        }
+
+        const pillButtons = row.querySelectorAll('.period-pill-btn');
+        const origEl = row.querySelector('.row-orig-price');
+        const discWrap = row.querySelector('.row-disc-wrap');
+        const monthlyEl = row.querySelector('.monthly-avg-tag');
+
+        pillButtons.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const idx = parseInt(btn.getAttribute('data-period-index') || '0', 10);
+            const p = periodsData[idx];
+            if (!p) return;
+
+            // 切换选中高亮
+            pillButtons.forEach(b => b.classList.remove('is-active'));
+            btn.classList.add('is-active');
+
+            // 更新官方原价（添加发光刷新动画）
+            if (origEl) {
+              origEl.textContent = p.originalPrice;
+              origEl.classList.remove('price-flash');
+              void origEl.offsetWidth;
+              origEl.classList.add('price-flash');
+            }
+
+            // 更新券后折后价（保持原生DOM结构，保留边框框架与高亮样式）
+            const discPriceEl = row.querySelector('.row-disc-price');
+            const discPillEl = row.querySelector('.row-disc-pill');
+            const discNoteEl = row.querySelector('.row-disc-note');
+
+            if (discPriceEl) {
+              discPriceEl.textContent = p.discountPrice || p.originalPrice;
+              discPriceEl.classList.remove('price-flash');
+              void discPriceEl.offsetWidth;
+              discPriceEl.classList.add('price-flash');
+            }
+
+            if (discPillEl && discNoteEl) {
+              const hasDiscount = Boolean(p.discountPrice && couponDiscount && couponDiscount !== '官方正价');
+              if (hasDiscount) {
+                discPillEl.style.display = 'inline-block';
+                discPillEl.classList.remove('price-flash');
+                void discPillEl.offsetWidth;
+                discPillEl.classList.add('price-flash');
+                discNoteEl.style.display = 'none';
+              } else {
+                discPillEl.style.display = 'none';
+                discNoteEl.textContent = p.note || '原价实付';
+                discNoteEl.style.display = 'inline-block';
+              }
+            }
+
+            // 更新折合月均（添加发光刷新动画）
+            if (monthlyEl) {
+              monthlyEl.textContent = p.monthlyAverage;
+              monthlyEl.classList.remove('price-flash');
+              void monthlyEl.offsetWidth;
+              monthlyEl.classList.add('price-flash');
+            }
+          });
+        });
+      });
+
+      // 2. 顶部快捷全表周期切换工具栏
+      const toolbarButtons = document.querySelectorAll('.ppt-btn');
+      toolbarButtons.forEach(tBtn => {
+        tBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          toolbarButtons.forEach(b => b.classList.remove('is-active'));
+          tBtn.classList.add('is-active');
+
+          const filter = tBtn.getAttribute('data-period-filter') || 'default';
+
+          rows.forEach(row => {
+            const periodsDataStr = row.getAttribute('data-periods');
+            if (!periodsDataStr) return;
+            let periodsData = [];
+            try {
+              periodsData = JSON.parse(periodsDataStr);
+            } catch (e) {
+              return;
+            }
+
+            const pillButtons = Array.from(row.querySelectorAll('.period-pill-btn'));
+            if (!pillButtons.length) return;
+
+            let targetIdx = -1;
+            if (filter === 'default') {
+              // 优先选择月付，其次标准年付，其次其他年期，最后第0个
+              targetIdx = periodsData.findIndex(p => p.period === '月付');
+              if (targetIdx === -1) targetIdx = periodsData.findIndex(p => p.period === '年付');
+              if (targetIdx === -1) targetIdx = periodsData.findIndex(p => p.period.includes('年') && !p.period.includes('半'));
+              if (targetIdx === -1) targetIdx = 0;
+            } else if (filter === '月付') {
+              targetIdx = periodsData.findIndex(p => p.period === '月付');
+              if (targetIdx === -1) targetIdx = periodsData.findIndex(p => p.period.includes('月') && !p.period.includes('半') && !p.period.includes('年'));
+            } else if (filter === '季付') {
+              targetIdx = periodsData.findIndex(p => p.period === '季付');
+              if (targetIdx === -1) targetIdx = periodsData.findIndex(p => p.period.includes('季'));
+            } else if (filter === '半年付') {
+              // 半年付：精确匹配半年付或包含半年
+              targetIdx = periodsData.findIndex(p => p.period === '半年付');
+              if (targetIdx === -1) targetIdx = periodsData.findIndex(p => p.period.includes('半年'));
+            } else if (filter === '年付') {
+              // 年付特惠：优先精确匹配“年付”，若无则匹配含“年”但坚决排除“半年付”、“二年付”、“两年付”、“三年付”
+              targetIdx = periodsData.findIndex(p => p.period === '年付');
+              if (targetIdx === -1) {
+                targetIdx = periodsData.findIndex(p => 
+                  p.period.includes('年') && 
+                  !p.period.includes('半') && 
+                  !p.period.includes('二') && 
+                  !p.period.includes('两') && 
+                  !p.period.includes('三')
+                );
+              }
+            } else if (filter === '两年付') {
+              targetIdx = periodsData.findIndex(p => p.period.includes('两年') || p.period.includes('二年'));
+            } else if (filter === '三年付') {
+              targetIdx = periodsData.findIndex(p => p.period.includes('三年'));
+            } else if (filter === '一次性') {
+              targetIdx = periodsData.findIndex(p => p.period.includes('一次性') || p.period.includes('不限时'));
+            } else {
+              targetIdx = periodsData.findIndex(p => p.period === filter);
+            }
+
+            if (targetIdx !== -1 && pillButtons[targetIdx]) {
+              pillButtons[targetIdx].click();
+            }
+          });
+        });
+      });
+    }
+
+    // 客户端多系统指南按键切换与全屏灯箱预览交互
+    function initClientInteractiveGuide() {
+      // 1. Tab 点击进入与切换
+      const tabButtons = document.querySelectorAll('.cig-tab-btn');
+      const panels = document.querySelectorAll('.cig-panel');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = btn.getAttribute('data-platform-target');
+          if (!targetId) return;
+
+          tabButtons.forEach(b => {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+
+          panels.forEach(p => {
+            if (p.id === `cig-panel-${targetId}`) {
+              p.classList.add('is-active');
+            } else {
+              p.classList.remove('is-active');
+            }
+          });
+        });
+      });
+
+      // 2. Lightbox 弹窗预览
+      const modal = document.getElementById('tutorial-lightbox-modal');
+      const backdrop = document.getElementById('lightbox-backdrop');
+      const closeBtn = document.getElementById('lightbox-close');
+      const lbImg = document.getElementById('lightbox-img');
+      const lbTitle = document.getElementById('lightbox-title');
+      const lbDesc = document.getElementById('lightbox-desc');
+
+      if (!modal || !lbImg) return;
+
+      function openLightbox(src, title, desc) {
+        lbImg.src = src;
+        if (lbTitle) lbTitle.textContent = title || '';
+        if (lbDesc) lbDesc.textContent = desc || '';
+        modal.classList.add('is-active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        modal.classList.remove('is-active');
+        document.body.style.overflow = '';
+      }
+
+      const imgWraps = document.querySelectorAll('.csc-img-wrap');
+      imgWraps.forEach(wrap => {
+        wrap.addEventListener('click', () => {
+          const src = wrap.getAttribute('data-lightbox-src');
+          const title = wrap.getAttribute('data-lightbox-title');
+          const desc = wrap.getAttribute('data-lightbox-desc');
+          if (src) openLightbox(src, title, desc);
+        });
+      });
+
+      if (backdrop) backdrop.addEventListener('click', closeLightbox);
+      if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+          closeLightbox();
+        }
+      });
+    }
+
+    function initAll() {
+      initCouponCopy();
+      initScrollSpy();
+      initMobileToc();
+      initInteractivePricingTable();
+      initClientInteractiveGuide();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  .review-detail-page {
+    padding-bottom: 60px;
+  }
+
+  .review-custom-header {
+    margin-bottom: 24px;
+  }
+
+  .brand-tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+  }
+
+  .main-review-h1 {
+    font-size: clamp(22px, 3.5vw, 32px);
+    font-weight: 800;
+    line-height: 1.35;
+    color: #ffffff;
+    margin-bottom: 12px;
+  }
+
+  .review-subtitle {
+    font-size: clamp(14px, 2vw, 16px);
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .score-highlight {
+    color: var(--gold);
+  }
+
+  /* 开头摘要框 */
+  .lead-summary-box {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-left: 4px solid #3b82f6;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+
+  .lead-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+
+  .lead-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #cbd5e1;
+    margin: 0;
+  }
+
+  /* 三个层次区隔 */
+  .review-layer {
+    margin-bottom: 40px;
+    padding-top: 10px;
+  }
+
+  .layer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px;
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+
+  .layer-num {
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 11px;
+    background: var(--gold);
+    color: #000000;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .layer-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f8fafc;
+  }
+
+  .module-block {
+    margin-bottom: 35px;
+    scroll-margin-top: 80px;
+  }
+
+  .module-block h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* 痛点与解决方案对比网格 */
+  .pain-solution-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+  }
+
+  .ps-card {
+    border-radius: 12px;
+    padding: 18px 20px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .ps-card.pain {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .ps-card.solution {
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  .ps-head {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #ffffff;
+  }
+
+  .ps-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ps-card li {
+    margin-bottom: 8px;
+    color: #cbd5e1;
+  }
+
+  /* 特色规格表格 */
+  .spec-table-box {
+    margin: 16px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .styled-spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .styled-spec-table th {
+    width: 25%;
+    background: rgba(255, 255, 255, 0.04);
+    color: #94a3b8;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .styled-spec-table td {
+    padding: 10px 14px;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .feature-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  /* 价格表格样式 */
+  .table-responsive {
+    overflow-x: auto;
+    margin: 18px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .styled-pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .styled-pricing-table th {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 600;
+    white-space: normal;
+    line-height: 1.35;
+  }
+
+  .styled-pricing-table td {
+    padding: 10px 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    vertical-align: middle;
+  }
+
+  .traffic-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+  }
+
+  :global(.discount-cell),
+  .discount-cell {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    white-space: normal;
+  }
+
+  :global(.discount-price),
+  .discount-price {
+    color: #fbbf24;
+    font-size: 15px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+    font-variant-numeric: tabular-nums;
+    transition: all 0.2s ease;
+  }
+
+  :global(.discount-badge-pill),
+  .discount-badge-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+    border: 1px solid #f59e0b;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  :global(.status-normal),
+  :global(.status-no-discount),
+  .status-normal,
+  .status-no-discount {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  :global(.monthly-avg-tag),
+  .monthly-avg-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.2s ease;
+  }
+
+  @keyframes priceFlashGlow {
+    0% {
+      filter: brightness(2);
+      transform: scale(1.08);
+    }
+    100% {
+      filter: brightness(1);
+      transform: scale(1);
+    }
+  }
+
+  .price-flash {
+    animation: priceFlashGlow 0.35s ease-out;
+  }
+
+  /* 快捷切换全表周期工具栏 */
+  .pricing-period-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 10px 16px;
+    border-radius: 10px;
+  }
+
+  .ppt-label {
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  .ppt-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ppt-brand-spec {
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .ppt-brand-spec strong {
+    color: #93c5fd;
+    font-weight: 600;
+  }
+
+  .ppt-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .ppt-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .ppt-btn:hover {
+    border-color: #60a5fa;
+    color: #ffffff;
+    background: rgba(96, 165, 250, 0.1);
+  }
+
+  .ppt-btn.is-active {
+    background: #2563eb;
+    border-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  }
+
+  /* 单行内周期药丸按钮 */
+  .period-toggle-group {
+    display: inline-flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .period-pill-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #94a3b8;
+    font-size: 11px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .period-pill-btn:hover {
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .period-pill-btn.is-active {
+    background: rgba(245, 158, 11, 0.25);
+    border: 1.5px solid #f59e0b;
+    color: #fef08a;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.55), inset 0 0 6px rgba(245, 158, 11, 0.3);
+    text-shadow: 0 0 6px rgba(245, 158, 11, 0.7);
+  }
+
+  .pkg-name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .row-orig-price {
+    color: #94a3b8;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .row-disc-wrap {
+    min-width: unset;
+    white-space: normal;
+  }
+
+  /* 强化价格表格套餐名称列：限制合理宽度并支持文字自动换行，避免挤压右侧价格 */
+  .styled-pricing-table th:first-child,
+  .styled-pricing-table td:first-child {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    min-width: 85px;
+    max-width: 120px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.35;
+  }
+
+  .pkg-name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .pkg-name-cell strong {
+    display: inline-block;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.35;
+  }
+
+  /* 月流量 / 总量列：允许自动换行，避免撑宽表格 */
+  .styled-pricing-table th:nth-child(2),
+  .styled-pricing-table td:nth-child(2) {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.35;
+    min-width: 65px;
+    max-width: 90px;
+  }
+
+  /* 周期按钮列 */
+  .styled-pricing-table th:nth-child(3),
+  .styled-pricing-table td:nth-child(3) {
+    min-width: 120px;
+  }
+
+  /* 官方原价列 */
+  .styled-pricing-table th:nth-child(4),
+  .styled-pricing-table td:nth-child(4) {
+    white-space: nowrap;
+    min-width: 55px;
+  }
+
+  /* 券后折后价列：允许价格与优惠券标签自然折行，无需横向撑宽拉伸 */
+  .styled-pricing-table th:nth-child(5),
+  .styled-pricing-table td:nth-child(5) {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.35;
+    min-width: 75px;
+    max-width: 110px;
+  }
+
+  /* 折合月均列 */
+  .styled-pricing-table th:nth-child(6),
+  .styled-pricing-table td:nth-child(6) {
+    white-space: nowrap;
+    min-width: 65px;
+  }
+
+  /* 专属优惠券交互卡片（票券卡片） */
+  .interactive-coupon-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px dashed rgba(245, 158, 11, 0.45);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 22px 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .interactive-coupon-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--gold);
+  }
+
+  .coupon-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .coupon-badge-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .c-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(245, 158, 11, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  .c-discount {
+    font-size: 12px;
+    color: #fef08a;
+    font-weight: 600;
+  }
+
+  .coupon-code-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 4px 0;
+  }
+
+  .coupon-label {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  .code-val {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  .coupon-scope-text {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .scope-highlight {
+    color: #cbd5e1;
+    font-weight: 600;
+  }
+
+  .scope-sub {
+    color: #94a3b8;
+    margin-left: 4px;
+  }
+
+  .coupon-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .btn-copy-coupon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #000000;
+    font-size: 14px;
+    font-weight: 800;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    transition: all 0.2s ease;
+  }
+
+  .btn-copy-coupon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  }
+
+  .btn-copy-coupon.is-copied {
+    background: #10b981 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important;
+    transform: scale(1.02);
+  }
+
+  .copy-hint {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  /* 顶部核心卡片底部的微型一键复制按钮 */
+  .interactive-quick-copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .mini-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px dashed rgba(245, 158, 11, 0.4);
+    border-radius: 6px;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mini-copy-btn:hover {
+    border-color: var(--gold);
+    background: rgba(245, 158, 11, 0.15);
+  }
+
+  .mini-copy-btn code {
+    background: transparent !important;
+    padding: 0 !important;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mini-copy-action {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  .mini-copy-btn.is-copied {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+  }
+
+  .mini-copy-btn.is-copied .mini-copy-action {
+    color: #34d399;
+    font-weight: 700;
+  }
+
+  @media (max-width: 640px) {
+    .interactive-coupon-card {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+    .coupon-right {
+      align-items: stretch;
+    }
+    .btn-copy-coupon {
+      justify-content: center;
+      width: 100%;
+    }
+    .copy-hint {
+      text-align: center;
+    }
+  }
+
+  .billing-warning-note {
+    font-size: 12px;
+    color: #f87171;
+    margin-top: 8px;
+  }
+
+  /* 体验参数卡片 */
+  .experience-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+  }
+
+  .exp-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .exp-label {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  .exp-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .exp-sub {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .unlock-status-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #cbd5e1;
+    margin: 16px 0;
+  }
+
+  .data-source-note {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 8px;
+  }
+
+  /* 通往 /data/ 实测大盘卡片样式 */
+  .telemetry-hub-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 18px 0 24px;
+    flex-wrap: wrap;
+  }
+
+  .thb-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 240px;
+  }
+
+  .thb-badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .thb-info strong {
+    font-size: 14px;
+    color: #ffffff;
+  }
+
+  .thb-info p {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* 人群推荐网格 */
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+  }
+
+  .aud-card {
+    border-radius: 12px;
+    padding: 18px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .aud-card.suitable {
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  .aud-card.unsuitable {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .aud-head {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #ffffff;
+  }
+
+  .aud-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .aud-card li {
+    margin-bottom: 6px;
+    color: #cbd5e1;
+  }
+
+  /* 官方主推专属客户端横幅说明 */
+  .usage-method-banner {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.22) 0%, rgba(15, 23, 42, 0.75) 100%);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    border-left: 4px solid #3b82f6;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .umb-icon {
+    font-size: 22px;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+
+  .umb-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .umb-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #93c5fd;
+    letter-spacing: 0.02em;
+  }
+
+  .umb-desc {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.65;
+  }
+
+  .umb-desc strong {
+    color: #ffffff;
+  }
+
+  .module-lead-p {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  /* 使用流程卡片 */
+  .steps-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 18px 0;
+  }
+
+  .step-card {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+
+  .step-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+
+  .client-guide-title {
+    margin-top: 26px;
+    margin-bottom: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  /* ==================== 交互式各操作系统专属客户端指引 ==================== */
+  .client-interactive-guide-wrapper {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 22px;
+    margin: 24px 0 16px;
+  }
+
+  .cig-header {
+    margin-bottom: 16px;
+  }
+
+  .cig-subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    margin: 0;
+  }
+
+  /* 4 系统切换按键 Tab */
+  .cig-platform-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .cig-tab-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+  }
+
+  .cig-tab-btn:hover {
+    background: rgba(96, 165, 250, 0.08);
+    border-color: rgba(96, 165, 250, 0.35);
+  }
+
+  .cig-tab-btn.is-active {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(30, 58, 138, 0.4) 100%);
+    border-color: #3b82f6;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+  }
+
+  .cig-tab-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .cig-tab-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .cig-tab-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cig-tab-btn.is-active .cig-tab-name {
+    color: #93c5fd;
+  }
+
+  .cig-tab-badge {
+    font-size: 11px;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 6px;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
+  .cig-tab-btn.is-active .cig-tab-badge {
+    background: rgba(37, 99, 235, 0.35);
+    color: #bfdbfe;
+  }
+
+  /* 面板展示 */
+  .cig-panel {
+    display: none;
+    animation: cigFadeIn 0.25s ease-out;
+  }
+
+  .cig-panel.is-active {
+    display: block;
+  }
+
+  @keyframes cigFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .cig-panel-intro {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+  }
+
+  .cpi-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .cpi-platform-badge {
+    font-size: 13px;
+    font-weight: 700;
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.12);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(96, 165, 250, 0.25);
+  }
+
+  .cpi-system-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.12);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(52, 211, 153, 0.25);
+  }
+
+  .cpi-system-badge strong {
+    color: #a7f3d0;
+  }
+
+  .cpi-rec {
+    font-size: 12.5px;
+    color: #cbd5e1;
+  }
+
+  .cpi-rec strong {
+    color: #ffffff;
+  }
+
+  .cpi-summary {
+    font-size: 12.5px;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .cpi-notice-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-left: 4px solid #f59e0b;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+  }
+
+  .cnb-icon {
+    font-size: 16px;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+
+  .cnb-text {
+    font-size: 12px;
+    color: #fef08a;
+    line-height: 1.6;
+  }
+
+  .cnb-text strong {
+    color: #ffffff;
+    margin-right: 4px;
+  }
+
+  /* 步骤卡片网格 */
+  .cig-steps-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .grid-windows {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-macos {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grid-android {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grid-ios {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cig-step-card {
+    background: #0d1117;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .cig-step-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(96, 165, 250, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .csc-img-wrap {
+    position: relative;
+    background: #000000;
+    cursor: zoom-in;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 竖屏手机截图比例适配 */
+  .grid-android .csc-img-wrap,
+  .grid-ios .csc-img-wrap {
+    aspect-ratio: 9 / 16;
+  }
+
+  .csc-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.3s ease;
+  }
+
+  .cig-step-card:hover .csc-img-wrap img {
+    transform: scale(1.04);
+  }
+
+  .csc-step-tag {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.4);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+  }
+
+  .csc-zoom-hint {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    backdrop-filter: blur(2px);
+  }
+
+  .csc-zoom-hint span {
+    font-size: 11.5px;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .cig-step-card:hover .csc-zoom-hint {
+    opacity: 1;
+  }
+
+  .csc-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .csc-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .csc-desc {
+    font-size: 11.5px;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* 全屏大图灯箱预览 Modal */
+  .lightbox-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .lightbox-modal.is-active {
+    display: flex;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(8px);
+  }
+
+  .lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    z-index: 1;
+    animation: lbZoomIn 0.2s ease-out;
+  }
+
+  @keyframes lbZoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .lightbox-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s;
+  }
+
+  .lightbox-close-btn:hover {
+    background: #ef4444;
+  }
+
+  .lightbox-image-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 70vh;
+    background: #000000;
+    overflow: hidden;
+  }
+
+  .lightbox-image-box img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+
+  .lightbox-caption {
+    padding: 14px 20px;
+    background: #0f172a;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .lightbox-caption strong {
+    display: block;
+    font-size: 14px;
+    color: #60a5fa;
+    margin-bottom: 4px;
+  }
+
+  .lightbox-caption p {
+    font-size: 12.5px;
+    color: #cbd5e1;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 900px) {
+    .cig-platform-tabs {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-windows,
+    .grid-macos {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-android,
+    .grid-ios {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .cig-platform-tabs {
+      grid-template-columns: 1fr;
+    }
+    .grid-windows,
+    .grid-macos,
+    .grid-android,
+    .grid-ios {
+      grid-template-columns: 1fr;
+    }
+  }
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .cg-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+
+  .cg-platform {
+    font-weight: 700;
+    color: #60a5fa;
+    margin-bottom: 4px;
+  }
+
+  .cg-app {
+    color: #e2e8f0;
+    margin-bottom: 4px;
+  }
+
+  .cg-desc {
+    color: #64748b;
+    line-height: 1.5;
+  }
+
+  /* FAQ 列表 */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 18px 0;
+  }
+
+  .faq-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .faq-q {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+
+  .faq-a {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.7;
+  }
+
+  /* 定论 Verdict */
+  .verdict-summary {
+    font-size: 15px;
+    color: #e2e8f0;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .verdict-reasons-card {
+    background: #11141c;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 18px 0;
+    font-size: 13px;
+  }
+
+  .vr-head {
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .verdict-reasons-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+  }
+
+  .verdict-reasons-card li {
+    margin-bottom: 6px;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  .vrc-head {
+    font-weight: 700;
+    color: #f87171;
+    margin-bottom: 8px;
+  }
+
+  /* 侧边栏导航与粘性吸顶跟随 */
+  .reading-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 36px;
+    margin-top: 30px;
+    align-items: start;
+  }
+
+  .review-sidebar {
+    position: sticky;
+    top: 76px;
+    align-self: start;
+  }
+
+  .sidebar-sticky {
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 4px;
+  }
+
+  .sidebar-sticky::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  .sidebar-sticky::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+  }
+
+  /* AUDIT OVERVIEW 核心卡片样式 */
+  .sidebar-brand-card {
+    background: #0f131a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .sb-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .sb-status-badge {
+    font-size: 10px;
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .sb-brand-name {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sb-grid-params {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sb-param-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .sb-k {
+    color: #94a3b8;
+    flex-shrink: 0;
+  }
+
+  .sb-v {
+    color: #f1f5f9;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  .sb-coupon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sb-code-text {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  .sb-mini-copy-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #cbd5e1;
+    font-size: 10.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sb-mini-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+  }
+
+  .sb-param-usage {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding-top: 4px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    margin-top: 2px;
+  }
+
+  .sb-usage-text {
+    font-size: 11.5px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    width: 100%;
+  }
+
+  .sb-usage-text.is-primary-usage {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fef08a;
+    font-weight: 600;
+  }
+
+  /* 测评目录导航卡片 */
+  .sidebar-nav-card {
+    background: #0f131a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+
+  .sn-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .sn-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .sn-hint {
+    font-size: 10px;
+    color: #64748b;
+  }
+
+  .sn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sn-list a {
+    font-size: 11.5px;
+    color: #94a3b8;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border-left: 2px solid transparent;
+    display: block;
+  }
+
+  .sn-list a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(2px);
+  }
+
+  .sn-list a.active-nav-link {
+    color: #38bdf8 !important;
+    background: rgba(56, 189, 248, 0.1) !important;
+    border-left-color: #38bdf8 !important;
+    font-weight: 600;
+  }
+
+  .sidebar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 4px;
+  }
+
+  .sidebar-links a {
+    font-size: 11.5px;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .sidebar-links a:hover {
+    color: #94a3b8;
+  }
+
+  /* 基础通用类微调 */
+  .review-brand-title h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bp-tag {
+    font-size: 11px;
+    padding: 2px 6px;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--gold);
+    border-radius: 4px;
+  }
+
+  .review-tag-line {
+    font-size: 12px;
+    color: #8b9bb4;
+  }
+
+  .review-metrics-grid-expanded {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 1024px) {
+    .review-metrics-grid-expanded {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .review-metrics-grid-expanded {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .rm-item-usage {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 600px) {
+    .rm-item-usage {
+      grid-column: span 1;
+    }
+  }
+
+  .rm-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .rm-label {
+    display: block;
+    font-size: 11px;
+    color: #8b9bb4;
+    margin-bottom: 4px;
+  }
+
+  .rm-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .review-bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .review-coupon-area {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  .review-coupon-area code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .coupon-desc {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  /* 移动端悬浮目录胶囊与抽屉 */
+  .mobile-toc-fab-wrap {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 90;
+  }
+
+  .mobile-toc-fab-btn {
+    background: #0f172a;
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 12.5px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+  }
+
+  .mobile-toc-modal {
+    display: none;
+  }
+
+  .mobile-toc-modal.open {
+    display: block;
+  }
+
+  .mobile-toc-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+  }
+
+  .mobile-toc-modal-content {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 75vh;
+    background: #0d1117;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px 16px 0 0;
+    padding: 18px 20px 30px;
+    z-index: 101;
+    overflow-y: auto;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  .mobile-toc-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #ffffff;
+  }
+
+  .mobile-toc-close-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  .mobile-toc-modal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mobile-modal-link {
+    display: block;
+    padding: 8px 12px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .mobile-modal-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  @media (max-width: 900px) {
+    .reading-layout {
+      grid-template-columns: 1fr;
+    }
+    .review-sidebar {
+      display: none;
+    }
+    .mobile-toc-fab-wrap {
+      display: block;
+    }
+  }
+
+  /* ==================== 06 测速报告专用视觉卡片（高保真仪表盘视觉） ==================== */
+  .speedtest-photo-card {
+    background: #111317;
+    border: 1px solid #222630;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 22px 0;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+    position: relative;
+  }
+
+  .spc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1e222b;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .spc-title-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .spc-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  .spc-sub-badge {
+    font-size: 11px;
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .spc-date {
+    font-size: 13px;
+    color: #8b92a0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .spc-table-head {
+    display: grid;
+    grid-template-columns: minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(190px, 1.4fr);
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #626d7f;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+
+  .spc-th-latency {
+    text-align: center;
+  }
+
+  .spc-th-status {
+    text-align: right;
+  }
+
+  .spc-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .spc-row {
+    display: grid;
+    grid-template-columns: minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(190px, 1.4fr);
+    align-items: center;
+    padding: 11px 12px;
+    border-bottom: 1px solid #1a1d24;
+    transition: background 0.15s ease;
+    border-radius: 6px;
+  }
+
+  .spc-row:hover {
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .spc-row:last-child {
+    border-bottom: none;
+  }
+
+  .spc-col-node {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .spc-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-fast {
+    background: #10b981;
+    box-shadow: 0 0 7px rgba(16, 185, 129, 0.5);
+  }
+
+  .dot-mid {
+    background: #38bdf8;
+    box-shadow: 0 0 7px rgba(56, 189, 248, 0.5);
+  }
+
+  .dot-slow {
+    background: #f59e0b;
+    box-shadow: 0 0 7px rgba(245, 158, 11, 0.5);
+  }
+
+  .spc-node-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .spc-col-latency {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spc-latency-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #171920;
+    border: 1px solid #262b36;
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .spc-pill-lbl {
+    font-size: 11.5px;
+    color: #64748b;
+  }
+
+  .spc-pill-val {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1;
+  }
+
+  .spc-col-status {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .spc-tag-line {
+    font-size: 12px;
+    color: #94a3b8;
+    background: #181b22;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #282d38;
+    white-space: nowrap;
+  }
+
+  .spc-speed-val {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #38bdf8;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .spc-tag-ok {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .spc-tag-timeout {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .spc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #1a1d24;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .spc-notice {
+    font-size: 12px;
+    color: #7b808a;
+    line-height: 1.6;
+    max-width: 650px;
+  }
+
+  .spc-src {
+    font-size: 12px;
+    color: #525660;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+
+  @media (max-width: 640px) {
+    .speedtest-photo-card {
+      padding: 18px 16px;
+    }
+    .spc-table-head {
+      display: none;
+    }
+    .spc-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px 6px;
+    }
+    .spc-col-latency,
+    .spc-col-status {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  /* ==================== 流媒体 & AI 解锁情况看板 ==================== */
+  .unlock-matrix-card {
+    background: #0f131a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 28px 0;
+  }
+
+  .um-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .um-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: #34d399;
+  }
+
+  .um-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .um-desc {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .um-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 680px) {
+    .um-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .um-col {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .um-col-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f1f5f9;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .um-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .um-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .um-status {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .status-green {
+    color: #34d399;
+  }
+
+  .um-sub {
+    font-size: 11.5px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+
+  /* ==================== 专线网络拓扑示意 ==================== */
+  .topology-card {
+    background: #0d1117;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 28px 0;
+  }
+
+  .topo-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .topo-badge-top {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+  }
+
+  .topo-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .topo-desc {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+
+  .topo-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+
+  .topo-node {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 12px 16px;
+    position: relative;
+  }
+
+  .topo-core-node {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.03));
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.1);
+  }
+
+  .tn-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 2px;
+  }
+
+  .tn-badge-gold {
+    color: #fbbf24;
+  }
+
+  .tn-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+  }
+
+  .tn-desc {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.45;
+  }
+
+  .topo-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    color: #64748b;
+    font-size: 11px;
+    position: relative;
+  }
+
+  .tc-line {
+    width: 2px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .tc-arrow {
+    font-size: 9px;
+    color: #60a5fa;
+    margin: -1px 0 2px;
+  }
+
+  .tc-label {
+    font-size: 10.5px;
+    color: #818cf8;
+    background: rgba(129, 140, 248, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(129, 140, 248, 0.2);
+  }
+
+  .topo-callout {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid #38bdf8;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #cbd5e1;
+  }
+
+  .topo-callout strong {
+    color: #ffffff;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .topo-callout p {
+    margin: 0;
+  }
+</style>

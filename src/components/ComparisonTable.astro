@@ -1,0 +1,375 @@
+---
+import { coreResourceCompares } from '../data/comparisons';
+---
+<div class="resource-compare-wrap">
+  <!-- 桌面端自适应表格（自动换行，不设死 min-width，无横向滚动条） -->
+  <div class="res-desktop-table-view">
+    <table class="res-table">
+      <thead>
+        <tr>
+          <th style="width: 16%;">海外热门服务</th>
+          <th style="width: 22%;">网页端 (Web) 核心优势</th>
+          <th style="width: 22%;">移动 App 独占体验</th>
+          <th style="width: 24%; background: rgba(239, 68, 68, 0.08); color: #fca5a5;">
+            ⚠️ 为什么国内必须买专线梯子？
+          </th>
+          <th style="width: 16%;">最佳使用建议</th>
+        </tr>
+      </thead>
+      <tbody>
+        {coreResourceCompares.map((res) => (
+          <tr>
+            <th class="res-th">
+              <span class="res-icon">{res.icon}</span>
+              <div class="res-meta-wrap">
+                <strong class="res-title">{res.name}</strong>
+                <span class="res-badge">{res.category}</span>
+                <a href={res.guideUrl} class="res-guide-link">实操指南 ↗</a>
+              </div>
+            </th>
+            <td>
+              <div class="pill-label web-pill">Web 亮点</div>
+              <p class="res-desc">{res.webHighlight}</p>
+            </td>
+            <td>
+              <div class="pill-label app-pill">App 独占</div>
+              <p class="res-desc">{res.appHighlight}</p>
+            </td>
+            <td style="background: rgba(239, 68, 68, 0.025);">
+              <div class="vpn-need-box">
+                <span class="vpn-need-icon">⚡</span>
+                <span class="vpn-need-text">{res.whyNeedVpn}</span>
+              </div>
+            </td>
+            <td>
+              <div class="rec-box">
+                <span class="rec-icon">💡</span>
+                <span class="rec-text">{res.recommendedChoice}</span>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 移动端与中窄屏自适应卡片流（100% 自动换行，绝无左右拉动） -->
+  <div class="res-mobile-cards-view">
+    {coreResourceCompares.map((res) => (
+      <div class="res-card">
+        <div class="rc-header">
+          <div class="rc-title-row">
+            <span class="rc-icon">{res.icon}</span>
+            <div>
+              <h3 class="rc-name">{res.name}</h3>
+              <span class="rc-cat">{res.category}</span>
+            </div>
+          </div>
+          <a href={res.guideUrl} class="rc-guide-btn">
+            实操指南 ↗
+          </a>
+        </div>
+
+        <div class="rc-dual-grid">
+          <div class="rc-block rc-web">
+            <span class="rc-block-tag web-pill">Web 网页端优势</span>
+            <p>{res.webHighlight}</p>
+          </div>
+          <div class="rc-block rc-app">
+            <span class="rc-block-tag app-pill">App 移动端独占</span>
+            <p>{res.appHighlight}</p>
+          </div>
+        </div>
+
+        <div class="rc-vpn-callout">
+          <span class="rvc-icon">⚡</span>
+          <div>
+            <strong>为什么国内必须买专线梯子？</strong>
+            <p>{res.whyNeedVpn}</p>
+          </div>
+        </div>
+
+        <div class="rc-rec-box">
+          <span class="rrb-icon">💡</span>
+          <p><strong>使用建议：</strong>{res.recommendedChoice}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .resource-compare-wrap {
+    margin-top: 15px;
+    width: 100%;
+  }
+
+  /* 桌面端全宽自适应表格（自动换行） */
+  .res-desktop-table-view {
+    display: block;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .res-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+    font-size: 13px;
+    background: var(--card-bg, #0e1017);
+  }
+  .res-table th, .res-table td {
+    padding: 16px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    vertical-align: top;
+    line-height: 1.6;
+    word-break: break-word;
+    white-space: normal;
+  }
+  .res-table thead th {
+    background: #141722;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  }
+  .res-th {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .res-icon {
+    font-size: 24px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .res-meta-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  .res-title {
+    display: block;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .res-badge {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--gold-light, #e0bb56);
+    background: rgba(223, 186, 85, 0.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .res-guide-link {
+    font-size: 11.5px;
+    color: var(--gold-light, #e0bb56);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    margin-top: 4px;
+  }
+  .res-guide-link:hover {
+    color: #ffffff;
+  }
+  .pill-label {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  .web-pill {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+  }
+  .app-pill {
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.1);
+  }
+  .res-desc {
+    margin: 0 !important;
+    font-size: 12.5px;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+  .vpn-need-box {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .vpn-need-icon {
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .vpn-need-text {
+    font-size: 11.5px;
+    color: #fca5a5;
+    line-height: 1.5;
+  }
+  .rec-box {
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .rec-icon {
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .rec-text {
+    font-size: 11.5px;
+    color: #6ee7b7;
+    line-height: 1.5;
+  }
+
+  /* 移动端卡片视图（默认隐藏，窄屏自动展示） */
+  .res-mobile-cards-view {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+  .res-card {
+    background: var(--card-bg, #0e1017);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .rc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 12px;
+  }
+  .rc-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rc-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+  .rc-name {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+  .rc-cat {
+    font-size: 10.5px;
+    color: var(--gold-light, #e0bb56);
+    background: rgba(223, 186, 85, 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .rc-guide-btn {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--gold-light, #e0bb56);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .rc-dual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .rc-block {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rc-block-tag {
+    align-self: flex-start;
+  }
+  .rc-block p {
+    margin: 0;
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+  .rc-vpn-callout {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .rvc-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .rc-vpn-callout strong {
+    display: block;
+    font-size: 12px;
+    color: #fca5a5;
+    margin-bottom: 2px;
+  }
+  .rc-vpn-callout p {
+    margin: 0;
+    font-size: 11.5px;
+    color: #fca5a5;
+    line-height: 1.5;
+  }
+  .rc-rec-box {
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .rrb-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .rc-rec-box p {
+    margin: 0;
+    font-size: 12px;
+    color: #6ee7b7;
+    line-height: 1.5;
+  }
+
+  /* 响应式断点：小于 960px 彻底消除左右拖拽拉动 */
+  @media (max-width: 960px) {
+    .res-desktop-table-view {
+      display: none;
+    }
+    .res-mobile-cards-view {
+      display: flex;
+    }
+    .rc-dual-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { categories, categoryHref } from '../data/site';
+interface Props { post: CollectionEntry<'blog'>; }
+const { post } = Astro.props;
+const category = categories.find(c => c.slug === post.data.category);
+---
+<article class="article-card"><div class="article-body"><div class="meta"><a href={categoryHref(post.data.category)}>{category?.name}</a><span>{post.data.example ? '框架示例' : '内容指南'}</span></div><h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3><p>{post.data.description}</p><div class="card-bottom"><time datetime={post.data.updatedDate.toISOString()}>更新于 {post.data.updatedDate.toISOString().slice(0, 10)}</time><a href={`/blog/${post.id}/`} aria-label={`阅读${post.data.title}`}>↗</a></div></div></article>

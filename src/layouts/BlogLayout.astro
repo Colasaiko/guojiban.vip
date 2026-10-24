@@ -1,0 +1,55 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import AirportStickyCta from '../components/AirportStickyCta.astro';
+import { categories, categoryHref } from '../data/site';
+import { tagsWithPages } from '../utils/tags';
+interface Props { post: CollectionEntry<'blog'>; headings: { depth: number; slug: string; text: string }[]; }
+const { post, headings } = Astro.props;
+const { data } = post;
+const tagPages = tagsWithPages(await getCollection('blog', ({data}) => !data.draft));
+---
+<BaseLayout title={data.title} description={data.description} type="article">
+  <div class="container">
+    <Breadcrumb items={[{label:'全部文章',href:'/blog/'},{label:data.title}]} />
+    <header class="page-heading article-heading">
+      <span class="eyebrow">FIELD NOTES · {data.example ? '框架示例' : '内容指南'}</span>
+      <h1>{data.title}</h1>
+      <p>{data.description}</p>
+      <div class="article-meta">
+        <span>{data.author}</span>
+        <time datetime={data.pubDate.toISOString()}>发布：{data.pubDate.toISOString().slice(0,10)}</time>
+        <time datetime={data.updatedDate.toISOString()}>更新：{data.updatedDate.toISOString().slice(0,10)}</time>
+        <a href={categoryHref(data.category)}>{categories.find(c => c.slug === data.category)?.name}</a>
+      </div>
+    </header>
+    <div class="reading-layout">
+      <article class="prose">
+        <div class="article-vpn-cta">
+          <div class="avc-content">
+            <span class="avc-badge">⚡ 访问提示 · 网络环境门槛</span>
+            <h3>国内网络打不开该服务或一直转圈？</h3>
+            <p>文中介绍的海外网站和 App 服务器位于境外，在国内直连时会遇到打不开、加载超时或无法注册等问题。建议先选购支持月付的优质专线梯子进行测试。</p>
+          </div>
+          <div class="avc-actions">
+            <a href="/vpn/" class="button primary" style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 13px; font-weight: 700; white-space: nowrap;">
+              前往【梯子推荐】选购 ↗
+            </a>
+          </div>
+        </div>
+
+        <slot />
+
+        <div class="tags">{data.tags.map(tag => tagPages.has(tag) ? <a href={`/tag/${tag}/`}>#{tag}</a> : <span>#{tag}</span>)}</div>
+        <h2>继续探索</h2>
+        <a href="/blog/">查看全部文章 ↗</a>
+      </article>
+      <aside class="toc">
+        <span class="eyebrow">本文目录</span>
+        {headings.filter(h => h.depth === 2).map(h => <a href={`#${h.slug}`}>{h.text}</a>)}
+      </aside>
+    </div>
+  </div>
+  {data.category === 'airports' && <AirportStickyCta />}
+</BaseLayout>

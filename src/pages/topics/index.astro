@@ -1,0 +1,7 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+const topics = (await getCollection('topics')).sort((a, b) => b.data.updatedDate.getTime() - a.data.updatedDate.getTime());
+---
+<BaseLayout title="专题指南：挂了梯子打不开、国外 App 怎么下载等常见问题合集" description="按问题整理的海外 App 使用专题：挂了梯子还是打不开的排查合集、iPhone 外区 Apple ID 与安卓 Google Play 下载指南，按顺序阅读，快速解决问题。"><div class="container"><Breadcrumb items={[{label:'专题指南'}]} /><header class="page-heading"><span class="eyebrow">TOPIC GUIDES · 专题指南</span><h1>按问题找答案：海外 App 使用专题指南</h1><p>每个专题围绕一个常见问题，整理通用解决步骤和相关文章，按顺序阅读即可。</p></header><div class="section topic-grid">{topics.map((topic, i) => <a class="topic-tile" href={`/topics/${topic.id}/`}><span class="eyebrow">TOPIC / {String(i + 1).padStart(2, '0')} · {topic.data.posts.length} 篇相关文章</span><span class="topic-symbol">↗</span><h2>{topic.data.title}</h2><p>{topic.data.description}</p><span class="text-link">进入专题 ↗</span></a>)}</div></div></BaseLayout>

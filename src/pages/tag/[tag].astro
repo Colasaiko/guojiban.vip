@@ -1,0 +1,10 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { tagsWithPages } from '../../utils/tags';
+export async function getStaticPaths() { const posts = await getCollection('blog', ({data}) => !data.draft); return [...tagsWithPages(posts)].map(tag => ({params:{tag},props:{tag,posts:posts.filter(p => p.data.tags.includes(tag))}})); }
+const {tag,posts} = Astro.props;
+---
+<BaseLayout title={`${tag}相关文章`} description={`浏览国际版VIP中与${tag}相关的内容。`}><div class="container"><Breadcrumb items={[{label:'全部文章',href:'/blog/'},{label:tag}]} /><header class="page-heading"><span class="eyebrow">BROWSE BY TAG</span><h1>#{tag}</h1><p>沿着一个关键词，发现相关内容。</p></header><div class="article-grid section">{posts.map(post => <ArticleCard post={post} />)}</div></div></BaseLayout>

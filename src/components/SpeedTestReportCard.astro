@@ -1,0 +1,367 @@
+---
+import { brandSpeedTestMap, type BrandSpeedTestReport } from '../data/brandSpeedTests';
+
+interface Props {
+  brandSlug?: string;
+  speedReport?: BrandSpeedTestReport;
+  titleSuffix?: string;
+}
+
+const { brandSlug, speedReport: propReport, titleSuffix = '测速报告' } = Astro.props;
+
+const report = propReport || (brandSlug ? brandSpeedTestMap[brandSlug] : null);
+const untested = !report || report.nodes.length === 0;
+---
+{untested && (
+  <div class="speedtest-photo-card">
+    <div class="spc-header">
+      <div class="spc-title-box">
+        <div class="spc-title">
+          <span class="spc-radar-icon">⚡</span>
+          {report?.brandName} {titleSuffix}
+        </div>
+      </div>
+      <div class="spc-date">未测试</div>
+    </div>
+    <div class="spc-pending">该品牌尚未进行实测，测速数据待补充。</div>
+  </div>
+)}
+{!untested && report && (
+  <div class="speedtest-photo-card">
+    <div class="spc-header">
+      <div class="spc-title-box">
+        <div class="spc-title">
+          <span class="spc-radar-icon">⚡</span>
+          {report.brandName} {titleSuffix}
+        </div>
+        <div class="spc-sub-badge">06 章节实测同源归档</div>
+      </div>
+      <div class="spc-date">{report.testDate}</div>
+    </div>
+
+    <!-- 严格对齐表头 -->
+    <div class="spc-table-head">
+      <span class="spc-th-node">测试节点 / 分类</span>
+      <span class="spc-th-latency">实测响应延迟</span>
+      <span class="spc-th-status">线路类型与连通状态</span>
+    </div>
+
+    <div class="spc-list">
+      {report.nodes.map(node => {
+        const isTimeout = (node.status && node.status.includes('Timeout')) || 
+                          (node.speed && node.speed.includes('Timeout'));
+        const latencyMatch = (node.latency || '').match(/\d+/);
+        const latencyNum = latencyMatch ? parseInt(latencyMatch[0], 10) : 50;
+        const dotClass = latencyNum <= 35 ? 'dot-fast' : latencyNum <= 70 ? 'dot-mid' : 'dot-slow';
+        const hasSpeedMbps = node.speed && (node.speed.includes('Mbps') || node.speed.includes('Gbps'));
+        const lineTag = node.lineType || (!hasSpeedMbps && !isTimeout && node.speed && !node.speed.includes('不限速') ? node.speed : '');
+        
+        return (
+          <div class="spc-row">
+            <div class="spc-col-node">
+              <span class={`spc-status-dot ${dotClass}`}></span>
+              <span class="spc-node-name">{node.name}</span>
+            </div>
+            
+            <div class="spc-col-latency">
+              <span class="spc-latency-pill">
+                <span class="spc-pill-lbl">延迟</span>
+                <span class="spc-pill-val">{node.latency}</span>
+              </span>
+            </div>
+            
+            <div class="spc-col-status">
+              {lineTag && (
+                <span class="spc-tag-line">{lineTag}</span>
+              )}
+              {hasSpeedMbps && (
+                <span class="spc-speed-val">↓ {node.speed}</span>
+              )}
+              {isTimeout ? (
+                <span class="spc-tag-timeout">部分 Timeout</span>
+              ) : (
+                <span class="spc-tag-ok">正常连通</span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <div class="spc-footer">
+      <div class="spc-notice">{report.notice}</div>
+      <div class="spc-src">国际版VIP · 实测数据归档</div>
+    </div>
+  </div>
+)}
+
+<style>
+  /* ==================== 06 测速报告专用视觉卡片（高保真仪表盘视觉） ==================== */
+  .speedtest-photo-card {
+    background: #111317;
+    border: 1px solid #222630;
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 18px 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+    position: relative;
+  }
+
+  .spc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #1e222b;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .spc-title-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .spc-radar-icon {
+    font-size: 15px;
+  }
+
+  .spc-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  .spc-sub-badge {
+    font-size: 11px;
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .spc-date {
+    font-size: 12.5px;
+    color: #8b92a0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .spc-pending {
+    padding: 18px 12px;
+    font-size: 13.5px;
+    color: #8b92a0;
+    text-align: center;
+  }
+
+  .spc-table-head {
+    display: grid;
+    grid-template-columns: minmax(140px, 1.4fr) minmax(120px, 1fr) minmax(180px, 1.4fr);
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #626d7f;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+
+  .spc-th-latency {
+    text-align: center;
+  }
+
+  .spc-th-status {
+    text-align: right;
+  }
+
+  .spc-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .spc-row {
+    display: grid;
+    grid-template-columns: minmax(140px, 1.4fr) minmax(120px, 1fr) minmax(180px, 1.4fr);
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid #1a1d24;
+    transition: background 0.15s ease;
+    border-radius: 6px;
+  }
+
+  .spc-row:hover {
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .spc-row:last-child {
+    border-bottom: none;
+  }
+
+  .spc-col-node {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .spc-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-fast {
+    background: #10b981;
+    box-shadow: 0 0 7px rgba(16, 185, 129, 0.5);
+  }
+
+  .dot-mid {
+    background: #38bdf8;
+    box-shadow: 0 0 7px rgba(56, 189, 248, 0.5);
+  }
+
+  .dot-slow {
+    background: #f59e0b;
+    box-shadow: 0 0 7px rgba(245, 158, 11, 0.5);
+  }
+
+  .spc-node-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .spc-col-latency {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spc-latency-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #171920;
+    border: 1px solid #262b36;
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .spc-pill-lbl {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .spc-pill-val {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1;
+  }
+
+  .spc-col-status {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .spc-tag-line {
+    font-size: 11.5px;
+    color: #94a3b8;
+    background: #181b22;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid #282d38;
+    white-space: nowrap;
+  }
+
+  .spc-speed-val {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #38bdf8;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .spc-tag-ok {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .spc-tag-timeout {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .spc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #1a1d24;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .spc-notice {
+    font-size: 12px;
+    color: #7b808a;
+    line-height: 1.6;
+    max-width: 650px;
+  }
+
+  .spc-src {
+    font-size: 11.5px;
+    color: #525660;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+
+  @media (max-width: 640px) {
+    .speedtest-photo-card {
+      padding: 16px 14px;
+    }
+    .spc-table-head {
+      display: none;
+    }
+    .spc-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 4px;
+    }
+    .spc-col-latency,
+    .spc-col-status {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>

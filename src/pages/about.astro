@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { site } from '../data/site';
+
+const telegramUrl = site.contactTelegram
+  ? (site.contactTelegram.startsWith('http')
+      ? site.contactTelegram
+      : `https://t.me/${site.contactTelegram.replace(/^@/, '')}`)
+  : '';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: `关于${site.name}`,
+  url: `${site.url}/about/`,
+  inLanguage: site.language,
+  mainEntity: {
+    '@type': 'Organization',
+    name: site.name,
+    url: site.url,
+    logo: `${site.url}/favicon.svg`,
+    ...(site.contactEmail && { email: site.contactEmail }),
+    ...(telegramUrl && { sameAs: [telegramUrl] }),
+  },
+};
+---
+<BaseLayout
+  title={`关于${site.name}：资料来源、测评方法与内容原则`}
+  description={`了解${site.name}如何整理海外 App 使用指南、机场推荐与网络加速服务资料，认识我们的资料核实方法、测评计划、商业合作说明及内容更新原则。`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <div class="container">
+    <Breadcrumb items={[{ label: '关于本站' }]} />
+    <header class="page-heading">
+      <span class="eyebrow">ABOUT GUOJIBAN.VIP</span>
+      <h1>关于{site.name}</h1>
+      <p class="about-lead">我们不要求读者直接相信我们的推荐，而是希望通过可核实的资料、公开的测试过程与透明的评价依据，让读者自行判断。</p>
+    </header>
+
+    <div class="prose about-copy">
+      <h2>我们是谁？</h2>
+      <p>{site.name}是一个中文内容平台，主要整理两类内容：</p>
+      <ul>
+        <li><strong>海外网站与 App 使用指南</strong>：ChatGPT、TikTok、Telegram、YouTube 等服务的官方入口、下载方法、打不开的原因与排查步骤；</li>
+        <li><strong>机场与网络加速服务资料</strong>：品牌介绍、套餐分析、功能说明与使用经验。</li>
+      </ul>
+      <p>我们希望帮助读者更容易了解不同服务之间的区别，并根据自己的需求作出合适的选择。</p>
+      <p>我们相信，一篇有价值的品牌介绍，不应该只是重复商家的宣传内容，而是尽可能回答读者真正关心的问题：这个品牌提供什么服务？套餐是否适合自己？有什么优势与限制？是否值得进一步了解？</p>
+      <p>
+        本站于 2026 年正式起步运营，由一群热衷于打破信息差、渴望帮助大家跳出舒适区去探索更广阔数字世界的内容团队共同维护。我们相信，每一次接触新工具、拓宽新视野的尝试都值得被认真对待，也希望能陪你轻松迈出探索全球优质网络与应用的第一步。
+      </p>
+
+      <h2>我们的资料从哪里来？</h2>
+      <p>部分品牌资料来自实际接触和使用过程中收集的信息，包括套餐价格、流量额度、线路类型、节点地区、协议支持及客户端功能等。其他资料则来自官方网站、官方公告、服务文档及其他可核实的公开来源。</p>
+      <p>整理内容时，我们会尽可能区分以下几类信息：</p>
+      <ul>
+        <li><strong>已核实资料</strong>：能够通过官方信息、客户端界面或其他证据确认的内容；</li>
+        <li><strong>实际测试结果</strong>：在注明的设备、网络环境和测试时间下获得的数据；</li>
+        <li><strong>官方声明</strong>：品牌自行公布、尚未经过本站独立验证的信息；</li>
+        <li><strong>暂未确认资料</strong>：缺少充分证据的信息，我们会标明不确定性或暂不作出判断。</li>
+      </ul>
+      <p>我们不会将未经测试的速度、延迟、丢包率或稳定性描述为本站的实测结果。每篇文章都会标注更新日期，引用的公告与资料会附上来源链接。</p>
+
+      <h2>我们如何进行品牌测评？</h2>
+      <p>对于具备测试条件的品牌，我们会根据需要购买套餐，在真实使用环境中了解服务表现。测评可能涉及：</p>
+      <ul>
+        <li>套餐价格及实际流量额度</li>
+        <li>节点分布与线路类型</li>
+        <li>客户端兼容性及使用体验</li>
+        <li>节点连接情况与访问表现</li>
+        <li>下载速度、连接延迟及稳定性</li>
+        <li>客服支持及使用过程中遇到的问题</li>
+      </ul>
+      <p>由于网络表现会受地区、运营商、时间段和节点负载等因素影响，单次测试不能代表品牌的长期表现。某项数据尚未完成验证时，我们会明确说明，而不是使用推测数据填补。</p>
+      <p>
+        在具体测评文章中，我们均会清晰注明当次实测的所在地区、网络宽带类型（如电信/联通/移动）以及测试终端设备（涵盖主流 Windows、macOS、iOS 与 Android 系统），方便读者结合自身网络环境进行客观比对。
+      </p>
+
+      <h2>推荐我们测评其他品牌</h2>
+      <p>我们欢迎读者推荐自己感兴趣的机场或网络加速服务。如果你正在考虑某个品牌，却找不到足够详细的资料，可以通过下方联系方式提交品牌名称及希望了解的问题。</p>
+      <p>我们会根据读者需求、测试条件与实际预算评估测评安排。对于选定的品牌，我们愿意自费购买套餐进行体验，并尽可能公开测试方法、测试时间、相关证据以及发现的问题。</p>
+      <p>测评结果可能是正面的，也可能存在不足。我们不会保证任何品牌一定获得好评。已整理的品牌资料可以在 <a href="/jichang/">机场测评大全</a> 查看。</p>
+
+      <h2>关于商业合作与联盟链接</h2>
+      <p>为维持网站运营，本站的部分文章包含联盟推广链接（Affiliate Links）或商业合作内容。读者通过部分链接购买服务时，本站可能获得一定佣金，用于支持网站维护、资料整理及测试成本。本站的推广链接均已标注为赞助链接（sponsored）。</p>
+      <p>商业合作关系不应被视为产品质量保证。我们会尽可能区分广告合作、品牌公开资料与测试结果，也鼓励读者在购买前自行核实套餐、服务条款及最新公告，并优先选择月付进行测试。</p>
+
+      <h2>我们的目标</h2>
+      <p>我们希望长期建立一个内容持续更新、资料来源清晰、评价依据透明的中文资料平台。</p>
+      <p>我们不保证每一项资料永久准确，也不保证任何网络服务始终稳定，但我们愿意持续检查信息、修正错误，并通过实际研究和测试提高文章的参考价值。</p>
+      <p><strong>真实资料、透明分析、持续更新</strong>，是我们希望坚持的内容原则。</p>
+
+      <h2>联系我们</h2>
+      <p>如果你发现文章存在错误、资料过时，或者希望推荐新的测评品牌，欢迎联系我们：</p>
+      
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="contact-card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+          </div>
+          <div class="contact-card-body">
+            <span class="contact-card-title">电子邮箱</span>
+            <span class="contact-card-desc">
+              {site.contactEmail ? (
+                <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+              ) : (
+                <span>筹备中，即将公开</span>
+              )}
+            </span>
+          </div>
+        </div>
+
+        {telegramUrl && (
+          <a
+            href={telegramUrl}
+            target="_blank"
+            rel="noopener"
+            class="contact-card contact-card-interactive"
+            aria-label="加入 Telegram 官方交流群"
+          >
+            <div class="contact-card-icon tg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+              </svg>
+            </div>
+            <div class="contact-card-body">
+              <span class="contact-card-title">Telegram 官方交流群</span>
+              <span class="contact-card-action">点击加入群聊 · 互动交流与反馈 ↗</span>
+            </div>
+          </a>
+        )}
+      </div>
+      <p>更多内容可以从 <a href="/topics/">专题指南</a>、<a href="/resources/">海外资源</a> 和 <a href="/blog/">全部文章</a> 开始浏览。</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-lead {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #e2e8f0;
+    max-width: 760px;
+    border-left: 3px solid #38bdf8;
+    padding-left: 16px;
+  }
+  .about-copy { max-width: 760px; }
+  .contact-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 22px 0 28px;
+  }
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: #12141d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none !important;
+    color: inherit;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .contact-card-interactive {
+    cursor: pointer;
+  }
+  .contact-card-interactive:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(56, 189, 248, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.5);
+  }
+  .contact-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .contact-card-icon.tg {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+  }
+  .contact-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .contact-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.3;
+  }
+  .contact-card-desc,
+  .contact-card-action {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .contact-card-desc {
+    color: #64748b;
+  }
+  .contact-card-desc a {
+    color: #cbd5e1;
+    text-decoration: underline;
+  }
+  .contact-card-action {
+    color: #38bdf8;
+    font-weight: 500;
+  }
+  .contact-card-interactive:hover .contact-card-action {
+    color: #7dd3fc;
+  }
+  .todo-fill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px dashed rgba(245, 158, 11, 0.6);
+    color: #fbbf24;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+</style>

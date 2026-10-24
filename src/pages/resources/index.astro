@@ -1,0 +1,222 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { resources, resourceCategories, resourceGuides } from '../../data/resources';
+import { site } from '../../data/site';
+---
+<BaseLayout
+  title={`国外好用的网站与App推荐（100+精选）· 海外官方资源直达导航 · ${site.name}`}
+  description="精选 100 个国内用户关注的高口碑海外网站与实用 App，涵盖国外 AI 神器、热门社交平台、正版影视流媒体与高效办公工具，全网官方正版域名核验，一键安全直达。"
+>
+  <div class="container">
+    <Breadcrumb items={[{ label: '官方直达' }]} />
+
+    <header class="page-heading">
+      <span class="eyebrow">OVERSEAS RESOURCES DIRECTORY · 100 精选收录</span>
+      <h1>想找国外好用的网站与 App？<br />100+ 海外宝藏资源，<span class="hero-emphasis">一键直达正版官网。</span></h1>
+      <p>面对国外资源不知从何找起、搜到的全是钓鱼与仿冒站？国际版VIP 专为需要探索海外工具的用户打造，精选收录 100 个全球核心主流网站与热门 App，涵盖 AI 神器、社媒流媒体与协作开发，正规域名逐一核验，拒绝假冒与广告，让你省去繁琐检索，一键直达官方正版。</p>
+    </header>
+
+    <!-- 打不开官网？前往梯子推荐选购引导 Banner -->
+    <div class="resource-vpn-notice">
+      <div class="rvn-content">
+        <h3><span>⚡</span> 遇到海外官网按不进去或连接超时？</h3>
+        <p>本页面收录的 ChatGPT、Claude、YouTube、Netflix 等海外资源服务器均位于境外。如在国内网络环境下直接点击按不进去，建议先配置稳定高速专线，或前往我们的精选梯子推荐选购月付品牌试水。</p>
+      </div>
+      <div class="rvn-btn">
+        <a href="/vpn/" class="button primary" style="color: #090a0f !important; text-decoration: none !important; font-size: 13px; font-weight: 700; padding: 11px 18px; white-space: nowrap;">
+          按不进去？前往【梯子推荐】选购 ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- Top Sticky Bar (包含收录统计、梯子直达按钮、搜索框与分类导航) -->
+    <div class="resource-sticky-bar">
+      <div class="resource-toolbar">
+        <div class="toolbar-stats">
+          <span class="status-dot"></span>
+          <span>已收录 <strong>{resources.length}</strong> 个海外精选资源</span>
+        </div>
+        <a href="/vpn/" class="toolbar-vpn-btn" title="按不进去海外官网？前往梯子推荐选购">
+          <span class="tv-dot">⚡</span>
+          <span>按不进去官网？先选梯子</span>
+          <span class="tv-arrow">→</span>
+        </a>
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input
+            type="text"
+            id="resource-search"
+            placeholder="快速搜索资源（如：ChatGPT、视频、设计、翻译...）"
+            aria-label="搜索海外资源"
+          />
+          <button id="search-clear" type="button" style="display: none;" aria-label="清空搜索">✕</button>
+        </div>
+      </div>
+
+      <!-- 分类快捷跳转导航 -->
+      <nav class="category-pills-nav" aria-label="资源分类快捷导航">
+        {resourceCategories.map(cat => {
+          const count = resources.filter(r => r.category === cat.id).length;
+          return (
+            <a href={`#category-${cat.id}`} class="cat-pill">
+              <span class="cat-pill-icon">{cat.icon}</span>
+              <span class="cat-pill-name">{cat.name}</span>
+              <span class="cat-pill-count">{count}</span>
+            </a>
+          );
+        })}
+      </nav>
+    </div>
+
+    <div id="resources-container">
+      {resourceCategories.map(cat => {
+        const items = resources.filter(r => r.category === cat.id);
+        return (
+          <section id={`category-${cat.id}`} class="section resource-section" style="padding-top: 15px; padding-bottom: 35px;">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">{cat.name.toUpperCase()}</span>
+                <h2>{cat.name}</h2>
+                <p class="muted">{cat.desc} · 本类精选收录 {items.length} 个</p>
+              </div>
+              <a href="#main" class="text-link" style="font-size: 11px;">回到顶部 ↑</a>
+            </div>
+
+            <div class="resource-grid">
+              {items.map(item => (
+                <div class="resource-card" data-name={item.name.toLowerCase()} data-domain={item.domain.toLowerCase()} data-desc={item.description.toLowerCase()} data-tag={item.tag.toLowerCase()}>
+                  <div class="resource-top">
+                    <div class="resource-identity">
+                      <span class="resource-icon">{item.icon}</span>
+                      <div style="min-width: 0;">
+                        <div class="resource-name-row">
+                          <h3 title={item.name}>{item.name}</h3>
+                          <span class="resource-tag">{item.tag}</span>
+                        </div>
+                        <span class="resource-domain">{item.domain}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="resource-desc">{item.description}</p>
+
+                  <div class="resource-platforms">
+                    <span class="platform-label">支持：</span>
+                    {item.platforms.map(p => <span class="platform-badge">{p}</span>)}
+                  </div>
+
+                  <div class="resource-actions">
+                    <div class="resource-btn-row">
+                      {resourceGuides[item.id] && (
+                        <a
+                          href={`/blog/${resourceGuides[item.id]}/`}
+                          class="resource-btn resource-btn-guide"
+                          aria-label={`阅读 ${item.name} 使用教程`}
+                        >
+                          使用教程
+                        </a>
+                      )}
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        class="resource-btn"
+                        aria-label={`前往 ${item.name} 官方网站`}
+                      >
+                        直达官网 <span>↗</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+
+    <div id="no-search-results" class="empty-state" style="display: none; padding-block: 50px;">
+      <span>⌕</span>
+      <h2>没有找到匹配的海外资源</h2>
+      <p>尝试搜索其他关键词，例如 “AI”、“开源”、“视频”、“设计” 等。</p>
+      <button class="button secondary" id="reset-search-btn" type="button">清除搜索条件</button>
+    </div>
+
+    <!-- 底部大转化卡片：按不进去官网的排查与购买引导 -->
+    <div class="resource-vpn-bridge">
+      <div class="bridge-left">
+        <span class="eyebrow" style="color: var(--gold); font-size: 11px; letter-spacing: .12em; font-weight: 700;">CONNECTION TROUBLESHOOTING</span>
+        <h2>点击“直达官网”后一直转圈或无法访问？</h2>
+        <p>百大海外官方资源在国内受地区网络策略限制，直接访问往往会出现打不开或连接超时。站长为您实测筛选了高口碑的主推专线梯子品牌（微风网络、firefly、暮光加速等），支持月付试水、晚高峰低延迟，彻底解决按不进去官网的后顾之忧。</p>
+      </div>
+      <div class="bridge-right">
+        <a href="/vpn/" class="button primary" style="color: #090a0f !important; text-decoration: none !important; font-size: 14px; font-weight: 700; padding: 13px 26px;">
+          按不进去？前往【梯子推荐】选购品牌专线 ↗
+        </a>
+        <span class="bridge-tip">✓ 拒绝盲目年付 · 建议月付试水 · 专线秒开海外资源</span>
+      </div>
+    </div>
+
+    <section class="closing">
+      <span class="eyebrow">EXCLUSIVE DIRECTORY</span>
+      <h2>国际版VIP · 连接全球优质数字生态</h2>
+      <p class="muted" style="margin-top: 10px; font-size: 13px;">百大资源持续核对更新。若有全新海外重磅工具或域名变更，欢迎向我们反馈。</p>
+    </section>
+  </div>
+
+  <script is:inline>
+    // 纯前端轻量即时检索（秒级过滤 100 个卡片）
+    const searchInput = document.getElementById('resource-search');
+    const clearBtn = document.getElementById('search-clear');
+    const resetBtn = document.getElementById('reset-search-btn');
+    const cards = document.querySelectorAll('.resource-card');
+    const sections = document.querySelectorAll('.resource-section');
+    const noResults = document.getElementById('no-search-results');
+
+    function filterResources() {
+      const q = searchInput.value.trim().toLowerCase();
+      clearBtn.style.display = q ? 'block' : 'none';
+      let totalVisible = 0;
+
+      sections.forEach(section => {
+        const secCards = section.querySelectorAll('.resource-card');
+        let secVisible = 0;
+
+        secCards.forEach(card => {
+          const name = card.dataset.name || '';
+          const domain = card.dataset.domain || '';
+          const desc = card.dataset.desc || '';
+          const tag = card.dataset.tag || '';
+          const matches = !q || name.includes(q) || domain.includes(q) || desc.includes(q) || tag.includes(q);
+
+          if (matches) {
+            card.style.display = '';
+            secVisible++;
+            totalVisible++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        section.style.display = secVisible > 0 ? '' : 'none';
+      });
+
+      noResults.style.display = totalVisible === 0 ? 'block' : 'none';
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', filterResources);
+      clearBtn?.addEventListener('click', () => {
+        searchInput.value = '';
+        filterResources();
+        searchInput.focus();
+      });
+      resetBtn?.addEventListener('click', () => {
+        searchInput.value = '';
+        filterResources();
+        searchInput.focus();
+      });
+    }
+  </script>
+</BaseLayout>

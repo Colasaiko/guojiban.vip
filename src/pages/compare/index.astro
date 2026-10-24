@@ -1,0 +1,798 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+import FAQ from '../../components/FAQ.astro';
+import { site } from '../../data/site';
+import { primaryBrandCompares } from '../../data/comparisons';
+---
+<BaseLayout
+  title={`2026好用的梯子对比与科学上网机场排行榜 · 海外网站与App对比指南 · ${site.name}`}
+  description="2026最新科学上网梯子对比与海外资源使用指南。权威评测微风网络、飞猫云、暮光加速、firefly等9大主推专线机场，系统对比ChatGPT、TikTok、YouTube等海外热门应用的网页版与App差异，助你看清差异，先月付试水再做选择。"
+>
+  <div class="container">
+    <Breadcrumb items={[{ label: '使用对比' }]} />
+
+    <!-- 页面大标题：高流量提示词强化 -->
+    <header class="page-heading">
+      <span class="eyebrow">2026 SPEED & BENCHMARK · 梯子对比与海外资源全景</span>
+      <h1>2026 好用的梯子对比与科学上网机场排行榜：<br />看清专线与海外资源差异，<span class="hero-emphasis">做出最适合你的高效选择。</span></h1>
+      <p>面对国内直连打不开海外网站、App 一直转圈加载的困扰，究竟哪个梯子好用？翻墙机场该怎么选？国际版VIP 实测梳理 <strong>9 大主推口碑专线梯子品牌</strong>核心参数对比（专线架构、月付资费、专属优惠码与优势场景），并配套 ChatGPT、TikTok、YouTube 等海外主流资源的平台使用差异，助你花最少的钱、选对最稳的专线工具。</p>
+    </header>
+
+    <!-- 顶部导流转化卡片：网络环境门槛提示 -->
+    <div class="compare-vpn-notice">
+      <div class="cvn-content">
+        <h3><span>⚡</span> 国内网络直连打不开海外官网或加载超时？</h3>
+        <p>文中所对比的所有海外正版服务服务器均位于境外。国内直连时普遍存在域名污染与网络阻断。想稳定体验网页版秒开或 App 顺畅登录，建议先配置稳定高速专线，或前往我们的精选梯子推荐选购月付品牌试水。</p>
+      </div>
+      <div class="cvn-btn">
+        <a href="/vpn/" class="button primary" style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 13px; font-weight: 700; padding: 11px 18px; white-space: nowrap;">
+          按不进去？前往【梯子推荐】选购 ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- 快捷双模块跳转导航 -->
+    <nav class="compare-quick-nav" aria-label="对比板块快速跳转">
+      <a href="#brand-comparison" class="cq-pill">
+        <span class="cq-icon">🚀</span>
+        <span>第一部分：9 大主推专线梯子品牌横向对比</span>
+      </a>
+      <a href="#resource-comparison" class="cq-pill">
+        <span class="cq-icon">🌐</span>
+        <span>第二部分：海外热门资源（Web vs App）差异对比</span>
+      </a>
+    </nav>
+
+    <!-- ================= 第一部分：主推品牌对比 ================= -->
+    <section id="brand-comparison" class="section compare-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">MODULE 01 · TOP PROMOTED BRANDS</span>
+          <h2>梯子推荐对比：9 大口碑主推专线机场核心参数横评</h2>
+          <p class="muted">拒绝虚标与跑路风险。精选微风网络、飞猫云、暮光加速、firefly 等实测口碑专线，直观对比线路类型、入门月付门槛、优惠码与擅长场景。</p>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看深度实测报告 /reviews/ ↗</a>
+          <a href="/vpn/" class="text-link" style="font-size: 12px;">梯子推荐精选 /vpn/ ↗</a>
+        </div>
+      </div>
+
+      <!-- 温馨消费提示 -->
+      <div class="compare-tip-box">
+        <span class="ctb-badge">💡 站长强烈建议 · 诚实消费常识</span>
+        <p>
+          在选购任何梯子品牌时，<strong>请务必优先购买一个月的【月付套餐】进行实测</strong>，绝对不要一上来就盲目买一年！每一个人的本地宽带运营商（电信/联通/移动）与所在省份差异极大，在自己的实际日常环境中测试 1~2 周觉得晚高峰稳定不卡、确实好用，再根据需求考虑长期续费。
+        </p>
+      </div>
+
+      <!-- 9 大品牌横向对比：桌面端全宽自适应表格（自动换行，不设死 min-width，无横向拉拽） -->
+      <div class="brand-desktop-table-view">
+        <table class="brand-compare-table">
+          <thead>
+            <tr>
+              <th style="width: 15%;">主推梯子品牌</th>
+              <th style="width: 16%;">物理专线类型</th>
+              <th style="width: 16%;">推荐入门方案</th>
+              <th style="width: 13%;">专属优惠码</th>
+              <th style="width: 18%;">晚高峰实测亮点</th>
+              <th style="width: 12%;">适合人群</th>
+              <th style="width: 10%;">直达操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {primaryBrandCompares.map((b, idx) => (
+              <tr>
+                <th class="brand-th">
+                  <div class="brand-title-group">
+                    <div class="brand-header-line">
+                      <span class="brand-index">{String(idx + 1).padStart(2, '0')}</span>
+                      <strong class="brand-name">{b.name}</strong>
+                    </div>
+                    <span class="brand-tag-chip">{b.tag}</span>
+                  </div>
+                </th>
+                <td>
+                  <span class="line-badge">{b.lineType}</span>
+                </td>
+                <td>
+                  <div class="price-val">{b.recPrice}</div>
+                  <div class="price-note">{b.recPriceNote}</div>
+                </td>
+                <td>
+                  <div class="coupon-box">
+                    <code class="coupon-code">{b.coupon}</code>
+                    <span class="coupon-discount">{b.couponDiscount}</span>
+                  </div>
+                </td>
+                <td>
+                  <ul class="strength-list">
+                    {b.strengths.map((s) => <li>{s}</li>)}
+                  </ul>
+                </td>
+                <td>
+                  <p class="best-for-text">{b.bestFor}</p>
+                </td>
+                <td>
+                  <div class="brand-action-col">
+                    <a
+                      href={b.targetUrl}
+                      target="_blank"
+                      rel="nofollow noopener noreferrer sponsored"
+                      class="button primary mini-btn"
+                      style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 11px; font-weight: 700; padding: 6px 12px; white-space: nowrap;"
+                    >
+                      官网直达 ↗
+                    </a>
+                    <a href={b.reviewUrl} class="mini-review-link">
+                      评测报告 📊
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 9 大品牌横向对比：移动端与窄屏流式自适应卡片流（100% 自动换行，绝无左右拉动） -->
+      <div class="brand-mobile-cards-view">
+        {primaryBrandCompares.map((b, idx) => (
+          <div class="brand-card-item">
+            <div class="bci-top">
+              <div class="bci-name-row">
+                <span class="brand-index">{String(idx + 1).padStart(2, '0')}</span>
+                <h3 class="bci-name">{b.name}</h3>
+                <span class="brand-tag-chip">{b.tag}</span>
+              </div>
+              <span class="line-badge">{b.lineType}</span>
+            </div>
+
+            <div class="bci-specs-grid">
+              <div class="bci-spec-box">
+                <span class="bsb-label">推荐入门方案</span>
+                <div class="price-val">{b.recPrice}</div>
+                <div class="price-note">{b.recPriceNote}</div>
+              </div>
+              <div class="bci-spec-box">
+                <span class="bsb-label">专属优惠券</span>
+                <div class="coupon-box">
+                  <code class="coupon-code">{b.coupon}</code>
+                  <span class="coupon-discount">{b.couponDiscount}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bci-feature-box">
+              <span class="bfb-label">晚高峰实测亮点：</span>
+              <ul class="strength-list">
+                {b.strengths.map((s) => <li>{s}</li>)}
+              </ul>
+            </div>
+
+            <div class="bci-bestfor-box">
+              <span class="bbb-label">💡 适合人群：</span>
+              <p>{b.bestFor}</p>
+            </div>
+
+            <div class="bci-actions-row">
+              <a
+                href={b.targetUrl}
+                target="_blank"
+                rel="nofollow noopener noreferrer sponsored"
+                class="button primary bci-main-btn"
+                style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 13px; font-weight: 700; padding: 10px 16px; text-align: center;"
+              >
+                前往官网 ↗
+              </a>
+              <a href={b.reviewUrl} class="button secondary bci-sub-btn" style="font-size: 12px; padding: 10px 16px; text-align: center;">
+                查看深度评测报告 📊
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- 专线梯子 VS 免费公共节点横向对比 -->
+      <div class="vs-highlight-box">
+        <div class="vs-hb-left">
+          <span class="vs-badge-pro">为什么推荐主推专线梯子？</span>
+          <h3>IPLC / IEPL 物理专线保障</h3>
+          <ul>
+            <li>✓ 数据走内网专用物理光纤出境，<strong>全程根本不经过公网防火墙 (GFW)</strong>；</li>
+            <li>✓ 晚高峰（20:00~23:00）骨干网不塞车，延迟极低，看 4K/8K 视频不转圈；</li>
+            <li>✓ 分配高纯净度原生 IP，稳定支持 ChatGPT、Claude 交互与 Netflix 全量解锁。</li>
+          </ul>
+        </div>
+        <div class="vs-hb-divider" aria-hidden="true">VS</div>
+        <div class="vs-hb-right">
+          <span class="vs-badge-con">为什么坚决不碰免费公共节点？</span>
+          <h3>公共共享节点的致命缺陷</h3>
+          <ul>
+            <li>⚠️ 成千上万人共用同一 IP，早被 Cloudflare 和 OpenAI 标记为高风控黑名单；</li>
+            <li>⚠️ 晚高峰公网严重挤兑丢包，频繁断流、疯狂掉线，无法维持长连接；</li>
+            <li>❌ <strong>极度危险</strong>：公共共享节点存在被中间人嗅探明文密码的巨大安全隐患。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 第二部分：海外资源对比 ================= -->
+    <section id="resource-comparison" class="section compare-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">MODULE 02 · OVERSEAS RESOURCES</span>
+          <h2>海外热门资源对比：网页端 (Web) vs 移动 App 使用差异</h2>
+          <p class="muted">解决了网络连接底座后，海外资源该用网页版还是装 App？针对 ChatGPT、TikTok、YouTube 等高频应用的平台差异与网络门槛说明。</p>
+        </div>
+        <a href="/resources/" class="text-link" style="font-size: 12px; color: var(--gold-light);">100+ 海外官方资源库 /resources/ ↗</a>
+      </div>
+
+      <!-- 渲染海外资源对比表格组件（自带移动端自适应换行） -->
+      <ComparisonTable />
+
+      <!-- 选型核心准则小结 -->
+      <div class="key-takeaways-box" style="margin-top: 25px;">
+        <div class="kt-head">💡 海外资源核心选型准则：</div>
+        <div class="kt-grid">
+          <div class="kt-item">
+            <strong>优先选网页版 (Web) 的场景：</strong>
+            <p>日常办公、复杂代码编写与长文本研究（ChatGPT Canvas）、免去海外 Apple ID 与安卓谷歌框架的繁琐安装门槛，电脑浏览器秒开。</p>
+          </div>
+          <div class="kt-item">
+            <strong>必须选移动 App 的场景：</strong>
+            <p>ChatGPT 独占高级自然语音对话（口语陪练）、TikTok 完整全球短视频与直播出海（需免拔卡与纯净原生 IP）、电视大屏 4K 杜比观影。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 底部大转化卡片 -->
+    <div class="compare-vpn-bridge">
+      <div class="bridge-left">
+        <span class="eyebrow" style="color: var(--gold); font-size: 11px; letter-spacing: .12em; font-weight: 700;">ACTIONABLE NEXT STEPS</span>
+        <h2>选对专线梯子，彻底解决海外官网按不进去的难题</h2>
+        <p>无论是使用 ChatGPT 生产力、刷 TikTok 国际版，还是看 4K YouTube 与 Netflix，一条低延迟、高可用的 IPLC 专线都是不可或缺的基础底座。强烈建议在上方品牌对比中先选购一个月的月付套餐实测，满意再续费。</p>
+      </div>
+      <div class="bridge-right">
+        <a href="/vpn/" class="button primary" style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 14px; font-weight: 700; padding: 13px 26px;">
+          前往【梯子推荐】选购品牌专线 ↗
+        </a>
+        <a href="/resources/" class="button secondary" style="font-size: 13px; padding: 11px 20px;">
+          100+ 海外官网正版直达 ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- 常见问题 -->
+    <FAQ />
+  </div>
+</BaseLayout>
+
+<style>
+  /* 顶部网络门槛提示卡片 */
+  .compare-vpn-notice {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background: rgba(30, 41, 59, 0.35);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  }
+  .cvn-content h3 {
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cvn-content p {
+    font-size: 12.5px;
+    color: #94a3b8;
+    line-height: 1.7;
+    margin: 0;
+  }
+  .cvn-btn {
+    flex-shrink: 0;
+  }
+
+  /* 快捷双模块跳转导航 */
+  .compare-quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 35px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+  }
+  .cq-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cq-pill:hover {
+    background: rgba(223, 186, 85, 0.12);
+    border-color: rgba(223, 186, 85, 0.35);
+    color: var(--gold-light);
+    transform: translateY(-1px);
+  }
+  .cq-icon {
+    font-size: 15px;
+  }
+
+  /* 对比板块 */
+  .compare-section {
+    padding-top: 20px;
+    padding-bottom: 45px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* 温馨消费提示卡 */
+  .compare-tip-box {
+    background: rgba(223, 186, 85, 0.06);
+    border: 1px solid rgba(223, 186, 85, 0.22);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+  }
+  .ctb-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+  .compare-tip-box p {
+    margin: 0;
+    font-size: 12.5px;
+    color: #cbd5e1;
+    line-height: 1.7;
+  }
+
+  /* 9大品牌横向对比：桌面全宽自适应表格（自动换行） */
+  .brand-desktop-table-view {
+    display: block;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .brand-compare-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+    font-size: 13px;
+    background: var(--card-bg, #0e1017);
+  }
+  .brand-compare-table th, .brand-compare-table td {
+    padding: 16px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    vertical-align: middle;
+    line-height: 1.6;
+    word-break: break-word;
+    white-space: normal;
+  }
+  .brand-compare-table thead th {
+    background: #141722;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  }
+  .brand-th {
+    vertical-align: middle;
+  }
+  .brand-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .brand-header-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-index {
+    font-size: 11px;
+    font-family: monospace;
+    font-weight: 700;
+    color: var(--gold-light);
+    background: rgba(223, 186, 85, 0.12);
+    border: 1px solid rgba(223, 186, 85, 0.25);
+    padding: 1px 5px;
+    border-radius: 4px;
+    line-height: 1.2;
+  }
+  .brand-name {
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .brand-tag-chip {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gold-light);
+    background: rgba(223, 186, 85, 0.08);
+    border: 1px solid rgba(223, 186, 85, 0.18);
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .line-badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .price-val {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #f8fafc;
+  }
+  .price-note {
+    font-size: 11px;
+    color: #94a3b8;
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+  .coupon-box {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: flex-start;
+  }
+  .coupon-code {
+    font-family: monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .coupon-discount {
+    font-size: 10.5px;
+    color: #34d399;
+    font-weight: 600;
+  }
+  .strength-list {
+    margin: 0;
+    padding-left: 14px;
+    color: #cbd5e1;
+    font-size: 11.5px;
+    list-style: disc;
+    line-height: 1.5;
+  }
+  .strength-list li {
+    margin-bottom: 2px;
+  }
+  .best-for-text {
+    margin: 0;
+    font-size: 11.5px;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+  .brand-action-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .mini-btn {
+    text-align: center;
+  }
+  .mini-review-link {
+    font-size: 11px;
+    color: var(--gold-light);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .mini-review-link:hover {
+    color: #ffffff;
+  }
+
+  /* 9大品牌移动端卡片视图（默认隐藏，≤ 960px 彻底消除左右拖拽拉动） */
+  .brand-mobile-cards-view {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+  .brand-card-item {
+    background: var(--card-bg, #0e1017);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .bci-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 12px;
+  }
+  .bci-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .bci-name {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+  .bci-specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .bci-spec-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .bsb-label {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 2px;
+  }
+  .bci-feature-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .bfb-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #e2e8f0;
+  }
+  .bci-bestfor-box {
+    background: rgba(223, 186, 85, 0.04);
+    border: 1px solid rgba(223, 186, 85, 0.15);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .bbb-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 3px;
+  }
+  .bci-bestfor-box p {
+    margin: 0;
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+  .bci-actions-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .bci-main-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .bci-sub-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* 专线 VS 免费节点双栏对比卡 */
+  .vs-highlight-box {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(20, 24, 34, 0.8) 0%, rgba(14, 16, 23, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-top: 25px;
+  }
+  .vs-hb-left h3 {
+    margin: 8px 0 10px;
+    font-size: 17px;
+    color: #34d399;
+  }
+  .vs-hb-right h3 {
+    margin: 8px 0 10px;
+    font-size: 17px;
+    color: #f87171;
+  }
+  .vs-badge-pro {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.12);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .vs-badge-con {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.12);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .vs-hb-left ul, .vs-hb-right ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #cbd5e1;
+  }
+  .vs-hb-left li, .vs-hb-right li {
+    margin-bottom: 6px;
+  }
+  .vs-hb-divider {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--gold-light);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+
+  /* 核心准则小结 */
+  .key-takeaways-box {
+    background: linear-gradient(135deg, rgba(20, 24, 34, 0.8) 0%, rgba(14, 16, 23, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 4px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+  .kt-head {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+  }
+  .kt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .kt-item strong {
+    display: block;
+    font-size: 12.5px;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+  .kt-item p {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* 底部转化桥梁 */
+  .compare-vpn-bridge {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    background: linear-gradient(135deg, #131622 0%, #0e1017 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    padding: 30px 34px;
+    margin: 40px 0 35px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+  .bridge-left {
+    max-width: 620px;
+  }
+  .bridge-left h2 {
+    font-size: 22px;
+    color: #ffffff;
+    margin: 8px 0 10px;
+  }
+  .bridge-left p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin: 0;
+  }
+  .bridge-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  /* 响应式断点：小于 960px 彻底消除左右拖拽拉动 */
+  @media (max-width: 960px) {
+    .brand-desktop-table-view {
+      display: none;
+    }
+    .brand-mobile-cards-view {
+      display: flex;
+    }
+    .bci-actions-row {
+      grid-template-columns: 1fr;
+    }
+    .compare-vpn-notice {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: left;
+    }
+    .cvn-btn .button {
+      width: 100%;
+      text-align: center;
+    }
+    .vs-highlight-box {
+      grid-template-columns: 1fr;
+      text-align: left;
+    }
+    .vs-hb-divider {
+      margin: 0 auto;
+    }
+    .kt-grid {
+      grid-template-columns: 1fr;
+    }
+    .compare-vpn-bridge {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: left;
+    }
+    .bridge-right {
+      width: 100%;
+    }
+    .bridge-right .button {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

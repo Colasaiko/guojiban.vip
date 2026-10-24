@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 430" width="880" height="430">
+  <defs>
+    <style>
+      .bg { fill: #131416; }
+      .border { stroke: #252830; stroke-width: 1; fill: none; }
+      .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 20px; font-weight: 700; fill: #ffffff; }
+      .date { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; fill: #999ca3; text-anchor: end; }
+      .node-name { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 15px; fill: #f1f2f4; }
+      .latency { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 14.5px; fill: #cbd5e1; text-anchor: end; }
+      .speed { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 14.5px; font-weight: 700; fill: #ffffff; text-anchor: end; }
+      .line { stroke: #20232a; stroke-width: 1; }
+      .notice { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12px; fill: #7b808a; }
+      .brand-src { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12px; fill: #525660; text-anchor: end; }
+    </style>
+  </defs>
+
+  <!-- 外框背景 -->
+  <rect x="0.5" y="0.5" width="879" height="429" rx="12" class="bg" />
+  <rect x="0.5" y="0.5" width="879" height="429" rx="12" class="border" />
+
+  <!-- 头部：品牌标题与实测日期 -->
+  <text x="28" y="44" class="title">星岛梦 测速报告</text>
+  <text x="852" y="44" class="date">2026年10月19日 实测</text>
+  <line x1="28" y1="62" x2="852" y2="62" class="line" />
+
+  <!-- 节点 1：香港 -->
+  <text x="28" y="104" class="node-name">香港 节点</text>
+  <text x="690" y="104" class="latency">延迟 55ms</text>
+  <text x="852" y="104" class="speed">下载 361Mbps</text>
+  <line x1="28" y1="124" x2="852" y2="124" class="line" />
+
+  <!-- 节点 2：台湾 -->
+  <text x="28" y="162" class="node-name">台湾 节点</text>
+  <text x="690" y="162" class="latency">延迟 67ms</text>
+  <text x="852" y="162" class="speed">下载 115Mbps</text>
+  <line x1="28" y1="182" x2="852" y2="182" class="line" />
+
+  <!-- 节点 3：新加坡 -->
+  <text x="28" y="220" class="node-name">新加坡 节点</text>
+  <text x="690" y="220" class="latency">延迟 70ms</text>
+  <text x="852" y="220" class="speed">下载 282Mbps</text>
+  <line x1="28" y1="240" x2="852" y2="240" class="line" />
+
+  <!-- 节点 4：日本 -->
+  <text x="28" y="278" class="node-name">日本 节点</text>
+  <text x="690" y="278" class="latency">延迟 82ms</text>
+  <text x="852" y="278" class="speed">下载 135Mbps</text>
+  <line x1="28" y1="298" x2="852" y2="298" class="line" />
+
+  <!-- 节点 5：美国 -->
+  <text x="28" y="336" class="node-name">美国 节点</text>
+  <text x="690" y="336" class="latency">延迟 170ms</text>
+  <text x="852" y="336" class="speed">下载 25Mbps</text>
+  <line x1="28" y1="356" x2="852" y2="356" class="line" />
+
+  <!-- 底部说明与来源 -->
+  <text x="28" y="386" class="notice">测试并非在晚高峰时段进行，仅反映测试当时的网络状况，实际晚高峰体验可能有所不同，仅供参考，不代表任何时刻的保证速度。</text>
+  <text x="852" y="412" class="brand-src">国际版VIP · 实测数据归档</text>
+</svg>

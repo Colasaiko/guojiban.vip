@@ -1,0 +1,391 @@
+---
+import { allBrands } from '../../data/brands';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return allBrands.map(brand => ({
+    params: { slug: brand.slug },
+    props: { brand }
+  }));
+}
+
+const { brand } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>安全跳转中 · {brand.name} | {site.name}</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <!-- 5秒兜底自动跳转 -->
+  <meta http-equiv="refresh" content={`5;url=${brand.targetUrl}`} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    :root {
+      --bg: #07090e;
+      --card-bg: rgba(14, 20, 32, 0.95);
+      --border: rgba(40, 56, 85, 0.7);
+      --text: #f0f4fc;
+      --muted: #8b9bb4;
+      --gold: #f59e0b;
+      --blue: #3b82f6;
+      --blue-glow: rgba(59, 130, 246, 0.35);
+      --green: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(ellipse at 50% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.06) 0%, transparent 40%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+
+    .redirect-card {
+      width: 100%;
+      max-width: 540px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px var(--blue-glow);
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+
+    /* 顶部网关标识 */
+    .gateway-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* 倒计时圆环 */
+    .timer-wrap {
+      margin: 16px auto 24px;
+      position: relative;
+      width: 96px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-circle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 96px;
+      height: 96px;
+      transform: rotate(-90deg);
+    }
+
+    .timer-circle circle {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+    }
+
+    .circle-bg {
+      stroke: rgba(255, 255, 255, 0.08);
+    }
+
+    .circle-bar {
+      stroke: var(--blue);
+      stroke-dasharray: 264;
+      stroke-dashoffset: 0;
+      animation: countdown 5s linear forwards;
+    }
+
+    @keyframes countdown {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: 264; }
+    }
+
+    .timer-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: #ffffff;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-unit {
+      font-size: 13px;
+      color: var(--muted);
+      margin-left: 2px;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .target-brand {
+      color: var(--gold);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .redirect-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* 进度条 */
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), #60a5fa);
+      width: 0%;
+      animation: fillProgress 5s linear forwards;
+      border-radius: 999px;
+    }
+
+    @keyframes fillProgress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    /* 优惠券提示卡 */
+    .coupon-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px dashed rgba(245, 158, 11, 0.4);
+      padding: 10px 18px;
+      border-radius: 12px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--gold);
+    }
+
+    .coupon-code {
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.08em;
+    }
+
+    /* 操作按钮 */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .button-primary {
+      display: block;
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+      border: none;
+      cursor: pointer;
+    }
+
+    .button-primary:hover {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+
+    .button-secondary {
+      display: inline-block;
+      padding: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .button-secondary:hover {
+      color: #ffffff;
+    }
+
+    /* 底部安全说明 */
+    .security-footer {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 11px;
+      color: #5c6b84;
+      line-height: 1.6;
+    }
+
+    .site-brand {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #4b5870;
+      letter-spacing: 0.05em;
+    }
+
+    .site-brand a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .site-brand a:hover {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="redirect-card">
+    <div class="gateway-badge">
+      <span class="pulse-dot"></span>
+      <span>SSL 加密安全跳转网关 · 5秒倒计时</span>
+    </div>
+
+    <!-- 5 秒倒计时环 -->
+    <div class="timer-wrap">
+      <svg class="timer-circle" viewBox="0 0 96 96">
+        <circle class="circle-bg" cx="48" cy="48" r="42"></circle>
+        <circle class="circle-bar" cx="48" cy="48" r="42"></circle>
+      </svg>
+      <div class="timer-number">
+        <span id="countdown">5</span><span class="timer-unit">s</span>
+      </div>
+    </div>
+
+    <h1>即将前往 <span class="target-brand">{brand.name}</span> 官方网站</h1>
+    <p class="redirect-desc">
+      您正在通过国际版VIP 专属安全通道访问【{brand.name}】官方站点。<br />
+      系统正在配置安全加密连接，将在 <strong style="color: #ffffff;" id="countdown-text">5 秒</strong>后自动进入官网...
+    </p>
+
+    <!-- 进度条 -->
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill"></div>
+    </div>
+
+    <!-- 优惠券展示（若有） -->
+    {brand.coupon && brand.coupon !== '无需优惠码' ? (
+      <div class="coupon-pill">
+        <span>🎁 专属优惠券已激活：</span>
+        <span class="coupon-code">{brand.coupon}</span>
+        <span>（{brand.couponDiscount}）</span>
+      </div>
+    ) : (
+      <div class="coupon-pill" style="border-color: rgba(59, 130, 246, 0.3); color: #93c5fd; background: rgba(59, 130, 246, 0.08);">
+        <span>⚡ 专属优惠：官方直发正价通道，按月付费更省心</span>
+      </div>
+    )}
+
+    <div class="actions">
+      <a
+        id="jump-btn"
+        href={brand.targetUrl}
+        rel="noopener noreferrer nofollow sponsored"
+        class="button-primary"
+      >
+        无需等待 5 秒，立即前往官网 ↗
+      </a>
+      <button type="button" onclick="history.back()" class="button-secondary">
+        ← 取消并返回上一页
+      </button>
+    </div>
+
+    <div class="security-footer">
+      🛡️ 安全声明：本页面为国际版VIP 对外跳转网关（Link Cloaking），已严格通过防钓鱼与域名白名单核验。未经过您的授权不会收集任何隐私。
+    </div>
+  </div>
+
+  <div class="site-brand">
+    <a href="/">{site.name}</a> · 权威客观的海外网络资源与梯子工具导航
+  </div>
+
+  <script define:vars={{ targetUrl: brand.targetUrl }}>
+    // 5秒倒计时逻辑
+    let remaining = 5;
+    const countdownNumber = document.getElementById('countdown');
+    const countdownText = document.getElementById('countdown-text');
+    const jumpBtn = document.getElementById('jump-btn');
+
+    // 复制优惠码到剪贴板，方便用户粘贴
+    const couponCode = document.querySelector('.coupon-code');
+    if (couponCode && navigator.clipboard) {
+      navigator.clipboard.writeText(couponCode.textContent.trim()).catch(() => {});
+    }
+
+    const interval = setInterval(() => {
+      remaining -= 1;
+      if (countdownNumber) countdownNumber.textContent = remaining;
+      if (countdownText) countdownText.textContent = remaining + ' 秒';
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+        window.location.replace(targetUrl);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

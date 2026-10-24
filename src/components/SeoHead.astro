@@ -1,0 +1,21 @@
+---
+import { site } from '../data/site';
+interface Props { title: string; description?: string; noindex?: boolean; type?: string; }
+const { title, description = site.description, noindex = false, type = 'website' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const pageTitle = title.includes(site.name) ? title : `${title} · ${site.name}`;
+---
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content="zh_CN" />
+{noindex && <meta name="robots" content="noindex, follow" />}
+{site.bingSiteVerification && <meta name="msvalidate.01" content={site.bingSiteVerification} />}
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

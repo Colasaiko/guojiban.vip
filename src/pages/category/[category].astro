@@ -1,0 +1,11 @@
+---
+import { getCollection } from 'astro:content';
+import { categories, categoryHref } from '../../data/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+export function getStaticPaths() { return categories.filter(c => c.slug !== 'airports').map(category => ({params:{category:category.slug},props:{category}})); }
+const {category} = Astro.props;
+const posts = await getCollection('blog', ({data}) => !data.draft && data.category === category.slug);
+---
+<BaseLayout title={category.name} description={category.description}><div class="container"><Breadcrumb items={[{label:'全部文章',href:'/blog/'},{label:category.name}]} /><header class="page-heading"><span class="eyebrow">EXPLORE / {category.slug.toUpperCase()}</span><h1>{category.name}</h1><p>{category.description}</p></header><nav class="filter-nav" aria-label="分类导航">{categories.map(c => <a class:list={[{selected:c.slug === category.slug}]} href={categoryHref(c.slug)}>{c.name}</a>)}</nav>{posts.length ? <div class="article-grid section">{posts.map(post => <ArticleCard post={post} />)}</div> : <div class="empty-state"><span>{category.icon}</span><h2>这个栏目，正在准备中。</h2><p>分类框架已就绪，具体网站与 App 的介绍将在后续补充。</p><a class="button primary" href="/blog/">先看看其他内容 ↗</a></div>}</div></BaseLayout>

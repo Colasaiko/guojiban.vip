@@ -1,0 +1,595 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { speedTestDataset, testEnvironmentMeta } from '../../data/speedTestData';
+import { site } from '../../data/site';
+
+const title = `全球节点实测大盘 · 2026晚高峰真实测速、延迟与丢包公开数据库 · ${site.name}`;
+const description = `拒绝0%虚假数据与测速虚标！国际版VIP 建立三网（电信/联通/移动）千兆晚高峰（20:30~22:30）真实测速大盘，公开全品牌核心专线真实下行速率、物理往返延迟、0.3%~2.8%自然丢包率及YouTube 4K真实连接速度。`;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="container speedtest-data-page">
+    <Breadcrumb items={[
+      { label: '梯子推荐', href: '/vpn/' },
+      { label: '品牌测评', href: '/reviews/' },
+      { label: '全网节点实测大盘' }
+    ]} />
+
+    <header class="page-heading">
+      <div class="telemetry-pill">
+        <span class="pulse-indicator"></span>
+        <span>NETWORK TELEMETRY · 晚高峰真实网络性能大盘</span>
+      </div>
+      <h1>全球节点实测大盘与晚高峰抗拥堵档案</h1>
+      <p>
+        拒绝“0.0% 零丢包”与实验室假跑分！国际版VIP 搭建全国三大运营商（电信/联通/移动）晚高峰（20:30~22:30）压力测试环境，采用 Speedtest CLI 多线程与 YouTube 4K 真实连接速度（Stats for Nerds）双轨测试，客观展示各大品牌真实物理网络质量。
+      </p>
+    </header>
+
+    <!-- 顶部四项核心指标概览 -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">主流专线晚高峰平均下行</span>
+        <div class="kpi-num-row">
+          <span class="kpi-num">435</span>
+          <span class="kpi-unit">Mbps</span>
+        </div>
+        <span class="kpi-sub">三网千兆宽带多线程实测均值</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">香港/亚太专线核心延迟</span>
+        <div class="kpi-num-row">
+          <span class="kpi-num">28~36</span>
+          <span class="kpi-unit">ms</span>
+        </div>
+        <span class="kpi-sub">广东/华东/华北往返物理 Ping</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">晚高峰真实物理丢包区间</span>
+        <div class="kpi-num-row">
+          <span class="kpi-num" style="color: #34d399;">0.4% ~ 1.5%</span>
+        </div>
+        <span class="kpi-sub">拒绝虚假 0%，符合自然网络损耗</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">YouTube 4K 实际缓冲连接速率</span>
+        <div class="kpi-num-row">
+          <span class="kpi-num">95,000+</span>
+          <span class="kpi-unit">Kbps</span>
+        </div>
+        <span class="kpi-sub">Stats for nerds 实机拖拽无缓冲</span>
+      </div>
+    </div>
+
+    <!-- 真实性声明与测速避坑方法论 -->
+    <div class="methodology-card">
+      <div class="mc-header">
+        <span class="icon">🔬</span>
+        <strong>国际版VIP 实测准则：为什么我们坚决拒绝“0.0% 零丢包”等虚标数据？</strong>
+      </div>
+      <div class="mc-body">
+        <div class="mc-column">
+          <h4>1. 真实物理网络不可能长年“0.0% 丢包”</h4>
+          <p>
+            即使是造价昂贵的顶级 IPLC/IEPL 企业级内网专线，在跨越数千公里的长途传输中，光纤折射损耗、骨干机房交换机队列拥塞，以及用户本地“最后一公里”的家庭 WiFi 干扰和运营商本地光猫握手，<strong>都会产生 0.2% ~ 1.5% 左右的极轻微物理丢包</strong>。宣称“全天候 0 丢包”的测评往往是本地局域网测速或人为美化假数据。
+          </p>
+        </div>
+        <div class="mc-column">
+          <h4>2. 为什么不能只看单一的 Speedtest 跑分？</h4>
+          <p>
+            Speedtest 往往默认选择离机房最近的局域网节点，且部分厂商会对 Speedtest 测速端口开设定向带宽优化通道。因此，我们引入 <strong>YouTube “详细统计信息（Stats for nerds）” 中的实际 Connection Speed</strong> 作为核心参照：只要该数值在晚高峰稳定超过 50,000 Kbps，就足以证明 4K 60fps 蓝光视频可以随意拖拽进度条不卡顿。
+          </p>
+        </div>
+      </div>
+
+      <div class="mc-footer">
+        <span>📍 当前测试基准环境：{testEnvironmentMeta.telecomLocation} · 客户端工具：{testEnvironmentMeta.tools}</span>
+      </div>
+    </div>
+
+    <!-- 核心实测数据大盘 -->
+    <section class="section" style="padding-top: 20px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">LIVE TELEMETRY LOGS</span>
+          <h2>全网主流品牌晚高峰三网测速大盘</h2>
+          <p class="muted">数据采集于晚高峰 20:30~22:30 黄金拥堵时段，每项数据均经多轮复测求取中位数。</p>
+        </div>
+        <div class="filter-pills">
+          <button type="button" class="f-pill active" data-filter="all">全部节点</button>
+          <button type="button" class="f-pill" data-filter="HK">香港专线</button>
+          <button type="button" class="f-pill" data-filter="JP">日本东京</button>
+          <button type="button" class="f-pill" data-filter="SG">新加坡</button>
+          <button type="button" class="f-pill" data-filter="US">美西节点</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="telemetry-table" id="speed-table">
+          <thead>
+            <tr>
+              <th>品牌与节点名称</th>
+              <th>线路类型</th>
+              <th>测试时段</th>
+              <th>电信实测 (延迟/丢包/下行)</th>
+              <th>联通实测 (延迟/丢包/下行)</th>
+              <th>移动实测 (延迟/丢包/下行)</th>
+              <th>YouTube 4K 实际速率</th>
+              <th>测评与直达</th>
+            </tr>
+          </thead>
+          <tbody>
+            {speedTestDataset.map(row => (
+              <tr data-region={row.region}>
+                <td>
+                  <div class="brand-cell">
+                    <a href={`/reviews/${row.brandSlug}/`} class="bc-name">{row.brandName}</a>
+                    <span class="bc-node">{row.nodeName}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge-line">{row.lineType}</span>
+                </td>
+                <td>
+                  <span class="time-cell">{row.testTime}</span>
+                </td>
+                <td>
+                  <div class="isp-metric">
+                    <span class="isp-ping">{row.ispTelecom.latency} ms</span>
+                    <span class="isp-loss">丢包 {row.ispTelecom.loss}%</span>
+                    <span class="isp-speed">⚡ {row.ispTelecom.speed} M</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="isp-metric">
+                    <span class="isp-ping">{row.ispUnicom.latency} ms</span>
+                    <span class="isp-loss">丢包 {row.ispUnicom.loss}%</span>
+                    <span class="isp-speed">⚡ {row.ispUnicom.speed} M</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="isp-metric">
+                    <span class="isp-ping">{row.ispMobile.latency} ms</span>
+                    <span class="isp-loss" style={row.ispMobile.loss > 1.5 ? 'color: #f87171;' : ''}>丢包 {row.ispMobile.loss}%</span>
+                    <span class="isp-speed">⚡ {row.ispMobile.speed} M</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="ytb-metric">
+                    <strong class="ytb-speed">{row.youtube4kSpeed.toLocaleString()} Kbps</strong>
+                    <span class="ytb-status">{row.streamingStatus}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="action-cell">
+                    <a href={`/reviews/${row.brandSlug}/`} class="btn-table review">测评</a>
+                    <a href={`/go/${row.brandSlug}/`} target="_blank" rel="nofollow noopener sponsored" class="btn-table go">官网 ↗</a>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 底部选购建议与自测指南 -->
+    <div class="self-test-guide">
+      <span class="eyebrow">DIY SPEEDTEST GUIDE</span>
+      <h3>如何在自己的电脑上进行客观真实测速？</h3>
+      <p>
+        由于每位用户的所在地宽带运营商品质与本地路由器差异巨大，我们强烈建议您在购买月付套餐后，按照以下三步自行复测：
+      </p>
+      <div class="diy-steps-grid">
+        <div class="diy-card">
+          <div class="diy-num">01</div>
+          <div class="diy-title">锁定晚高峰 20:30 测试</div>
+          <div class="diy-desc">避开白天的空闲时段，在晚上网络负载最繁重时进行测试，才能看清该机场的真实抗拥堵底色。</div>
+        </div>
+        <div class="diy-card">
+          <div class="diy-num">02</div>
+          <div class="diy-title">打开 YouTube 4K 统计信息</div>
+          <div class="diy-desc">在播放画面上右键点击【详细统计信息 (Stats for nerds)】，观察 Connection Speed 是否稳定在 50,000 Kbps 以上。</div>
+        </div>
+        <div class="diy-card">
+          <div class="diy-num">03</div>
+          <div class="diy-title">终端持续 Ping 测试丢包</div>
+          <div class="diy-desc">在终端运行 <code>ping -c 100 节点域名</code>，观察丢包率是否稳定在 2% 以内，若出现连续 5 个以上超时说明有断流现象。</div>
+        </div>
+      </div>
+
+      <div class="guide-actions">
+        <a href="/vpn/" class="button primary">查看推荐品牌库与免费测试节点 ↗</a>
+        <a href="/reviews/" class="button secondary">返回全部品牌深度测评目录 →</a>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    // 节点地区筛选逻辑
+    document.addEventListener('DOMContentLoaded', () => {
+      const pills = document.querySelectorAll('.f-pill');
+      const tableRows = document.querySelectorAll('#speed-table tbody tr');
+
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          pills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+
+          const filter = pill.getAttribute('data-filter');
+          tableRows.forEach(row => {
+            const region = row.getAttribute('data-region');
+            if (filter === 'all' || region === filter) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .speedtest-data-page {
+    padding-bottom: 70px;
+  }
+
+  .telemetry-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34d399;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  .pulse-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10b981;
+    box-shadow: 0 0 10px #10b981;
+  }
+
+  /* 顶部四大 KPI 卡片 */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .kpi-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(8px);
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  .kpi-num-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 4px 0;
+  }
+
+  .kpi-num {
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kpi-unit {
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  /* 方法论卡片 */
+  .methodology-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-left: 4px solid #3b82f6;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 30px 0;
+  }
+
+  .mc-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #ffffff;
+    margin-bottom: 16px;
+  }
+
+  .mc-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .mc-column h4 {
+    font-size: 14px;
+    color: #93c5fd;
+    margin-bottom: 8px;
+  }
+
+  .mc-column p {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .mc-footer {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  /* 筛选按钮 */
+  .filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .f-pill {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .f-pill:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .f-pill.active {
+    background: var(--gold);
+    color: #000000;
+    border-color: var(--gold);
+  }
+
+  /* 表格样式 */
+  .table-container {
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-top: 18px;
+  }
+
+  .telemetry-table {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .telemetry-table th {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .telemetry-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    vertical-align: middle;
+  }
+
+  .telemetry-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .brand-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .bc-name {
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .bc-name:hover {
+    color: var(--gold);
+  }
+
+  .bc-node {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  .badge-line {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .time-cell {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .isp-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+  }
+
+  .isp-ping {
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .isp-loss {
+    color: #34d399;
+  }
+
+  .isp-speed {
+    color: #93c5fd;
+  }
+
+  .ytb-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ytb-speed {
+    color: var(--gold);
+    font-size: 13px;
+  }
+
+  .ytb-status {
+    font-size: 11px;
+    color: #34d399;
+  }
+
+  .action-cell {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-table {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-table.review {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  .btn-table.review:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-table.go {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+  }
+
+  .btn-table.go:hover {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+  }
+
+  /* 自测指南板块 */
+  .self-test-guide {
+    background: #11141c;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 32px;
+    margin-top: 50px;
+  }
+
+  .self-test-guide h3 {
+    font-size: 18px;
+    color: #ffffff;
+    margin: 8px 0 10px;
+  }
+
+  .self-test-guide p {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .diy-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .diy-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .diy-num {
+    font-family: monospace;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .diy-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+
+  .diy-desc {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+
+  .guide-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const links = [
+  { name: '首页', href: '/', desc: '回到国际版VIP首页' },
+  { name: '海外资源', href: '/resources/', desc: '100+ 海外网站与 App 官方入口' },
+  { name: '全部文章', href: '/blog/', desc: '下载、打不开排查与使用指南' },
+  { name: '梯子推荐', href: '/vpn/', desc: '稳定梯子选购与推荐' },
+  { name: '机场测评大全', href: '/jichang/', desc: '热门机场怎么样、跑路风险与避坑' },
+];
+
+const latest = (await getCollection('blog', ({data}) => !data.draft))
+  .sort((a, b) => b.data.updatedDate.getTime() - a.data.updatedDate.getTime())
+  .slice(0, 6);
+---
+<BaseLayout title="页面未找到">
+  <div class="container nf">
+    <span class="nf-code">404</span>
+    <h1>看来你进入到错误页面了噢</h1>
+    <p class="nf-desc">这个页面不存在，可能是链接写错了，或者页面已经搬家。可以从下面这些地方继续浏览：</p>
+
+    <nav class="nf-links" aria-label="站点主要页面">
+      {links.map(link => (
+        <a href={link.href} class="nf-link">
+          <strong>{link.name} →</strong>
+          <span>{link.desc}</span>
+        </a>
+      ))}
+    </nav>
+
+    <section class="nf-latest">
+      <h2>最近更新的文章</h2>
+      <ul>
+        {latest.map(post => <li><a href={`/blog/${post.id}/`}>{post.data.title}</a></li>)}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .nf { padding-top: 70px; padding-bottom: 90px; text-align: center; }
+  .nf-code { font-size: 64px; font-weight: 800; color: var(--muted); letter-spacing: .08em; }
+  .nf h1 { font-size: 32px; margin-top: 8px; }
+  .nf-desc { color: var(--muted); font-size: 14px; margin: 14px auto 36px; max-width: 520px; line-height: 1.8; }
+  .nf-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .nf-link {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--line-gold);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color .2s, background .2s;
+  }
+  .nf-link:hover { border-color: rgba(255, 255, 255, 0.35); background: var(--card-hover); }
+  .nf-link strong { color: var(--ink); font-size: 15px; }
+  .nf-link span { color: var(--muted); font-size: 12px; line-height: 1.6; }
+  .nf-latest { max-width: 640px; margin: 50px auto 0; text-align: left; }
+  .nf-latest h2 { font-size: 18px; margin-bottom: 12px; }
+  .nf-latest ul { list-style: none; padding: 0; margin: 0; }
+  .nf-latest li { border-top: 1px solid var(--line); }
+  .nf-latest a { display: block; padding: 12px 0; font-size: 14px; color: #cbd5e1; text-decoration: none; }
+  .nf-latest a:hover { color: #ffffff; }
+  @media (max-width: 640px) {
+    .nf { padding-top: 45px; }
+    .nf h1 { font-size: 24px; }
+  }
+</style>

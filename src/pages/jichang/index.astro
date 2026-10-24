@@ -1,0 +1,459 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { categories, categoryHref, site } from '../../data/site';
+import { otherAirportsAuditCriteria } from '../../data/otherAirports';
+
+const posts = (await getCollection('blog', ({data}) => !data.draft && data.category === 'airports'))
+  .sort((a, b) => b.data.updatedDate.getTime() - a.data.updatedDate.getTime());
+
+const currentCategory = categories.find(c => c.slug === 'airports') || {
+  slug: 'airports',
+  name: '机场评价',
+  icon: '✈️',
+  description: '市面其他机场综合测评、口碑避坑与使用评价档案。'
+};
+---
+
+<BaseLayout
+  title={`机场测评大全（2026）：热门机场怎么样、官网入口、跑路风险与避坑指南 · ${site.name}`}
+  description="2026 年热门机场测评合集：逐家整理机场官网入口、套餐价格、优惠码、线路类型、稳定性记录与跑路风险，告诉你这家机场怎么样、值不值得买，帮你选机场时少踩坑。"
+>
+  <div class="container">
+    <Breadcrumb items={[{ label: '机场测评大全' }]} />
+
+    <header class="page-heading">
+      <span class="eyebrow">AIRPORT REVIEWS · 机场测评</span>
+      <h1>机场测评大全：2026 热门机场怎么样？跑路风险与避坑指南</h1>
+      <p>
+        除了国际版VIP深度压测推荐的主推物理专线外，市面上存在大量打着“低价大带宽”、“全专线”甚至“永久套餐”旗号的第三方小作坊机场。
+        本专栏专为客观记录、长期抽测市面各类其他机场的真实表现，公开其晚高峰丢包、虚标情况与跑路风险指数，方便你在面对形形色色的宣传时随时查阅避坑。
+      </p>
+    </header>
+
+    <!-- 分类横向导航 -->
+    <nav class="filter-nav" aria-label="分类导航">
+      <a href="/blog/">全部内容</a>
+      {categories.map(c => (
+        <a class:list={[{ selected: c.slug === currentCategory.slug }]} href={categoryHref(c.slug)}>
+          {c.name}
+        </a>
+      ))}
+    </nav>
+
+    <!-- 站长避坑四大军规 -->
+    <div class="rules-box">
+      <div class="rules-head">
+        <span class="rh-badge">⚖️ 站长避坑四军规</span>
+        <h3>买机场不想被割韭菜？请牢记以下四条铁律：</h3>
+      </div>
+      <div class="rules-grid">
+        <div class="rule-card">
+          <span class="rc-num">01</span>
+          <strong>坚决不买任何“永久终身”套餐</strong>
+          <p>物理服务器与国际带宽每个月都是真金白银的硬成本。凡宣传几十元“永久终身不限流”的，100% 违背运营经济学，90天内跑路率极高。</p>
+        </div>
+        <div class="rule-card">
+          <span class="rc-num">02</span>
+          <strong>无论吹得多好，第一单永远买月付</strong>
+          <p>不同地区运营商（电信/联通/移动）体质差异巨大。哪怕别人用着快，到你本地也可能丢包。先买 1 个月月付实测，满意再考虑按季度续费。</p>
+        </div>
+        <div class="rule-card">
+          <span class="rc-num">03</span>
+          <strong>警惕 9.9 元包年/超低价超卖陷阱</strong>
+          <p>几块钱的机场通常是廉价机房直连，超卖塞入成千上万人。白天看似正常，一到晚高峰（20:00~23:00）就会遭遇疯狂断流和剧烈拥堵。</p>
+        </div>
+        <div class="rule-card">
+          <span class="rc-num">04</span>
+          <strong>绝不用免费公共节点登录重要账号</strong>
+          <p>公共免费分享节点的 IP 早就被各大风控系统打上高风险标签，不仅 ChatGPT 秒封号，更存在中间人嗅探明文传输密码的极大安全风险。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 考核维度 -->
+    <section class="section" style="padding-top: 15px; padding-bottom: 25px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">AUDIT METHODOLOGY</span>
+          <h2>对市面其他机场的四大实测考核维度</h2>
+          <p class="muted">拒绝假大空云评测，我们从网络物理层与真实使用场景出发进行客观检验。</p>
+        </div>
+      </div>
+      <div class="criteria-grid">
+        {otherAirportsAuditCriteria.map((c, i) => (
+          <div class="criteria-item">
+            <span class="ci-num">0{i + 1}</span>
+            <h4>{c.title}</h4>
+            <p>{c.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 机场评价文章列表 -->
+    {posts.length > 0 && (
+      <section class="section" style="padding-top: 15px; padding-bottom: 25px;">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">AIRPORT PROFILES</span>
+            <h2>机场评价档案</h2>
+            <p class="muted">按公开资料与使用记录整理，点击查看完整内容。</p>
+          </div>
+        </div>
+        <div class="airport-list">
+          {posts.map(post => (
+            <a href={`/blog/${post.id}/`} class="airport-row">
+              <span class="ar-badge">✈️ 机场评价 · 更新于 {post.data.updatedDate.toISOString().slice(0, 10)}</span>
+              <strong class="ar-title">{post.data.title}</strong>
+              <p class="ar-desc">{post.data.description}</p>
+              <span class="ar-more">阅读完整测评 →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 独立品牌框架建设中提示区域（取代原临时列表） -->
+    <div class="framework-preview-box">
+      <div class="fpb-head">
+        <span class="fpb-badge">⚡ 独立评测框架建设中</span>
+        <h3>市面其他机场：单品牌独立评测专栏即将上线</h3>
+      </div>
+      <p class="fpb-desc">
+        为保证评测深度与数据的客观严谨，我们后续将为每一家受测的其他机场搭建<strong>“一品牌一独立框架”</strong>的专属深度评测页面（涵盖晚高峰三网丢包率、物理跳数抓包、IP 纯净度检测及真实退款工单实测），不再做笼统简略的列表展示。
+      </p>
+      <div class="fpb-grid">
+        <div class="fpb-step">
+          <span class="fs-icon">🧪</span>
+          <strong>01. 自费隐秘月付测试</strong>
+          <p>坚决拒绝机场公关送号，以普通用户身份匿名购入月付套餐进行盲测。</p>
+        </div>
+        <div class="fpb-step">
+          <span class="fs-icon">📊</span>
+          <strong>02. 晚高峰严苛压测</strong>
+          <p>在晚间 20:00~23:00 骨干网高峰期开展 4K/8K 视频缓冲与丢包率全天候监控。</p>
+        </div>
+        <div class="fpb-step">
+          <span class="fs-icon">📑</span>
+          <strong>03. 独立品牌专栏建立</strong>
+          <p>后续将为一个品牌建立一个专门的测评框架，详尽展示测速跑分、避坑指南与综合评级。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 读者提交求测登记入口 -->
+    <div class="request-review-box">
+      <div class="rrb-icon">📮</div>
+      <div class="rrb-content">
+        <h3>你在用哪家其他机场？拿不准想让站长测一下？</h3>
+        <p>
+          如果你发现市面上某家正在大力宣传的新机场、或者你正在用的梯子经常晚高峰卡顿不知道原因，欢迎向站长提交求测信息。
+          我们会自费购入月付套餐，将其接入 24 小时三网晚高峰监控大盘，并在本专栏客观公开真实测速报告与避坑等级。
+        </p>
+        <div class="rrb-tips">
+          <span>• 提交流程：请在站长反馈渠道提供【机场官网域名】及【关注的套餐类型】即可。</span>
+          <span>• 测评准则：我们绝不接受任何劣质机场的公关删稿要求，一切凭真实压测数据说话。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部大转化桥梁：不想当小白鼠直接选主推专线 -->
+    <div class="bridge-card">
+      <div class="bc-left">
+        <span class="eyebrow" style="color: var(--gold); font-size: 11px; letter-spacing: .12em; font-weight: 700;">SAFE & VERIFIED RECOMMENDATION</span>
+        <h2>不想在各类小作坊机场里当小白鼠浪费钱？</h2>
+        <p>
+          在鱼龙混杂的小机场里踩坑不仅浪费资金，更耽误工作与学习。
+          如果你需要一条无论晚高峰还是敏感期都稳定不掉线、能流畅开 4K 视频并秒开 ChatGPT 的可靠梯子，强烈建议直接查看我们长期主力实测验证的核心品牌，全部支持月付试用，不满意随时更换。
+        </p>
+      </div>
+      <div class="bc-right">
+        <a
+          href="/vpn/"
+          class="button primary"
+          style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 14px; font-weight: 700; padding: 13px 26px; text-align: center;"
+        >
+          前往【梯子推荐】选购核心物理专线 ↗
+        </a>
+        <a
+          href="/reviews/"
+          class="button secondary"
+          style="font-size: 13px; padding: 11px 22px; text-align: center;"
+        >
+          查看全部 35+ 品牌实测跑分 📊
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* 机场评价档案：横向长方形列表 */
+  .airport-list { display: flex; flex-direction: column; gap: 16px; }
+  .airport-row {
+    display: block;
+    background: rgba(30, 41, 59, 0.35);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    text-decoration: none;
+    transition: border-color .2s, background .2s;
+  }
+  .airport-row:hover { border-color: rgba(148, 163, 184, 0.4); background: rgba(30, 41, 59, 0.5); }
+  .ar-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #93c5fd;
+    letter-spacing: .08em;
+    margin-bottom: 8px;
+  }
+  .ar-title { display: block; font-size: 17px; color: #ffffff; line-height: 1.5; }
+  .ar-desc { font-size: 13px; color: #cbd5e1; line-height: 1.8; margin: 8px 0 12px; }
+  .ar-more { font-size: 13px; font-weight: 600; color: #38bdf8; }
+  .airport-row:hover .ar-more { color: #7dd3fc; }
+
+  /* 避坑四军规 */
+  .rules-box {
+    background: rgba(30, 41, 59, 0.45);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  }
+  .rules-head {
+    margin-bottom: 20px;
+  }
+  .rh-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-light);
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .rules-head h3 {
+    margin: 0;
+    font-size: 19px;
+    color: #ffffff;
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .rule-card {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    position: relative;
+  }
+  .rc-num {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold-light);
+    opacity: 0.45;
+    display: block;
+    margin-bottom: 6px;
+    font-family: monospace;
+  }
+  .rule-card strong {
+    display: block;
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .rule-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* 考核维度卡片 */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .criteria-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+  }
+  .ci-num {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--gold-light);
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-family: monospace;
+  }
+  .criteria-item h4 {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    color: #ffffff;
+  }
+  .criteria-item p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* 独立品牌框架建设中提示卡片 */
+  .framework-preview-box {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  }
+  .fpb-head {
+    margin-bottom: 14px;
+  }
+  .fpb-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-light);
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .fpb-head h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #ffffff;
+  }
+  .fpb-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin: 0 0 24px 0;
+  }
+  .fpb-desc strong {
+    color: #ffffff;
+  }
+  .fpb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .fpb-step {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+  }
+  .fs-icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .fpb-step strong {
+    display: block;
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+  .fpb-step p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* 投稿登记框 */
+  .request-review-box {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    background: rgba(30, 41, 59, 0.35);
+    border: 1px dashed rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 30px;
+  }
+  @media (max-width: 640px) {
+    .request-review-box {
+      flex-direction: column;
+    }
+  }
+  .rrb-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+  }
+  .rrb-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 17px;
+    color: #ffffff;
+  }
+  .rrb-content p {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .rrb-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--gold-light);
+  }
+
+  /* 底部大转化桥梁 */
+  .bridge-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius);
+    padding: 30px 36px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  }
+  @media (max-width: 900px) {
+    .bridge-card {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 24px 20px;
+    }
+  }
+  .bc-left h2 {
+    font-size: 20px;
+    color: #ffffff;
+    margin: 8px 0 10px 0;
+  }
+  .bc-left p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .bc-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+</style>

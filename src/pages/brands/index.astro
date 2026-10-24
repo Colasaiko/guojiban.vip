@@ -1,0 +1,647 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { site } from '../../data/site';
+import { allBrands } from '../../data/brands';
+
+// 站长主推核心 9 大品牌与全网扩展品牌（严格源自 jichangbuy 数据库）
+const primaryBrands = allBrands.filter(b => b.category === 'primary');
+const extendedBrands = allBrands.filter(b => b.category === 'extended');
+
+const auditPillars = [
+  { icon: '🏛️', title: '运营年限与口碑信誉', desc: '坚决过滤上线不足两周的跑路黑机场，优选有长期运营历史、社群反馈真实的技术团队。' },
+  { icon: '🌐', title: '骨干网络与专线质量', desc: '考察核心路由是否为真 IPLC/IEPL 国际专线或高抗干扰 BGP，拒绝虚标假专线。' },
+  { icon: '💻', title: '多端客户端适配度', desc: '是否提供一键连接客户端或标准化订阅导入（支持 Clash、Sing-box、Shadowrocket 等）。' },
+  { icon: '🤝', title: '退款机制与工单响应', desc: '是否有及时的技术工单响应，遇到海缆故障或敏感期是否有快速换线与容灾备用方案。' }
+];
+---
+<BaseLayout
+  title={`梯子品牌库 · 全球主流服务商档案与推荐 · ${site.name}`}
+  description="国际版VIP 梯子品牌大全，收录微风网络、FireFly 萤火虫、飞猫云、无忧链接、大佬云、暮光加速等主力品牌与全网主流服务商，提供详尽品牌档案、专属优惠码、专线评测与避坑指南。"
+>
+  <div class="container">
+    <Breadcrumb items={[{ label: '梯子推荐', href: '/vpn/' }, { label: '梯子品牌' }]} />
+
+    <header class="page-heading">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+        <span class="eyebrow" style="margin-bottom: 0;">GLOBAL PROVIDERS DIRECTORY · 梯子品牌库</span>
+        <span class="last-updated-badge" style="font-size: 12px; color: var(--text-muted); background: rgba(255, 255, 255, 0.04); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);">
+          ⚡ 数据已同步：2026年10月20日最新归档
+        </span>
+      </div>
+      <h1>全球知名梯子与网络服务品牌库</h1>
+      <p>市面上网络工具良莠不齐，如何避免遭遇虚标与跑路风险？国际版VIP 建立深度服务商品牌档案，每个品牌均收录真实背景、专线架构、套餐价格范围与优惠码限制，提供第三方客观视角与独立实测指引。</p>
+    </header>
+
+    <!-- 站长温馨提示 -->
+    <div class="aff-tip-card" style="margin-bottom: 35px;">
+      <span class="aff-tip-badge">📢 站长选购提醒</span>
+      <div class="aff-tip-body">
+        <strong>透明佣金说明与理性消费建议</strong>
+        <p>本页列出的品牌链接包含推荐佣金（Affiliate），全额用于本站服务器租用与长期真实测试维护。<strong>选购梯子服务时，强烈建议优先尝试按月或按季度购买，切勿贪图年付折扣而盲目直接买一年！</strong>只有在你的本地网络实际体验稳定、晚高峰不卡顿后，再考虑长期套餐。</p>
+      </div>
+    </div>
+
+    <!-- 核心主推 9 大品牌 -->
+    <section class="section" style="padding-top: 10px; padding-bottom: 40px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">FEATURED BRANDS</span>
+          <h2>站长核心主推品牌（实测首选 TOP 09）</h2>
+          <p class="muted">经过长期晚高峰压力测试与跨境场景核验，专线质量过硬、不限速且支持原生 IP 解锁的核心主力品牌。</p>
+        </div>
+        <span class="section-index">TOP 09</span>
+      </div>
+
+      <div class="brand-showcase-grid">
+        {primaryBrands.map(b => (
+          <article class="brand-card-lux primary-lux">
+            <div class="bc-header">
+              <div class="bc-title-wrap">
+                <div class="bc-name-row">
+                  <h3 class="bc-name">{b.name}</h3>
+                  <span class="bc-line-badge">{b.lineType}</span>
+                </div>
+                <span class="bc-tag-label">{b.tag}</span>
+              </div>
+              <div class="bc-price-box">
+                <span class="bc-price-val">{b.minMonthly}</span>
+                <span class="bc-discount-pill">{b.couponDiscount}</span>
+              </div>
+            </div>
+
+            <!-- 详细介绍段落（像 Firefly 一样详尽完整） -->
+            <div class="bc-summary-wrap">
+              <p class="bc-summary-text">{b.summary}</p>
+            </div>
+
+            <!-- 关键规格技术矩阵 -->
+            <div class="bc-specs-grid">
+              <div class="bc-spec-item">
+                <span class="spec-k">骨干线路</span>
+                <span class="spec-v">{b.lineType} 专线架构</span>
+              </div>
+              <div class="bc-spec-item">
+                <span class="spec-k">速率表现</span>
+                <span class="spec-v">{b.speed}</span>
+              </div>
+              <div class="bc-spec-item">
+                <span class="spec-k">设备连接</span>
+                <span class="spec-v">{b.devices}</span>
+              </div>
+              <div class="bc-spec-item">
+                <span class="spec-k">流媒体/AI</span>
+                <span class="spec-v">Netflix · ChatGPT 原生解锁</span>
+              </div>
+            </div>
+
+            <!-- 特色亮点标签 -->
+            <div class="bc-chips">
+              {b.features.map(f => (
+                <span class="bc-chip">✓ {f}</span>
+              ))}
+            </div>
+
+            <!-- 优惠代码复制卡 -->
+            <div class="bc-coupon-box">
+              <div class="coupon-info">
+                <span class="coupon-lbl">专属优惠码</span>
+                <code class="coupon-code-text" id={`code-${b.slug}`}>{b.coupon}</code>
+                <span class="coupon-sub">（{b.couponDiscount}）</span>
+              </div>
+              {b.coupon !== '无需优惠码' && (
+                <button
+                  type="button"
+                  class="copy-coupon-btn"
+                  data-clipboard={b.coupon}
+                  title="点击复制优惠码"
+                >
+                  <span class="btn-copy-text">复制优惠码</span>
+                </button>
+              )}
+            </div>
+
+            <!-- 双操作区：官网直达 + 评测报告 -->
+            <div class="bc-actions-row">
+              <a
+                href={`/go/${b.slug}/`}
+                target="_blank"
+                rel="nofollow noopener noreferrer sponsored"
+                class="button primary bc-btn-main"
+              >
+                前往官方网站 ↗
+              </a>
+              <a
+                href={`/reviews/${b.slug}/`}
+                class="button secondary bc-btn-sub"
+              >
+                查看深度评测报告 📊
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- 全网主流品牌扩展库 -->
+    <section class="section" style="padding-top: 20px; padding-bottom: 40px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">EXTENDED DIRECTORY</span>
+          <h2>全网主流扩展品牌收录（26 席备选服务商）</h2>
+          <p class="muted">涵盖不同预算、协议偏好（VLESS / Shadowsocks / Hysteria2）及不限时固定计费模式的详实档案。</p>
+        </div>
+        <span class="section-index">ALL BRANDS</span>
+      </div>
+
+      <div class="brand-showcase-grid">
+        {extendedBrands.map(item => (
+          <article class="brand-card-lux extended-lux">
+            <div class="bc-header">
+              <div class="bc-title-wrap">
+                <div class="bc-name-row">
+                  <h3 class="bc-name">{item.name}</h3>
+                  <span class="bc-line-badge">{item.lineType}</span>
+                </div>
+                <span class="bc-tag-label">{item.tag}</span>
+              </div>
+              <div class="bc-price-box">
+                <span class="bc-price-val">{item.minMonthly}</span>
+                <span class="bc-discount-pill">{item.couponDiscount}</span>
+              </div>
+            </div>
+
+            <!-- 详细介绍段落（像 Firefly 一样详尽完整） -->
+            <div class="bc-summary-wrap">
+              <p class="bc-summary-text">{item.summary}</p>
+            </div>
+
+            <!-- 关键规格技术矩阵 -->
+            <div class="bc-specs-grid">
+              <div class="bc-spec-item">
+                <span class="spec-k">线路类型</span>
+                <span class="spec-v">{item.lineType}</span>
+              </div>
+              <div class="bc-spec-item">
+                <span class="spec-k">速率表现</span>
+                <span class="spec-v">{item.speed}</span>
+              </div>
+              <div class="bc-spec-item">
+                <span class="spec-k">设备限制</span>
+                <span class="spec-v">{item.devices}</span>
+              </div>
+              <div class="bc-spec-item">
+                <span class="spec-k">应用支持</span>
+                <span class="spec-v">流媒体/AI 原生支持</span>
+              </div>
+            </div>
+
+            <!-- 特色亮点标签 -->
+            <div class="bc-chips">
+              {item.features.map(f => (
+                <span class="bc-chip">✓ {f}</span>
+              ))}
+            </div>
+
+            <!-- 优惠代码复制卡 -->
+            <div class="bc-coupon-box">
+              <div class="coupon-info">
+                <span class="coupon-lbl">优惠信息</span>
+                <code class="coupon-code-text" id={`code-${item.slug}`}>{item.coupon}</code>
+                <span class="coupon-sub">（{item.couponDiscount}）</span>
+              </div>
+              {item.coupon !== '无需优惠码' && (
+                <button
+                  type="button"
+                  class="copy-coupon-btn"
+                  data-clipboard={item.coupon}
+                  title="点击复制优惠码"
+                >
+                  <span class="btn-copy-text">复制优惠码</span>
+                </button>
+              )}
+            </div>
+
+            <!-- 双操作区：官网直达 + 评测报告 -->
+            <div class="bc-actions-row">
+              <a
+                href={`/go/${item.slug}/`}
+                target="_blank"
+                rel="nofollow noopener noreferrer sponsored"
+                class="button primary bc-btn-main"
+              >
+                前往该品牌官网 ↗
+              </a>
+              <a
+                href={`/reviews/${item.slug}/`}
+                class="button secondary bc-btn-sub"
+              >
+                查看深度评测报告 📊
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- 品牌审核标准 -->
+    <section class="section" style="padding-top: 10px; padding-bottom: 40px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">AUDIT PILLARS</span>
+          <h2>品牌入选四重严格审核标准</h2>
+          <p class="muted">拒绝套壳诈骗与短命服务商，为跨境出海用户提供可信赖的决策参考。</p>
+        </div>
+      </div>
+
+      <div class="guidance-grid">
+        {auditPillars.map(pillar => (
+          <div class="guidance-card">
+            <span style="font-size: 28px; display: block; margin-bottom: 12px;">{pillar.icon}</span>
+            <h3>{pillar.title}</h3>
+            <p>{pillar.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 选购避坑问答 -->
+    <section class="section" style="padding-top: 10px; padding-bottom: 45px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">BUYING GUIDE & FAQ</span>
+          <h2>选品牌常见避坑指南</h2>
+          <p class="muted">总结新手出海最容易遇到的误区与防坑策略。</p>
+        </div>
+      </div>
+
+      <div class="faq-list">
+        <details>
+          <summary>为什么要准备 2 个以上的不同品牌作为备用？</summary>
+          <div class="faq-answer">
+            任何单一服务商都可能受国际海缆故障、机房停电、敏感期封锁或上游线路检修影响。对于外贸业务沟通、跨国会议或远程工作者，建议常备一个按月续费的主力品牌（如微风网络、无忧链接或 FireFly 萤火虫），外加一个不限时按量计费的备用品牌（如唯兔云或 FlyV），彻底避免因断网导致的严重业务停滞。
+          </div>
+        </details>
+        <details>
+          <summary>为什么不建议直接购买超长周期的“永久套餐”或“三年付”？</summary>
+          <div class="faq-answer">
+            网络跨境传输环境高度动态，带宽成本和服务器租用是持续支出的月成本。打着“永久使用”、“极低价包三年”旗号的服务商多半由于资金链断裂而跑路。坚持<strong>“先月付试水，好用再买季度或半年”</strong>是最安全的原则。
+          </div>
+        </details>
+        <details>
+          <summary>免费测试节点与付费品牌专线究竟有何核心区别？</summary>
+          <div class="faq-answer">
+            免费节点通常由公网爬虫抓取自公开代理，所有未加密流量均可能被节点宿主嗅探，极度不安全，且极易随时失效；而正规付费品牌采用企业级 IPLC/IEPL 专线，不经过公网 GFW 防火墙过滤，流量传输经过严格端到端加密，兼顾高速率与个人隐私安全。
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 底部收尾引导 -->
+    <section class="closing">
+      <span class="eyebrow">NEED RECOMMENDATIONS?</span>
+      <h2>需要更具体的梯子选购对比与免费测试？</h2>
+      <p class="muted" style="margin-top: 10px; font-size: 13px;">前往梯子推荐专题页，查看实测对比、免费节点测试订阅及详细避坑说明。</p>
+      <div style="margin-top: 20px;">
+        <a href="/vpn/" class="button primary">前往【梯子推荐】专题页面 →</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- 轻量一键复制脚本与 Toast 提示 -->
+  <div id="copy-toast" class="copy-toast" role="alert" aria-live="polite">已成功复制优惠代码到剪贴板！</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toast = document.getElementById('copy-toast');
+      const copyBtns = document.querySelectorAll('.copy-coupon-btn');
+
+      copyBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const text = btn.getAttribute('data-clipboard');
+          if (!text) return;
+
+          try {
+            await navigator.clipboard.writeText(text);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="btn-copy-text" style="color: #6ee7b7;">已复制 ✓</span>';
+            
+            if (toast) {
+              toast.classList.add('show');
+              setTimeout(() => {
+                toast.classList.remove('show');
+              }, 2000);
+            }
+
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+            }, 2500);
+          } catch (err) {
+            console.error('复制失败:', err);
+          }
+        });
+      });
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  /* 品牌展示卡片专有高级 Titanium Obsidian 样式 */
+  .brand-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 15px;
+  }
+
+  @media (max-width: 900px) {
+    .brand-showcase-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  .brand-card-lux {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .brand-card-lux:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  }
+
+  .primary-lux {
+    border-top: 2px solid rgba(255, 255, 255, 0.4);
+  }
+
+  .extended-lux {
+    border-top: 1px solid var(--border);
+  }
+
+  /* 头部 */
+  .bc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 16px;
+  }
+
+  .bc-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .bc-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .bc-name {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .bc-line-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e2e8f0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .bc-tag-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .bc-price-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .bc-price-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bc-discount-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  /* 介绍段落 */
+  .bc-summary-wrap {
+    margin-bottom: 18px;
+    flex-grow: 1;
+  }
+
+  .bc-summary-text {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #cbd5e1;
+    text-align: justify;
+  }
+
+  /* 关键技术规格条 */
+  .bc-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+
+  .bc-spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .spec-k {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .spec-v {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 亮点标签 */
+  .bc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+
+  .bc-chip {
+    font-size: 11.5px;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* 优惠码复制卡 */
+  .bc-coupon-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+  }
+
+  .coupon-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12.5px;
+  }
+
+  .coupon-lbl {
+    color: var(--text-muted);
+  }
+
+  .coupon-code-text {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-family: monospace;
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.05em;
+  }
+
+  .coupon-sub {
+    font-size: 11.5px;
+    color: #94a3b8;
+  }
+
+  .copy-coupon-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #f1f5f9;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .copy-coupon-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* 双操作按钮区 */
+  .bc-actions-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  @media (max-width: 480px) {
+    .bc-actions-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .bc-btn-main {
+    text-align: center;
+    font-size: 13px;
+    padding: 10px 14px;
+    justify-content: center;
+  }
+
+  .bc-btn-sub {
+    text-align: center;
+    font-size: 13px;
+    padding: 10px 14px;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .bc-btn-sub:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* 悬浮 Toast 提示 */
+  .copy-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #0f172a;
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .copy-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import { site, categories, categoryHref } from '../data/site';
+
+// 只展示有文章的分类，避免链接到空页面
+const posts = await getCollection('blog', ({data}) => !data.draft);
+const activeCategories = categories.filter(c => posts.some(p => p.data.category === c.slug));
+---
+<footer class="footer">
+  <div class="container footer-main">
+    <div class="footer-col footer-col-brand">
+      <a class="logo" href="/" aria-label="国际版VIP首页">
+        <img src="/favicon.svg" width="32" height="32" alt="" />
+        <span>{site.name}<small>GUOJIBAN.VIP</small></span>
+      </a>
+      <p>海外好用网站与热门 App 的中文使用指南与官方入口整理。</p>
+    </div>
+
+    <div class="footer-col">
+      <span class="eyebrow">EXPLORE · 浏览</span>
+      <nav aria-label="站点导航">
+        <a href="/resources/">海外资源</a>
+        <a href="/blog/">全部文章</a>
+        <a href="/topics/">专题指南</a>
+        <a href="/about/">关于本站</a>
+      </nav>
+    </div>
+
+    <div class="footer-col">
+      <span class="eyebrow">NETWORK · 梯子</span>
+      <nav aria-label="梯子相关">
+        <a href="/vpn/">梯子推荐</a>
+        <a href="/brands/">品牌库</a>
+        <a href="/reviews/">品牌测评</a>
+        <a href="/data/">测速数据</a>
+      </nav>
+    </div>
+
+    <div class="footer-col">
+      <span class="eyebrow">CATEGORIES · 分类</span>
+      <nav aria-label="文章分类">
+        {activeCategories.map(cat => <a href={categoryHref(cat.slug)}>{cat.name}</a>)}
+      </nav>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <span>© {new Date().getFullYear()} {site.name} · guojiban.vip</span>
+  </div>
+</footer>

@@ -1,0 +1,291 @@
+---
+import { nav, site, type NavItem } from '../data/site';
+const path = Astro.url.pathname;
+
+function isItemActive(item: NavItem): boolean {
+  if (item.href === '/') return path === '/';
+  if (item.children) {
+    return item.children.some(c => path.startsWith(c.href));
+  }
+  return path.startsWith(item.href);
+}
+---
+<header class="header">
+  <div class="container header-inner">
+    <a class="logo" href="/" aria-label="国际版VIP首页">
+      <img src="/favicon.svg" width="36" height="36" alt="" />
+      <span>{site.name}<small>GUOJIBAN.VIP</small></span>
+    </a>
+
+    <!-- 桌面端主导航 -->
+    <nav class="desktop-nav" aria-label="主导航">
+      {nav.map(item => {
+        const active = isItemActive(item);
+        if (!item.children) {
+          return (
+            <a
+              class:list={[{ active }]}
+              aria-current={active ? 'page' : undefined}
+              href={item.href}
+            >
+              {item.name}
+            </a>
+          );
+        }
+
+        // 下拉列表菜单项：当点击菜单项本身时，直接前往 item.href（即 /vpn/ 梯子推荐）
+        return (
+          <div class="nav-dropdown-group">
+            <a
+              class:list={['dropdown-trigger', { active }]}
+              aria-current={active ? 'page' : undefined}
+              href={item.href}
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>{item.name}</span>
+              <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+
+            <div class="dropdown-menu" role="menu">
+              <div class="dropdown-menu-inner">
+                {item.children.map(child => {
+                  const childActive = path.startsWith(child.href);
+                  return (
+                    <a
+                      href={child.href}
+                      class:list={['dropdown-menu-item', { 'is-active': childActive }]}
+                      role="menuitem"
+                    >
+                      <div class="dd-item-text">
+                        <span class="dd-item-name">{child.name}</span>
+                        {child.desc && <span class="dd-item-desc">{child.desc}</span>}
+                      </div>
+                      {child.badge && <span class="dd-item-badge">{child.badge}</span>}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </nav>
+
+    <a class="header-cta" href="/blog/">开始探索 <span>↗</span></a>
+
+    <!-- 移动端抽屉菜单 -->
+    <details class="mobile-menu">
+      <summary>菜单</summary>
+      <nav aria-label="移动导航">
+        {nav.map(item => {
+          if (!item.children) {
+            return <a href={item.href}>{item.name}</a>;
+          }
+          return (
+            <div class="mobile-group">
+              <a href={item.href} class="mobile-parent-link">
+                <span>{item.name}</span>
+                <span class="mobile-badge-top">点击直达 ↗</span>
+              </a>
+              <div class="mobile-sub-list">
+                {item.children.map(child => (
+                  <a href={child.href} class="mobile-sub-item">
+                    <span>{child.name}</span>
+                    {child.badge && <small class="mobile-sub-badge">{child.badge}</small>}
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </nav>
+    </details>
+  </div>
+</header>
+
+<style>
+  /* 导航下拉组件专有样式 */
+  .nav-dropdown-group {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 0;
+    color: #94a3b8;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .dropdown-trigger:hover,
+  .nav-dropdown-group:hover .dropdown-trigger,
+  .dropdown-trigger.active {
+    color: #ffffff;
+  }
+
+  .dropdown-chevron {
+    transition: transform 0.2s ease, stroke 0.2s ease;
+    opacity: 0.75;
+  }
+
+  .nav-dropdown-group:hover .dropdown-chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+
+  /* 下拉面板 */
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    width: 260px;
+    padding-top: 6px; /* 桥接区域，防止鼠标移出丢失 hover */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    z-index: 100;
+  }
+
+  .nav-dropdown-group:hover .dropdown-menu,
+  .nav-dropdown-group:focus-within .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .dropdown-menu-inner {
+    background: #0f131c;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 1px rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    backdrop-filter: blur(16px);
+  }
+
+  .dropdown-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    border-radius: 8px;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: all 0.18s ease;
+  }
+
+  .dropdown-menu-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    transform: translateX(2px);
+  }
+
+  .dropdown-menu-item.is-active {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .dd-item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .dd-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #f1f5f9;
+  }
+
+  .dropdown-menu-item:hover .dd-item-name {
+    color: #ffffff;
+  }
+
+  .dd-item-desc {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .dd-item-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #94a3b8;
+    letter-spacing: 0.03em;
+  }
+
+  .dropdown-menu-item:hover .dd-item-badge {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+  }
+
+  /* 移动端菜单样式扩展 */
+  .mobile-group {
+    display: flex;
+    flex-direction: column;
+    margin: 4px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 0;
+  }
+
+  .mobile-parent-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #f8fafc !important;
+    padding: 8px 12px;
+  }
+
+  .mobile-badge-top {
+    font-size: 11px;
+    color: #38bdf8;
+    font-weight: normal;
+  }
+
+  .mobile-sub-list {
+    display: flex;
+    flex-direction: column;
+    padding-left: 14px;
+    gap: 2px;
+  }
+
+  .mobile-sub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 12px !important;
+    font-size: 12.5px;
+    color: #94a3b8 !important;
+  }
+
+  .mobile-sub-item:hover {
+    color: #ffffff !important;
+  }
+
+  .mobile-sub-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+  }
+</style>

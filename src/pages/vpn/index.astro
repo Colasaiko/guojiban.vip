@@ -1,0 +1,1259 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { site } from '../../data/site';
+
+// 主推品牌详细数据（源自 jichangbuy 严选）
+const brands = {
+  weifeng: {
+    name: '微风网络',
+    slug: 'weifeng',
+    tag: '全 IPLC 专线',
+    desc: '全 IPLC 物理专线与 VLESS 协议，全节点标称不限速，不限制设备同时在线数量，支持主流流媒体与 AI 工具。',
+    recPrice: '约 ¥17.50 / 月起 (7折后)',
+    recPriceNote: '（乘风月付原价 ¥25，清风年付折合 ¥7.99/月）',
+    coupon: 'weifeng90',
+    couponDiscount: '7折特惠',
+    targetUrl: 'https://edp01.breezenetaff.com/#/?code=6ehSdfxw',
+    features: ['全 IPLC 专线', '不限制设备数量', '支持不限时备用包'],
+    highlights: [
+      { label: '专线架构', text: '全 IPLC 物理专线与 VLESS 协议，网络抗干扰表现出色' },
+      { label: '设备支持', text: '不限制设备同时接入数量，多设备共同消耗套餐流量' },
+      { label: '弹性方案', text: '月流量最高 1200GB，并提供 270GB / 570GB 不限时备用包' },
+      { label: '客户端要求', text: 'iOS 需 Nextin (15.0+)，Win 10+ / Mac 10.15+ / Android 5.0+' },
+      { label: '优惠折扣', text: '专属优惠码 weifeng90 全场 7 折特惠（乘风月付折后 ¥17.50 起）' },
+      { label: '真实体验', text: '实测部分节点偶有超时波动，建议首选月付体验本地网络' }
+    ]
+  },
+  feimao: {
+    name: '飞猫云',
+    slug: 'feimao',
+    tag: '高性价比专线',
+    desc: '老牌口碑专线机场，节点丰富冗余度高，客户端一键导入即用，适合学生与多设备用户。',
+    recPrice: '约 ¥25 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: 'flycat888',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://flycat1.flycatvipaff.cc/#/?code=UUcH5yh9',
+    features: ['低门槛入门', '晚高峰专线', '全平台一键订阅'],
+    highlights: [
+      { label: '稳定性', text: '老牌口碑全 IPLC 专线，节点丰富冗余度高' },
+      { label: '流媒体', text: '超高清流媒体秒开，支持 4K 蓝光高速缓冲' },
+      { label: 'AI 工具', text: '多国原生 IP 节点，ChatGPT/Claude 交互顺畅' },
+      { label: '隐私安全', text: '自建机房端到端加密，有效避免公网劫持风险' },
+      { label: '设备支持', text: '全平台一键导入即用，不限制多设备同时连接' },
+      { label: '服务保障', text: '入门门槛亲民，支持随时月付，新手零负担' }
+    ]
+  },
+  muguang: {
+    name: '暮光加速',
+    slug: 'muguang',
+    tag: '超低延迟旗舰',
+    desc: '高带宽优化国际专线架构，延迟低至数十毫秒，秒开 8K 蓝光影视，适合电竞赛事与重度影音。',
+    recPrice: '约 ¥20 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: 'mm88',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://varnexa.twilightaff.com/#/?code=1eGqV85O',
+    features: ['超低延迟专线', '8K无缓冲', '工单极速响应'],
+    highlights: [
+      { label: '稳定性', text: 'BGP 多线智能调度专线，延迟低至数十毫秒' },
+      { label: '流媒体', text: '秒开 8K 蓝光超清视频，全球优质节点全解锁' },
+      { label: 'AI 工具', text: '海外机房直连直达，AI 大模型生产力极速响应' },
+      { label: '隐私安全', text: 'Shadowsocks 高强度加密，物理专线不过公网' },
+      { label: '设备支持', text: '完美适配小火箭 / Clash / sing-box 各主流软件' },
+      { label: '服务保障', text: '提供私人独享定制节点，工单秒级专业技术售后' }
+    ]
+  },
+  dalao: {
+    name: '大佬云',
+    slug: 'dalao',
+    tag: '老牌实力派',
+    desc: '长期平稳运营的资深服务商，专注于防封锁与节点高可用性，多国冷门原生节点一网打尽。',
+    recPrice: '约 ¥23 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: 'dly888',
+    couponDiscount: '7折特惠',
+    targetUrl: 'https://a01vipaff.dalaoyunaff.com/#/?code=4hRU02Tt',
+    features: ['长期运营口碑', '冷门原生节点', '抗封锁能力强'],
+    highlights: [
+      { label: '稳定性', text: '多年资深平稳运营，超强抗封锁与全节点高可用' },
+      { label: '流媒体', text: '多国冷门原生节点全覆盖，主流流媒体轻松解锁' },
+      { label: 'AI 工具', text: '独立原生商用出口 IP，避免共享风控被频繁拦截' },
+      { label: '隐私安全', text: '合规安全机房托管，企业级严格数据隔离保护' },
+      { label: '设备支持', text: '全平台客户端无缝兼容，手机与电脑多端畅联' },
+      { label: '服务保障', text: '支持月付周期与不限时固定流量包，选择更灵活' }
+    ]
+  },
+  firefly: {
+    name: 'firefly',
+    slug: 'firefly',
+    tag: 'IEPL 国际专线',
+    desc: '采用 IEPL 内网专线传输，出境段走私有物理通道避开公网出口拥堵，提供更稳定的日常海外访问。',
+    recPrice: '约 ¥25 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: 'firefly',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://vip02.fireflyaff.com/#/?code=mcYQUZxG',
+    features: ['IEPL专线传输', '出境避开拥堵', 'ChatGPT稳定可用'],
+    highlights: [
+      { label: '稳定性', text: 'IEPL 内网专线传输，有效降低晚高峰跨境抖动' },
+      { label: '流媒体', text: '全节点不限速满血释放，秒开 4K/8K 视频拖动顺畅' },
+      { label: 'AI 工具', text: '深度针对 ChatGPT / Claude 优化，会话稳定免封' },
+      { label: '隐私安全', text: 'VLESS 协议点对点加密，杜绝公网流量指纹特征' },
+      { label: '设备支持', text: '不限客户端接入数量，家庭与团队多设备通用' },
+      { label: '服务保障', text: '专属客服实时保障，支持按月购买灵活试用' }
+    ]
+  },
+  lingmao: {
+    name: '灵猫',
+    slug: 'lingmao',
+    tag: '稳定轻量首选',
+    desc: '为日常浏览、海淘与学术检索打造的轻量机场，流量充足，线路平稳且资费极为亲民。',
+    recPrice: '约 ¥25 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: 'lingmao',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://vip02.civetaff.com/#/?code=2Ai6V6Ub',
+    features: ['亲民高性价比', '学术查重加速', '简单易上手'],
+    highlights: [
+      { label: '稳定性', text: '全 IPLC 专线配置，全节点均为真实 x1 倍率' },
+      { label: '流媒体', text: '主流海外流媒体平稳解锁，日常追剧影音顺畅' },
+      { label: 'AI 工具', text: '学术查重检索与日常 AI 工具问答加速，轻量首选' },
+      { label: '隐私安全', text: '独立内网隧道转发，有效抵御公网嗅探和劫持' },
+      { label: '设备支持', text: '支持各系统客户端同时在线，配置步骤清晰简单' },
+      { label: '服务保障', text: '提供固定总量不限时备用包，月付资费亲民轻松' }
+    ]
+  },
+  shanyue: {
+    name: '闪跃',
+    slug: 'shanyue',
+    tag: '智能调度专线',
+    desc: '支持全自动智能健康检测与故障秒切，全时段保持连接通畅，告别手动频繁测速切节点。',
+    recPrice: '约 ¥24 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: 'shanyue',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://vip02.flashleapaff.com/#/?code=hCwClNUi',
+    features: ['智能故障秒切', '高并发承载', '多协议适配'],
+    highlights: [
+      { label: '稳定性', text: '智能健康检测故障秒级切换，全时段网络不掉线' },
+      { label: '流媒体', text: '原生住宅 IP 出口，海外主流流媒体点开秒播' },
+      { label: 'AI 工具', text: '万兆集群调度，AI 生产力大模型高并发承载不卡顿' },
+      { label: '隐私安全', text: '纯 IPLC 专线通道，全链路加密保障跨境业务隐私' },
+      { label: '设备支持', text: '支持多协议全平台适配，一键导入即开即用' },
+      { label: '服务保障', text: '多种流量档位随心选，支持 100G/200G 不限时包' }
+    ]
+  },
+  kuajie: {
+    name: '跨界云',
+    slug: 'kuajie',
+    tag: '商务跨境大带宽',
+    desc: '面向外贸、海外直播推流、跨境电商与重度开发者的企业级专线服务，带宽充沛不挤兑。',
+    recPrice: '约 ¥20 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: 'kuajie',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://vip02.kuajieaff.com/#/?code=HRzqSLrR',
+    features: ['万兆出口冗余', '跨境电商优选', '大流量无限制'],
+    highlights: [
+      { label: '稳定性', text: '万兆出口高冗余专线，满足企业跨境重度带宽需求' },
+      { label: '流媒体', text: '支持海外电商直播推流与 8K 蓝光级大吞吐流量' },
+      { label: 'AI 工具', text: '纯净商用出口 IP，开发部署与跨境自动化稳定运行' },
+      { label: '隐私安全', text: '高规格物理专线内网隔离，保护商业机密与隐私' },
+      { label: '设备支持', text: '团队多人多设备高并发支持，无严苛连接数限制' },
+      { label: '服务保障', text: '大流量方案充沛不挤兑，支持按月弹性购买扩容' }
+    ]
+  },
+  wuyou: {
+    name: '无忧链接',
+    slug: 'wuyou',
+    tag: '新手平价入门',
+    desc: '新手零负担起步选择，资费透明低廉，线路简单易用，支持随时月付试水。',
+    recPrice: '约 ¥19 / 月起',
+    recPriceNote: '（首推月付体验）',
+    coupon: '无需优惠码',
+    couponDiscount: '官方平价直发',
+    targetUrl: 'https://wep01.worryfreeaff.com/#/?code=ydtFVWqU',
+    features: ['平价月付试水', '入门教程详尽', '即开即用'],
+    highlights: [
+      { label: '稳定性', text: '全 IPLC 专线全节点 x1 倍率，实测平稳无虚高倍率' },
+      { label: '流媒体', text: '常用流媒体顺畅加载，1080P/4K 高清播放无压力' },
+      { label: 'AI 工具', text: '支持主流 AI 工具连接，日常搜索问答稳定顺畅' },
+      { label: '隐私安全', text: '强加密协议阻断公网嗅探，保障个人账号数据安全' },
+      { label: '设备支持', text: '官方提供全平台客户端与一键订阅，零基础极简上手' },
+      { label: '服务保障', text: '¥19 起极低入门门槛，随时月付试水零压力' }
+    ]
+  }
+};
+
+import { freeNodeSources } from '../../data/freeNodes';
+
+// 测试节点链接（全网每日自动更新与测速清洗数据源）
+const testNodes = freeNodeSources;
+---
+<BaseLayout
+  title={`梯子推荐指南（2026最新实测）· 稳定高速科学上网机场排行榜 · ${site.name}`}
+  description="2026年好用的梯子推荐与科学上网机场排行榜。精选实测稳定、晚高峰不卡顿、支持一键导入小火箭/Clash的靠谱机场，包含免费节点测试对比与防坑指南。"
+>
+  <div class="container">
+    <Breadcrumb items={[{ label: '梯子推荐' }]} />
+
+    <!-- 【梯子推荐大标题】与【关于梯子推荐副标题】 -->
+    <header class="page-heading">
+      <span class="eyebrow">2026 SPEED & STABILITY · 科学上网精选</span>
+      <h1>2026 梯子推荐与科学上网机场排行榜：<br />精选稳定高速、防封防卡顿<span class="hero-emphasis">网络工具指南。</span></h1>
+      <p>解决国内无法正常访问网络与加载缓慢的困扰。经过数月持续实测，系统梳理晚高峰不掉线、4K/8K 视频流畅秒开、原生解锁 ChatGPT 与流媒体的高性价比专线梯子与机场方案。</p>
+    </header>
+
+    <!-- 【温馨小提示】（包含佣金说明与月付建议） -->
+    <div class="aff-tip-card">
+      <div class="aff-tip-header">
+        <span class="aff-tip-badge">💡 温馨小提示 · 诚实消费指南</span>
+      </div>
+      <p>
+        本站包含推广合作链接，如果您通过本站链接注册或购买服务，我可能会获得一笔微薄的佣金支持，用于分担本站服务器与长期测试节点的高昂开销。
+      </p>
+      <div class="aff-tip-highlight">
+        ⚠️ <strong>强烈购买建议</strong>：在选购任何梯子推荐或机场品牌时，<strong>请务必先尝试购买一个月的【月付套餐】</strong>，绝对不要一上来就盲目买一年！每一个人的本地网络运营商（电信/联通/移动）与所在省份差异极大。只有在自己的实际日常环境中，测试 1~2 周觉得速度稳定、晚高峰不卡、确实好用没问题，再根据需求考虑续费更长周期或高配方案。
+      </div>
+    </div>
+
+    <!-- 【梯子推荐有什么用处】与【用了梯子推荐有什么可以解决】 -->
+    <section class="section" style="padding-top: 15px; padding-bottom: 35px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">USE CASES & VALUE</span>
+          <h2>梯子推荐有什么用处？用了能解决什么？</h2>
+          <p class="muted">打破信息隔阂，一站解锁完整数字工作与娱乐体验。</p>
+        </div>
+      </div>
+
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-card-top">
+            <span class="benefit-icon">🚀</span>
+            <h3>梯子推荐核心用处</h3>
+          </div>
+          <ul>
+            <li><strong>AI 智能创作与生产力</strong>：顺畅使用 ChatGPT Plus、Claude 3.5 Sonnet、Midjourney、Cursor 等前沿大模型，告别报错拦截；</li>
+            <li><strong>全球 4K/8K 影音娱乐</strong>：无缓冲畅看 YouTube 高码率视频、Netflix 正版影视剧集、Spotify 音乐与 Disney+；</li>
+            <li><strong>前沿学术与研发</strong>：自由检索 Google 学术文献、GitHub 源码拉取、Docker 镜像下载与 Stack Overflow 答疑；</li>
+            <li><strong>跨国商务与社交</strong>：无障碍使用 X (Twitter)、Telegram、WhatsApp、Instagram 及跨境电商管理后台。</li>
+          </ul>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-card-top">
+            <span class="benefit-icon">🛡️</span>
+            <h3>用了梯子可以解决什么痛点？</h3>
+          </div>
+          <ul>
+            <li><strong>告别打不开与连接超时</strong>：破除域名污染与网络阻断，让海外正规资源像打开本地网页一样自然秒开；</li>
+            <li><strong>解决晚高峰卡成幻灯片</strong>：普通劣质工具在晚上 8~11 点严重拥堵，优质专线机场采用专属内网传输，高峰期依然丝滑；</li>
+            <li><strong>解除地区 IP 拦截风控</strong>：解决 OpenAI、金融平台提示“Not Available in your country”等报错难题；</li>
+            <li><strong>告别复杂繁琐的手动配置</strong>：提供一键订阅链接，支持小火箭（Shadowrocket）、Clash、v2rayN、Sing-box 一键导入即用。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 【梯子推荐好处】与【梯子推荐坏处】（包含天气、假期等特殊情况） -->
+    <section class="section" style="padding-top: 10px; padding-bottom: 40px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">PROS & CONS</span>
+          <h2>梯子推荐的好处与潜在坏处客观对比</h2>
+          <p class="muted">不盲目神化工具，理智看待网络波动与环境限制。</p>
+        </div>
+      </div>
+
+      <div class="pros-cons-grid">
+        <div class="pro-card">
+          <div class="pc-badge pc-pro">好处优势（PROS）</div>
+          <div class="pc-item">
+            <strong>✅ 专线高速（IPLC / IEPL）</strong>
+            <p>不走公网国际出口，不受骨干网晚高峰拥堵影响，延迟极低、丢包率接近于零。</p>
+          </div>
+          <div class="pc-item">
+            <strong>✅ 多端客户端全平台支持</strong>
+            <p>一套订阅同时支持 Windows 电脑、MacBook、iPhone、iPad、Android 手机甚至智能电视。</p>
+          </div>
+          <div class="pc-item">
+            <strong>✅ 丰富节点智能故障秒切</strong>
+            <p>涵盖香港、日本、新加坡、美国等热门地区，遇到单个节点维护自动无感切换至可用线路。</p>
+          </div>
+        </div>
+
+        <div class="con-card">
+          <div class="pc-badge pc-con">坏处与特殊情况（CONS）</div>
+          <div class="pc-item">
+            <strong>⚠️ 恶劣天气与海底光缆物理影响</strong>
+            <p>如遇强台风、海底地震等极端自然灾害，国际海底光缆可能发生抖动甚至断纤，导致全网国际出口延迟临时上升。</p>
+          </div>
+          <div class="pc-item">
+            <strong>⚠️ 节假日与特殊敏感时期波动</strong>
+            <p>在国庆、长假或特定网络安全管控收紧时期，部分公网端口可能受到短暂干扰，偶尔需要更新订阅或切换备用备选线路。</p>
+          </div>
+          <div class="pc-item">
+            <strong>⚠️ 节点维护与流媒体风控反制</strong>
+            <p>Netflix 或 OpenAI 等平台会定期封禁机房 IP，服务商换 IP 期间可能会有短暂的解锁波动。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 【品牌推荐与测试对比区】 -->
+    <section class="section" id="brands-comparison" style="padding-top: 15px; padding-bottom: 45px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">TEST & BENCHMARK · 梯子与机场精选</span>
+          <h2>梯子品牌推荐与免费测试节点对比</h2>
+          <p class="muted">严选 9 大主推口碑品牌，配套免费测试线路，实测对比见真章。</p>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+          <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看品牌深度实测报告 /reviews/ ↗</a>
+          <a href="/brands/" class="text-link" style="font-size: 12px;">全部品牌库 /brands/ ↗</a>
+        </div>
+      </div>
+
+      <!-- 安全合规与隐私保护须知 -->
+      <div class="security-warning-banner">
+        <span class="warning-icon">🛡️</span>
+        <div class="warning-text">
+          <strong>【安全合规与隐私保护须知】</strong>
+          <p>
+            免费公开测试节点属于公共共享服务器，未经端到端加密的明文数据理论上存在被监听或中间人记录的风险。<strong>强烈建议严禁用于登录网上银行、移动支付、加密货币钱包或涉密商业邮箱</strong>。如需处理高保密性商务或追求长期稳定体验，建议选用具备自建机房独立加密专网的认证服务商。
+          </p>
+        </div>
+      </div>
+
+      <!-- 第一组：【微风】vs【测试】 -->
+      <div class="pair-block">
+        <div class="pair-label">第一组：【微风网络】vs【免费 / 超低价节点】</div>
+        <div class="pair-grid">
+          <!-- 微风 -->
+          <div class="brand-pick-card brand-highlight">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.weifeng.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.weifeng.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.weifeng.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.weifeng.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.weifeng.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.weifeng.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.weifeng.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.weifeng.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/weifeng/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/weifeng/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+
+          <!-- 中间 VS 标识 -->
+          <div class="vs-divider" aria-hidden="true">
+            <div class="vs-circle">VS</div>
+          </div>
+
+          <!-- VS 免费 / 超低价节点对比卡片 1 -->
+          <div class="test-node-card">
+            <div class="test-card-top">
+              <div class="test-badge-row">
+                <span class="test-badge live-update-badge">
+                  <span class="live-dot-green"></span>
+                  {testNodes.test1.badge}
+                </span>
+                <span class="daily-sync-time" data-daily-sync>今日已自动同步</span>
+              </div>
+              <h3>{testNodes.test1.name}</h3>
+            </div>
+            <p class="test-desc">{testNodes.test1.description}</p>
+
+            <div class="test-node-meta-grid">
+              <div class="tnm-item">
+                <span class="tnm-k">订阅格式</span>
+                <span class="tnm-v">{testNodes.test1.type}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">更新频率</span>
+                <span class="tnm-v">{testNodes.test1.updateFrequency.split(' · ')[0]}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">节点规模</span>
+                <span class="tnm-v">{testNodes.test1.nodeCountEstimate}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">支持客户端</span>
+                <span class="tnm-v">{testNodes.test1.clientSupport}</span>
+              </div>
+            </div>
+
+            <ul class="test-shortfalls">
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>稳定性：</strong>免费节点公共共享，晚高峰断线丢包率高</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>流媒体解锁：</strong>公共 IP 普遍被 Netflix/Disney+ 拦截封禁</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>AI 访问：</strong>ChatGPT / Claude 频繁遇到 1020 报错拦截</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>隐私风险：</strong>节点来源分散，绝不可用于登录网银支付账号</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>长期可用性：</strong>随时可能失效，仅适合紧急备用与临时测速</div>
+              </li>
+            </ul>
+
+            <div class="unlock-action-area" data-url={testNodes.test1.url}>
+              <button type="button" class="unlock-node-btn">
+                <span class="btn-icon">📋</span>
+                <span class="btn-text">复制今日免费订阅链接</span>
+              </button>
+              <p class="unlock-footnote">点击后 10 秒可解密复制全网每日自动维护的公开订阅链接，无需注册。</p>
+              <div class="copy-success-tip" style="display: none;">
+                <strong>✅ 今日最新订阅链接已成功复制到剪贴板！</strong>
+                <p>请直接打开 Shadowrocket（小火箭）、Clash 或 v2rayN 客户端，选择“从剪贴板导入”即可直接使用。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第二组：【飞猫】，【暮光】，【大佬】 -->
+      <div class="pair-block">
+        <div class="pair-label">第二组：【飞猫云】·【暮光加速】·【大佬云】</div>
+        <div class="triple-grid">
+          <!-- 飞猫 -->
+          <div class="brand-pick-card">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.feimao.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.feimao.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.feimao.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.feimao.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.feimao.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.feimao.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.feimao.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.feimao.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/feimao/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/feimao/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+
+          <!-- 暮光 -->
+          <div class="brand-pick-card">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.muguang.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.muguang.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.muguang.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.muguang.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.muguang.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.muguang.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.muguang.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.muguang.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/muguang/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/muguang/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+
+          <!-- 大佬 -->
+          <div class="brand-pick-card">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.dalao.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.dalao.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.dalao.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.dalao.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.dalao.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.dalao.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.dalao.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.dalao.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/dalao/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/dalao/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第三组：【firefly】vs【测试】 -->
+      <div class="pair-block">
+        <div class="pair-label">第三组：【firefly】vs【免费 / 超低价节点】</div>
+        <div class="pair-grid">
+          <!-- firefly -->
+          <div class="brand-pick-card brand-highlight">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.firefly.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.firefly.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.firefly.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.firefly.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.firefly.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.firefly.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.firefly.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.firefly.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/firefly/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/firefly/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+
+          <!-- 中间 VS 标识 -->
+          <div class="vs-divider" aria-hidden="true">
+            <div class="vs-circle">VS</div>
+          </div>
+
+          <!-- VS 免费 / 超低价节点对比卡片 2 -->
+          <div class="test-node-card">
+            <div class="test-card-top">
+              <div class="test-badge-row">
+                <span class="test-badge live-update-badge">
+                  <span class="live-dot-green"></span>
+                  {testNodes.test2.badge}
+                </span>
+                <span class="daily-sync-time" data-daily-sync>今日已自动同步</span>
+              </div>
+              <h3>{testNodes.test2.name}</h3>
+            </div>
+            <p class="test-desc">{testNodes.test2.description}</p>
+
+            <div class="test-node-meta-grid">
+              <div class="tnm-item">
+                <span class="tnm-k">订阅格式</span>
+                <span class="tnm-v">{testNodes.test2.type}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">更新频率</span>
+                <span class="tnm-v">{testNodes.test2.updateFrequency.split(' · ')[0]}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">节点规模</span>
+                <span class="tnm-v">{testNodes.test2.nodeCountEstimate}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">支持客户端</span>
+                <span class="tnm-v">{testNodes.test2.clientSupport}</span>
+              </div>
+            </div>
+
+            <ul class="test-shortfalls">
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>稳定性：</strong>免费节点公共共享，晚高峰断线丢包率高</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>流媒体解锁：</strong>公共 IP 普遍被 Netflix/Disney+ 拦截封禁</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>AI 访问：</strong>ChatGPT / Claude 频繁遇到 1020 报错拦截</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>隐私风险：</strong>节点来源分散，绝不可用于登录网银支付账号</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>长期可用性：</strong>随时可能失效，仅适合紧急备用与临时测速</div>
+              </li>
+            </ul>
+
+            <div class="unlock-action-area" data-url={testNodes.test2.url}>
+              <button type="button" class="unlock-node-btn">
+                <span class="btn-icon">📋</span>
+                <span class="btn-text">复制今日免费订阅链接</span>
+              </button>
+              <p class="unlock-footnote">点击后 10 秒可解密复制每日自动维护的 AI 测速优选订阅链接，无需注册。</p>
+              <div class="copy-success-tip" style="display: none;">
+                <strong>✅ 今日最新订阅链接已成功复制到剪贴板！</strong>
+                <p>请直接打开 Shadowrocket（小火箭）、Clash 或 v2rayN 客户端，选择“从剪贴板导入”即可直接使用。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第四组：【灵猫】，【闪跃】，【跨界】 -->
+      <div class="pair-block">
+        <div class="pair-label">第四组：【灵猫】·【闪跃】·【跨界云】</div>
+        <div class="triple-grid">
+          <!-- 灵猫 -->
+          <div class="brand-pick-card">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.lingmao.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.lingmao.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.lingmao.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.lingmao.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.lingmao.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.lingmao.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.lingmao.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.lingmao.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/lingmao/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/lingmao/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+
+          <!-- 闪跃 -->
+          <div class="brand-pick-card">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.shanyue.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.shanyue.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.shanyue.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.shanyue.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.shanyue.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.shanyue.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.shanyue.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.shanyue.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/shanyue/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/shanyue/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+
+          <!-- 跨界 -->
+          <div class="brand-pick-card">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.kuajie.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.kuajie.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.kuajie.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.kuajie.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.kuajie.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.kuajie.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.kuajie.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.kuajie.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/kuajie/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/kuajie/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第五组：【无忧】vs【测试】 -->
+      <div class="pair-block">
+        <div class="pair-label">第五组：【无忧链接】vs【免费 / 超低价节点】</div>
+        <div class="pair-grid">
+          <!-- 无忧 -->
+          <div class="brand-pick-card brand-highlight">
+            <div class="bp-top">
+              <div>
+                <span class="bp-badge">主推品牌</span>
+                <h3>{brands.wuyou.name}</h3>
+              </div>
+              <span class="bp-tag">{brands.wuyou.tag}</span>
+            </div>
+            <p class="bp-desc">{brands.wuyou.desc}</p>
+            
+            <div class="bp-pricing-row">
+              <div class="bp-price-left">
+                <span class="bp-price-label">推荐入门方案</span>
+                <span class="bp-price-note">{brands.wuyou.recPriceNote}</span>
+              </div>
+              <div class="bp-price-right">
+                <span class="bp-price-val">{brands.wuyou.recPrice}</span>
+              </div>
+            </div>
+
+            <ul class="bp-highlights-list">
+              {brands.wuyou.highlights.map(item => (
+                <li>
+                  <span class="check-symbol">✓</span>
+                  <div><strong>{item.label}：</strong>{item.text}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="bp-coupon-row">
+              <span class="bp-coupon-label">专属优惠券：</span>
+              <code class="bp-coupon-code">{brands.wuyou.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.wuyou.couponDiscount}）</span>
+            </div>
+
+            <div class="bp-actions">
+              <a href="/go/wuyou/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+                前往官网 ↗
+              </a>
+              <a href="/reviews/wuyou/" class="button secondary">
+                品牌测评 📊
+              </a>
+            </div>
+          </div>
+
+          <!-- 中间 VS 标识 -->
+          <div class="vs-divider" aria-hidden="true">
+            <div class="vs-circle">VS</div>
+          </div>
+
+          <!-- VS 免费 / 超低价节点对比卡片 3 -->
+          <div class="test-node-card">
+            <div class="test-card-top">
+              <div class="test-badge-row">
+                <span class="test-badge live-update-badge">
+                  <span class="live-dot-green"></span>
+                  {testNodes.test3.badge}
+                </span>
+                <span class="daily-sync-time" data-daily-sync>今日已自动同步</span>
+              </div>
+              <h3>{testNodes.test3.name}</h3>
+            </div>
+            <p class="test-desc">{testNodes.test3.description}</p>
+
+            <div class="test-node-meta-grid">
+              <div class="tnm-item">
+                <span class="tnm-k">订阅格式</span>
+                <span class="tnm-v">{testNodes.test3.type}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">更新频率</span>
+                <span class="tnm-v">{testNodes.test3.updateFrequency.split(' · ')[0]}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">节点规模</span>
+                <span class="tnm-v">{testNodes.test3.nodeCountEstimate}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">支持客户端</span>
+                <span class="tnm-v">{testNodes.test3.clientSupport}</span>
+              </div>
+            </div>
+
+            <ul class="test-shortfalls">
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>稳定性：</strong>免费节点公共共享，晚高峰断线丢包率高</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>流媒体解锁：</strong>公共 IP 普遍被 Netflix/Disney+ 拦截封禁</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>AI 访问：</strong>ChatGPT / Claude 频繁遇到 1020 报错拦截</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>隐私风险：</strong>节点来源分散，绝不可用于登录网银支付账号</div>
+              </li>
+              <li>
+                <span class="warn-symbol">⚠️</span>
+                <div><strong>长期可用性：</strong>随时可能失效，仅适合紧急备用与临时测速</div>
+              </li>
+            </ul>
+
+            <div class="unlock-action-area" data-url={testNodes.test3.url}>
+              <button type="button" class="unlock-node-btn">
+                <span class="btn-icon">📋</span>
+                <span class="btn-text">复制今日免费订阅链接</span>
+              </button>
+              <p class="unlock-footnote">点击后 10 秒可解密复制每日自动清洗的 Base64 通用订阅链接，无需注册。</p>
+              <div class="copy-success-tip" style="display: none;">
+                <strong>✅ 今日最新订阅链接已成功复制到剪贴板！</strong>
+                <p>请直接打开 Shadowrocket（小火箭）、Clash 或 v2rayN 客户端，选择“从剪贴板导入”即可直接使用。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 引导查看更多品牌 -->
+      <div class="more-brands-cta">
+        <div>
+          <h3>想了解更多备选品牌？</h3>
+          <p>涵盖 30+ 主流机场提供商、老牌服务商背景资质与运营评级。</p>
+        </div>
+        <a href="/brands/" class="button primary">
+          查看完整【梯子品牌库】档案 /brands/ ↗
+        </a>
+      </div>
+    </section>
+
+    <!-- 【FAQ 常见问题】 -->
+    <section class="section" style="padding-top: 20px; padding-bottom: 50px;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">FREQUENTLY ASKED QUESTIONS</span>
+          <h2>梯子与科学上网常见疑问解答（FAQ）</h2>
+          <p class="muted">解决你在选购、配置与使用过程中的各种疑惑。</p>
+        </div>
+      </div>
+
+      <div class="faq-list">
+        <details>
+          <summary>什么是梯子（机场）？它和传统单台 VPN 有何不同？<span aria-hidden="true">+</span></summary>
+          <p>
+            传统 VPN 往往是单点连接且容易被封锁协议；而现代“机场”（梯子）采用多节点智能中转与专线（如 Shadowsocks、VLESS、Trojan 等协议），通过全球数十个甚至数百个分布式节点轮换，即便个别线路维护也能秒切其他节点，速度与抗封锁能力大幅超越传统 VPN。
+          </p>
+        </details>
+
+        <details>
+          <summary>应该使用什么客户端软件？支持我的手机和电脑吗？<span aria-hidden="true">+</span></summary>
+          <p>
+            绝大多数机场均支持通用订阅协议：
+            <br />• <strong>iOS / iPhone</strong>：首选 Shadowrocket（小火箭）、Quantumult X、Stash；
+            <br />• <strong>Android 安卓</strong>：推荐 Clash Meta for Android、v2rayNG、sing-box；
+            <br />• <strong>Windows 电脑</strong>：推荐 Clash Verge Rev、v2rayN；
+            <br />• <strong>macOS 苹果电脑</strong>：推荐 Clash Verge Rev、Surge、Stash。
+            各品牌后台均有一键导入教程，几秒钟即可完成配置。
+          </p>
+        </details>
+
+        <details>
+          <summary>为什么必须强烈建议“先买一个月月付”，不要直接买一年？<span aria-hidden="true">+</span></summary>
+          <p>
+            因为每个人的宽带运营商（如中国电信、联通、移动、广电）与所处地域的国际出口路由情况大不相同，适合别人的线路不一定在你的城市表现最好。先花十几二十元买一个月试用，在不同时间段（尤其晚上 8~11 点高峰期）测试看视频、用 AI 是否满意，确认完全符合预期后再考虑年付更实惠。
+          </p>
+        </details>
+
+        <details>
+          <summary>什么是 IPLC / IEPL 专线？为什么专线比普通中转更好？<span aria-hidden="true">+</span></summary>
+          <p>
+            IPLC / IEPL 是国际点对点专用内网物理链路，数据在深圳、上海等境内机房直接通过专用光纤传输到香港、日本或美国，<strong>全程根本不经过公网防火墙（GFW）</strong>，因此不会被封锁端口，延迟极低且极度稳定。即使特殊时期或公网拥堵，专线依然能够稳定跑满带宽。
+          </p>
+        </details>
+
+        <details>
+          <summary>免费测试节点怎么使用？有什么安全风险？<span aria-hidden="true">+</span></summary>
+          <p>
+            复制上方的测试订阅链接，粘贴到客户端的“从 URL 导入”即可加载节点。<strong>特别提醒</strong>：免费公开节点由于所有人都可以查看甚至架设探针，节点的运营者或中间人理论上可以看到你未经 HTTPS 加密的明文网络请求。因此仅用于浏览公开网页或测速排查，<strong>严禁登录银行、邮箱、社交账号等涉及隐私财产的平台</strong>！
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <!-- 底部收尾 -->
+    <section class="closing">
+      <span class="eyebrow">GUOJIBAN.VIP · CURATED ACCESS</span>
+      <h2>稳定连接，开启全球无限可能</h2>
+      <p class="muted" style="margin-top: 10px; font-size: 13px;">选对梯子与工具，顺畅连接全球 100+ 海外优质数字资源。</p>
+      <div style="margin-top: 25px;">
+        <a class="button primary" href="/resources/">立即前往 100+ 海外优质官方资源 ↗</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- 点击复制免费订阅时触发的【重要使用提醒】专属交互弹窗 -->
+  <div id="security-reminder-modal" class="reminder-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="reminder-modal-title">
+    <div class="reminder-modal-card">
+      <div class="reminder-modal-header">
+        <div class="rmh-left">
+          <span class="rm-warning-badge">🛡️ 安全合规须知 · 官方风险声明</span>
+          <h3 id="reminder-modal-title">免费公开测试节点使用规范与建议</h3>
+        </div>
+        <button type="button" class="rm-close-x" id="close-reminder-x" aria-label="关闭提醒">✕</button>
+      </div>
+
+      <div class="reminder-modal-body">
+        <div class="rm-copy-status">
+          <span class="rm-status-icon">✅</span>
+          <div class="rm-status-info">
+            <strong>免费测试订阅链接已成功写入您的剪贴板！</strong>
+            <p>可直接在 Shadowrocket（小火箭）、Clash Verge 或 sing-box 客户端中粘贴添加使用。</p>
+          </div>
+        </div>
+
+        <div class="rm-points-box">
+          <div class="rm-point-item danger">
+            <div class="rmp-head">❌ 严禁敏感账号与资金交易</div>
+            <p>
+              免费公开节点属于公共共享服务器，节点管理者理论上能够捕获所有未经 TLS 加密的明文数据流量。<strong>绝不要用来登录网上银行、移动支付、加密货币钱包或商业机密邮箱！</strong>
+            </p>
+          </div>
+
+          <div class="rm-point-item warning">
+            <div class="rmp-head">⚠️ 仅供临时应急与网络测速</div>
+            <p>
+              免费线路带宽由海量公共用户挤占，在晚高峰（20:00~23:00）极易出现断连、高延迟或被防火墙直接阻断。请仅将其作为临时备用或测试本地连通性的工具。
+            </p>
+          </div>
+
+          <div class="rm-point-item safe">
+            <div class="rmp-head">💡 长期主力与生产力建议</div>
+            <p>
+              如果您有日常学术科研、ChatGPT 长期会话、跨国出海商务或 4K/8K 视频畅看需求，<strong>强烈建议选用前文实测推荐的优质月付专线</strong>（建议先买一个月月付实测）。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reminder-modal-footer">
+        <button type="button" class="button secondary" id="close-reminder-btn">
+          我知道了，继续使用免费订阅
+        </button>
+        <button type="button" class="button primary" id="jump-to-brands-btn">
+          前往优质专线品牌推荐 ↗
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    // 弹窗控制逻辑
+    const modal = document.getElementById('security-reminder-modal');
+    const closeX = document.getElementById('close-reminder-x');
+    const closeBtn = document.getElementById('close-reminder-btn');
+    const jumpBtn = document.getElementById('jump-to-brands-btn');
+
+    function openSecurityReminderModal() {
+      if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // 防止底层滚动穿透
+      }
+    }
+
+    function closeSecurityReminderModal() {
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    if (closeX) closeX.addEventListener('click', closeSecurityReminderModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeSecurityReminderModal);
+    if (jumpBtn) {
+      jumpBtn.addEventListener('click', () => {
+        closeSecurityReminderModal();
+        const target = document.getElementById('brands-comparison');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeSecurityReminderModal();
+        }
+      });
+    }
+
+    // 隐藏测试订阅链接，点击后 10 秒倒计时解锁，直接复制到剪贴板并主动弹出【重要使用提醒】
+    document.querySelectorAll('.unlock-action-area').forEach(area => {
+      const btn = area.querySelector('.unlock-node-btn');
+      const tipBox = area.querySelector('.copy-success-tip');
+      const footnote = area.querySelector('.unlock-footnote');
+      const url = area.dataset.url;
+
+      async function silentCopy(text) {
+        if (!text) return false;
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (e) {
+          // ignore
+        }
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          ta.style.top = '-9999px';
+          ta.setAttribute('readonly', '');
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch (err) {
+          return false;
+        }
+      }
+
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const iconSpan = btn.querySelector('.btn-icon');
+          const textSpan = btn.querySelector('.btn-text');
+
+          // 若已经解锁，直接再次复制并弹出【重要使用提醒】
+          if (btn.classList.contains('unlocked')) {
+            silentCopy(url);
+            openSecurityReminderModal();
+            const originalText = textSpan.textContent;
+            textSpan.textContent = '✅ 已再次复制！请查阅重要提醒';
+            setTimeout(() => {
+              textSpan.textContent = originalText;
+            }, 2500);
+            return;
+          }
+
+          // 尚未解锁：启动 10 秒倒计时
+          btn.disabled = true;
+          let remaining = 10;
+          if (iconSpan) iconSpan.textContent = '⏳';
+          if (textSpan) textSpan.textContent = `正在生成加密配置，请稍候 (${remaining}s)...`;
+
+          const timer = setInterval(() => {
+            remaining--;
+            if (remaining > 0) {
+              if (textSpan) textSpan.textContent = `正在生成加密配置，请稍候 (${remaining}s)...`;
+            } else {
+              clearInterval(timer);
+              btn.disabled = false;
+              btn.classList.add('unlocked');
+              if (iconSpan) iconSpan.textContent = '✅';
+              if (textSpan) textSpan.textContent = '已复制免费订阅！点击可再次复制';
+              if (tipBox) tipBox.style.display = 'block';
+              if (footnote) footnote.textContent = '💡 订阅链接已写入剪贴板，请牢记安全须知，直接在客户端粘贴即可。';
+              
+              // 复制订阅，并立刻弹出【重要使用提醒】
+              silentCopy(url);
+              openSecurityReminderModal();
+            }
+          }, 1000);
+        });
+      }
+    });
+
+    // 动态注入当日实时日期到免费节点每日更新徽章
+    try {
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+      document.querySelectorAll('[data-daily-sync]').forEach(el => {
+        el.textContent = `今日已自动同步（${dateStr}）`;
+      });
+    } catch (e) {
+      // ignore
+    }
+  </script>
+</BaseLayout>

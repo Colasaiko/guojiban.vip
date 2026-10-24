@@ -1,0 +1,144 @@
+---
+import { getBrandBySlug } from '../data/brands';
+
+// 机场评价文章底部通栏推荐横幅
+const brand = getBrandBySlug('weifeng');
+---
+{brand && (
+  <aside class="airport-sticky-cta" id="airport-sticky-cta" aria-label="更多推荐">
+    <div class="asc-inner">
+      <div class="asc-copy">
+        <span class="asc-eyebrow">查看更多推荐？</span>
+        <strong class="asc-title">看看 {brand.name} <span aria-hidden="true">→</span></strong>
+        <span class="asc-sub">{brand.lineType} 线路 · 月付 {brand.minMonthly} · 支持月付先试</span>
+      </div>
+      <div class="asc-actions">
+        <a href={`/go/${brand.slug}/`} class="asc-btn primary" target="_blank" rel="nofollow sponsored noopener">购买</a>
+        <a href={`/reviews/${brand.slug}/`} class="asc-btn">测评</a>
+      </div>
+      <button type="button" class="asc-close" aria-label="关闭推荐横幅">✕</button>
+    </div>
+  </aside>
+)}
+
+<script is:inline>
+  (() => {
+    const bar = document.getElementById('airport-sticky-cta');
+    if (!bar) return;
+    document.body.classList.add('has-sticky-cta');
+    bar.querySelector('.asc-close')?.addEventListener('click', () => {
+      bar.remove();
+      document.body.classList.remove('has-sticky-cta');
+    });
+  })();
+</script>
+
+<style is:global>
+  body.has-sticky-cta { padding-bottom: 112px; }
+  @media (max-width: 640px) {
+    body.has-sticky-cta { padding-bottom: 150px; }
+  }
+</style>
+
+<style>
+  .airport-sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background: linear-gradient(90deg, #1e3a8a 0%, #1d4ed8 45%, #0ea5e9 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.55);
+  }
+  .asc-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    min-height: 100px;
+    padding: 16px 56px 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+  }
+  .asc-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .asc-eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.04em;
+  }
+  .asc-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+  .asc-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .asc-actions {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .asc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 800;
+    text-decoration: none;
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+    transition: transform .15s, background .15s;
+  }
+  .asc-btn:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.12); }
+  .asc-btn.primary {
+    color: #1e3a8a;
+    background: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+  .asc-btn.primary:hover { background: #f1f5f9; }
+  .asc-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    color: #ffffff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .asc-close:hover { background: rgba(0, 0, 0, 0.35); }
+
+  @media (max-width: 640px) {
+    .asc-inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      min-height: 0;
+      padding: 14px 16px 16px;
+    }
+    .asc-copy { padding-right: 32px; }
+    .asc-title { font-size: 21px; }
+    .asc-sub { font-size: 12px; }
+    .asc-actions { margin-left: 0; }
+    .asc-btn { flex: 1; min-width: 0; padding: 12px 0; font-size: 15px; }
+  }
+</style>

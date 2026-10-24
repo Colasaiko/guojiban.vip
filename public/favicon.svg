@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1d22"/>
+      <stop offset="100%" stop-color="#0c0d10"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="14" fill="url(#bg-grad)" stroke="url(#gold-grad)" stroke-width="1.5"/>
+  <circle cx="24" cy="24" r="13" fill="none" stroke="url(#gold-grad)" stroke-width="1.8"/>
+  <ellipse cx="24" cy="24" rx="5.5" ry="13" fill="none" stroke="url(#gold-grad)" stroke-width="1.5"/>
+  <path d="M11 24h26M13.5 17.5h21M13.5 30.5h21" stroke="url(#gold-grad)" stroke-width="1.4" stroke-linecap="round"/>
+  <polygon points="36,10 37.2,13 40,14 37.2,15 36,18 34.8,15 32,14 34.8,13" fill="url(#gold-grad)"/>
+</svg>
