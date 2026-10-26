@@ -17,21 +17,24 @@ export const GET: APIRoute = async () => {
   const testDates = reviews.map(r => (r.data as { latestTest?: { date: string } }).latestTest?.date).filter((d): d is string => Boolean(d));
   const postDates = posts.map(p => day(p.data.updatedDate));
   const brandDates = allBrands.map(b => b.updatedAt);
+  const topicDates = topics.map(t => day(t.data.updatedDate));
+  const airportDates = posts.filter(p => p.data.category === 'airports').map(p => day(p.data.updatedDate));
 
-  // lastmod 只使用内容里真实存在的日期；没有可靠日期的静态页不写 lastmod
+  // lastmod 只使用内容里真实存在的日期；没有可靠日期的静态页（/resources/、/about/）不写 lastmod
   const entries: Entry[] = [
     { path: '/', lastmod: latest(postDates) },
     { path: '/resources/' },
-    { path: '/tizi/' },
-    { path: '/brands/' },
+    // 梯子推荐、对比页的内容来自品牌资料与测速数据
+    { path: '/tizi/', lastmod: latest([...brandDates, ...testDates]) },
+    { path: '/brands/', lastmod: latest(brandDates) },
     { path: '/blog/', lastmod: latest(postDates) },
-    { path: '/topics/' },
-    { path: '/compare/' },
+    { path: '/topics/', lastmod: latest(topicDates) },
+    { path: '/compare/', lastmod: latest([...brandDates, ...testDates]) },
     { path: '/about/' },
     { path: '/data/', lastmod: latest(testDates) },
     { path: '/reviews/', lastmod: latest(brandDates) },
     // 机场测评大全是独立页面，不论是否已有正式文章都提交
-    { path: '/jichang/' },
+    { path: '/jichang/', lastmod: latest(airportDates) },
     // 空分类只有占位提示，不提交
     ...categories
       .map(c => ({ c, dates: posts.filter(p => p.data.category === c.slug).map(p => day(p.data.updatedDate)) }))
@@ -46,8 +49,9 @@ export const GET: APIRoute = async () => {
     ...allBrands.filter(b => b.category === 'primary').map(b => ({ path: `/reviews/${b.slug}/`, lastmod: b.updatedAt })),
   ];
 
+  // 每个网址一段、带缩进，方便人工检查；搜索引擎读取不受影响
   const urls = entries.map(({ path, lastmod }) =>
-    `<url><loc>${new URL(path, site.url).href}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`
-  ).join('');
-  return new Response(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`, { headers: { 'Content-Type':'application/xml; charset=utf-8' } });
+    `  <url>\n    <loc>${new URL(path, site.url).href}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}\n  </url>`
+  ).join('\n');
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`, { headers: { 'Content-Type':'application/xml; charset=utf-8' } });
 };
