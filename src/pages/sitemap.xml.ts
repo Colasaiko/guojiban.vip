@@ -2,7 +2,6 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { categories, categoryHref, site } from '../data/site';
 import { allBrands } from '../data/brands';
-import { testEnvironmentMeta } from '../data/speedTestData';
 import { tagsWithPages } from '../utils/tags';
 
 type Entry = { path: string; lastmod?: string };
@@ -13,6 +12,9 @@ const latest = (dates: string[]) => dates.length ? dates.reduce((a, b) => (a > b
 export const GET: APIRoute = async () => {
   const posts = await getCollection('blog', ({data}) => !data.draft);
   const topics = await getCollection('topics');
+  const reviews = await getCollection('reviews');
+  // 测速页的更新日期取最新一次实测日期
+  const testDates = reviews.map(r => (r.data as { latestTest?: { date: string } }).latestTest?.date).filter((d): d is string => Boolean(d));
   const postDates = posts.map(p => day(p.data.updatedDate));
   const brandDates = allBrands.map(b => b.updatedAt);
 
@@ -20,13 +22,13 @@ export const GET: APIRoute = async () => {
   const entries: Entry[] = [
     { path: '/', lastmod: latest(postDates) },
     { path: '/resources/' },
-    { path: '/vpn/' },
+    { path: '/tizi/' },
     { path: '/brands/' },
     { path: '/blog/', lastmod: latest(postDates) },
     { path: '/topics/' },
     { path: '/compare/' },
     { path: '/about/' },
-    { path: '/data/', lastmod: testEnvironmentMeta.updateTime.slice(0, 10) },
+    { path: '/data/', lastmod: latest(testDates) },
     { path: '/reviews/', lastmod: latest(brandDates) },
     // 机场测评大全是独立页面，不论是否已有正式文章都提交
     { path: '/jichang/' },
@@ -41,7 +43,7 @@ export const GET: APIRoute = async () => {
       path: `/tag/${tag}/`,
       lastmod: latest(posts.filter(p => p.data.tags.includes(tag)).map(p => day(p.data.updatedDate))),
     })),
-    ...allBrands.map(b => ({ path: `/reviews/${b.slug}/`, lastmod: b.updatedAt })),
+    ...allBrands.filter(b => b.category === 'primary').map(b => ({ path: `/reviews/${b.slug}/`, lastmod: b.updatedAt })),
   ];
 
   const urls = entries.map(({ path, lastmod }) =>

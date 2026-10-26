@@ -18,20 +18,20 @@ export interface OtherAirportItem {
 
 export const otherAirportsAuditCriteria = [
   {
-    title: '线路真伪核验',
-    desc: '严查是否为廉价公网套壳伪装成“物理专线”，晚高峰抓包比对物理跳数与出口 IP 纯净度。'
+    title: '线路与套餐核对',
+    desc: '核对官网标注的线路类型（专线 / 中转 / 直连）、套餐价格、流量与倍率规则，分清宣传语和实际说明。'
   },
   {
-    title: '晚高峰持续压测',
-    desc: '在 20:00~23:00 骨干网最拥堵时段进行 4K/8K 码率加载与丢包率测试，拒绝虚标大带宽。'
+    title: '第三方监测数据',
+    desc: '参考第三方监测站的可用率、延迟与下载速度快照，注明数据日期，只作参考、不代表长期表现。'
   },
   {
     title: '运营资质与跑路风险',
-    desc: '核查开站时长、域名注册周期、TG 群活跃与言论限制、是否存在大促永久套餐圈钱前科。'
+    desc: '查看开站时间、官方公告频道、近期故障与补偿记录，以及是否大力推销长期或永久套餐。'
   },
   {
     title: 'AI 与流媒体可用性',
-    desc: '实测 ChatGPT Plus、Claude 3.5、TikTok、Netflix 真实解锁情况，防范机房脏 IP 拦截。'
+    desc: '整理官方与第三方评测对 ChatGPT、Claude、Netflix 等服务的支持说明，未实测时会明确标注。'
   }
 ];
 

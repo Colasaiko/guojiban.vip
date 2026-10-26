@@ -81,7 +81,7 @@ export const resources: ResourceItem[] = [
     domain: 'midjourney.com',
     icon: '◈',
     tag: '艺术绘图',
-    description: '全球公认质感最佳的 AI 图像生成神器，光影控制极强，被广泛用于创意与插画设计。',
+    description: '俗称 MJ。全球公认质感最佳的 AI 图像生成神器，光影控制极强，被广泛用于创意与插画设计。',
     platforms: ['Web', 'Discord']
   },
   {
@@ -227,7 +227,7 @@ export const resources: ResourceItem[] = [
     domain: 'x.com',
     icon: '𝕏',
     tag: '全球公共广场',
-    description: '全球最具影响力的即时热点讨论与公共信息发布平台，科技动态与国际事件第一现场。',
+    description: '原名 Twitter，俗称推特。全球最具影响力的即时热点讨论与公共信息发布平台，科技动态与国际事件第一现场。',
     platforms: ['Web', 'iOS', 'Android', 'macOS']
   },
   {
@@ -251,7 +251,7 @@ export const resources: ResourceItem[] = [
     domain: 'instagram.com',
     icon: '📷',
     tag: '视觉灵感社区',
-    description: '风靡全球的图片与短视频分享平台，汇集全球时尚、艺术、旅行摄影与 Reels 内容。',
+    description: '俗称 Ins、IG。风靡全球的图片与短视频分享平台，汇集全球时尚、艺术、旅行摄影与 Reels 内容。',
     platforms: ['Web', 'iOS', 'Android']
   },
   {
@@ -287,7 +287,7 @@ export const resources: ResourceItem[] = [
     domain: 'discord.com',
     icon: '🎮',
     tag: '高品质语音群聊',
-    description: '全球游戏玩家、开发者、AI 爱好者与项目方首选的频道式即时聊天与语音社区。',
+    description: '俗称 DC。全球游戏玩家、开发者、AI 爱好者与项目方首选的频道式即时聊天与语音社区。',
     platforms: ['Web', 'iOS', 'Android', 'macOS', 'Windows', 'Linux']
   },
   {
@@ -299,7 +299,7 @@ export const resources: ResourceItem[] = [
     domain: 'telegram.org',
     icon: '✈',
     tag: '极速加密通讯',
-    description: '支持超大群组、强大机器人自动化与无限多端无缝云端存储的即时通讯软件。',
+    description: '俗称电报、纸飞机、TG。支持超大群组、强大机器人自动化与无限多端无缝云端存储的即时通讯软件。',
     platforms: ['Web', 'iOS', 'Android', 'macOS', 'Windows', 'Linux']
   },
   {
@@ -409,7 +409,7 @@ export const resources: ResourceItem[] = [
     domain: 'youtube.com',
     icon: '▶',
     tag: '全球视频巨头',
-    description: '全球规模最大的视频与播客平台，涵盖数亿高质量科技教程、4K 纪录片与全球生活。',
+    description: '俗称油管。全球规模最大的视频与播客平台，涵盖数亿高质量科技教程、4K 纪录片与全球生活。',
     platforms: ['Web', 'iOS', 'Android', 'TV']
   },
   {
@@ -421,7 +421,7 @@ export const resources: ResourceItem[] = [
     domain: 'netflix.com',
     icon: '🎬',
     tag: '会员正版影视',
-    description: '全球领先的流媒体影视平台，提供超清无广告正版原创剧集、院线级电影与多语言字幕。',
+    description: '俗称奈飞、网飞。全球领先的流媒体影视平台，提供超清无广告正版原创剧集、院线级电影与多语言字幕。',
     platforms: ['Web', 'iOS', 'Android', 'TV', 'Windows', 'macOS']
   },
   {
@@ -517,7 +517,7 @@ export const resources: ResourceItem[] = [
     domain: 'tiktok.com',
     icon: '🎵',
     tag: '海外短视频潮流',
-    description: '字节跳动旗下风靡海外的短视频娱乐平台，是全球年轻人潮流文化与热门音乐风向标。',
+    description: '抖音国际版。字节跳动旗下风靡海外的短视频娱乐平台，是全球年轻人潮流文化与热门音乐风向标。',
     platforms: ['Web', 'iOS', 'Android']
   },
   {

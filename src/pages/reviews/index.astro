@@ -2,39 +2,42 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { allBrands } from '../../data/brands';
-import { reviewsDetailMap } from '../../data/reviewsDetail';
+import { getCollection } from 'astro:content';
 import { site } from '../../data/site';
 import SpeedTestReportCard from '../../components/SpeedTestReportCard.astro';
+import { testSummary } from '../../utils/latestTest';
+import type { BrandReviewDetail } from '../../types/review';
+
+const reviewsDetailMap = Object.fromEntries((await getCollection('reviews')).map(r => [r.data.slug, r.data as unknown as BrandReviewDetail]));
 
 const primaryBrands = allBrands.filter(b => b.category === 'primary');
-const extendedBrands = allBrands.filter(b => b.category === 'extended');
 
 const auditCriteria = [
-  { icon: '⏱️', title: '晚高峰测速与抗拥堵', desc: '在晚上 20:00~23:00 网络极度拥挤时段持续压测下行带宽与丢包率，杜绝虚标假专线。' },
-  { icon: '🤖', title: '海外 AI 生产力支持', desc: '检验对 ChatGPT Plus、Claude 3.5 Sonnet 及 Midjourney 等严格封控平台的原生连通度。' },
-  { icon: '🎬', title: '4K/8K 流媒体全解锁', desc: '核验是否拥有原生家庭住宅 IP，确保 Netflix、Disney+ 与 YouTube 高码率播放不锁区。' },
-  { icon: '🛡️', title: '退款机制与工单响应', desc: '考察技术团队的故障修复时效、敏感期备用容灾方案以及透明合理的售后条款。' }
+  { icon: '⏱️', title: '速度、延迟与丢包', desc: '用 Cloudflare Speed Test、Fast.com 等工具记录下载、上传、延迟与丢包，注明测试日期、节点与网络环境；晚高峰测试会陆续补充。' },
+  { icon: '🤖', title: '海外 AI 与网站连通', desc: '用 IPCheck.ing 检测 ChatGPT、Claude、Gemini 等 50 多个网站能否访问，并记录各自的响应延迟。' },
+  { icon: '🎬', title: '流媒体与 IP 检测', desc: '记录 YouTube 播放分辨率与连接速度、Fast.com（Netflix）测速，并用 Whoer 检查出口 IP 归属、DNS 泄露与黑名单。' },
+  { icon: '🛡️', title: '退款机制与工单响应', desc: '整理官网公开的退款条款、客服与工单渠道、官方公告频道，方便你购买前了解售后规则。' }
 ];
 ---
 <BaseLayout
-  title={`梯子品牌深度测评大全 · 2026全部主流服务商实测文章与跑分排行 · ${site.name}`}
-  description="国际版VIP 深度测评中心：收录全部 35 款主流梯子品牌实测文章。涵盖微风网络、飞猫云、暮光加速、大佬云、萤火虫等，全方位实测晚高峰带宽、延迟丢包、ChatGPT与流媒体解锁，点击即可查看每家品牌的专属评测文章。"
+  title={`9大主推梯子品牌测评：套餐价格、优惠码与优缺点 · ${site.name}`}
+  description="国际版VIP 主推梯子品牌测评：微风网络、飞猫云、暮光加速、大佬云、萤火虫、灵猫、闪跃、无忧链接、跨界云，逐家整理套餐价格、优惠码、客户端使用方法、优缺点与常见问题，测速数据持续补充中。"
 >
   <div class="container">
-    <Breadcrumb items={[{ label: '梯子推荐', href: '/vpn/' }, { label: '品牌测评' }]} />
+    <Breadcrumb items={[{ label: '梯子推荐', href: '/tizi/' }, { label: '品牌测评' }]} />
 
     <header class="page-heading">
       <span class="eyebrow">IN-DEPTH BENCHMARK & REVIEWS · 全部品牌测评中心</span>
-      <h1>梯子品牌深度测评大全与性能实测档案</h1>
-      <p>面对市面上形形色色的梯子服务商，究竟谁的专线更靠谱？国际版VIP 搭建三网跨省实测环境，长期追踪全部主流品牌的晚高峰表现。点击任意品牌卡片中的<strong>“阅读详细测评文章”</strong>，即可进入查看该品牌的专线质量、测速跑分、真实优缺点与避坑指引。</p>
+      <h1>9大主推梯子品牌测评：套餐、优惠码与使用方法</h1>
+      <p>面对市面上形形色色的梯子服务商，究竟谁的专线更靠谱？国际版VIP 按统一框架整理每个品牌的套餐、线路与官方资料，并逐家补充测速截图，每次测试都注明日期、节点与网络环境。点击任意品牌卡片中的<strong>“阅读详细测评文章”</strong>，即可进入查看该品牌的专线质量、测速跑分、真实优缺点与避坑指引。</p>
     </header>
 
     <!-- 站长中立声明与月付提示 -->
     <div class="aff-tip-card" style="margin-bottom: 35px;">
       <span class="aff-tip-badge">⚖️ 测评中立声明与选购提醒</span>
       <div class="aff-tip-body">
-        <strong>实测数据说明与核心原则</strong>
-        <p>所有评测文章均基于真实网络测试环境客观撰写。<strong>请牢记站长核心原则：无论测评文章得分多高，购买时请务必先尝试一个月月付套餐！</strong>在您自己的本地网络测试满意后，再考虑长期续费，切勿盲目直接购买一年。</p>
+        <strong>测试数据说明与核心原则</strong>
+        <p>评测内容根据官方资料整理；已完成测速的品牌附有测试截图，目前的测试为家庭宽带、非晚高峰时段，每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同。<strong>请牢记站长核心原则：无论测评文章得分多高，购买时请务必先尝试一个月月付套餐！</strong>在您自己的本地网络测试满意后，再考虑长期续费，切勿盲目直接购买一年。</p>
       </div>
     </div>
 
@@ -43,8 +46,8 @@ const auditCriteria = [
       <div class="section-heading">
         <div>
           <span class="eyebrow">AUDIT METHODOLOGY</span>
-          <h2>严格实测的四大考核维度</h2>
-          <p class="muted">拒绝假大空云评测，用真实测速与功能核验揭示品牌底色。</p>
+          <h2>测评的四大考核维度</h2>
+          <p class="muted">每项结果都附截图和测试环境，没测过的项目标注「待测试」。</p>
         </div>
       </div>
 
@@ -65,7 +68,7 @@ const auditCriteria = [
         <div>
           <span class="eyebrow">FEATURED REVIEWS</span>
           <h2>站长核心主推品牌测评（TOP 09）</h2>
-          <p class="muted">经过多轮严苛压测综合实力最突出的 9 大首选品牌，点击可进入查看完整测评文章。</p>
+          <p class="muted">站长主推的 9 个品牌，点击可进入查看完整测评文章与已有的测速记录。</p>
         </div>
         <span class="section-index">09 BRANDS</span>
       </div>
@@ -109,12 +112,12 @@ const auditCriteria = [
                 <span class="rm-value">🌐 {b.lineType}</span>
               </div>
               <div class="rm-item">
-                <span class="rm-label">晚高峰实测下行</span>
-                <span class="rm-value">⚡ {b.speed}</span>
+                <span class="rm-label">实测下载（非晚高峰）</span>
+                <span class="rm-value">⚡ {testSummary(reviewsDetailMap[b.slug]?.latestTest).speed}</span>
               </div>
               <div class="rm-item">
-                <span class="rm-label">核心节点延迟</span>
-                <span class="rm-value">📶 {b.latency}</span>
+                <span class="rm-label">实测延迟（非晚高峰）</span>
+                <span class="rm-value">📶 {testSummary(reviewsDetailMap[b.slug]?.latestTest).latency}</span>
               </div>
             </div>
 
@@ -144,7 +147,7 @@ const auditCriteria = [
             </p>
 
             <!-- 06 测速与节点响应报告（与测评文章第 06 章节同源） -->
-            <SpeedTestReportCard brandSlug={b.slug} titleSuffix="06 节点延迟与测速实测" />
+            <SpeedTestReportCard brandSlug={b.slug} titleSuffix="节点延迟测试" />
 
             <!-- 底部操作栏 -->
             <div class="review-bottom-bar">
@@ -189,83 +192,13 @@ const auditCriteria = [
       </div>
     </section>
 
-    <!-- 全网主流扩展品牌测评文章列表 -->
-    <section class="section" style="padding-top: 10px; padding-bottom: 45px;">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">EXTENDED DIRECTORY REVIEWS</span>
-          <h2>全网主流扩展品牌测评档案（共 {extendedBrands.length} 款）</h2>
-          <p class="muted">涵盖不同预算、协议偏好（V2Ray/Shadowsocks/Trojan/Hysteria2）及不限时按量计费的备选品牌。</p>
-        </div>
-        <span class="section-index">{extendedBrands.length} BRANDS</span>
-      </div>
-
-      <div class="resource-grid">
-        {extendedBrands.map(b => (
-          <div class="resource-card">
-            <div class="resource-top">
-              <div class="resource-identity">
-                <span class="resource-icon" style="color: var(--gold);">📊</span>
-                <div style="min-width: 0;">
-                  <div class="resource-name-row">
-                    <h3 title={b.name}>{b.name}</h3>
-                    <span class="resource-tag">{b.lineType}</span>
-                  </div>
-                  <span class="resource-domain">优惠码: {b.coupon}</span>
-                </div>
-              </div>
-            </div>
-
-            <p class="resource-desc">{reviewsDetailMap[b.slug]?.subtitle || b.summary}</p>
-
-            <div class="bp-features" style="margin-bottom: 12px;">
-              <span>⚡ {b.speed}</span>
-              <span>📶 {b.latency}</span>
-              <span>🏷️ {b.minMonthly}</span>
-              <span>{b.couponDiscount}</span>
-            </div>
-
-            <!-- 06 实测数据速查抽屉（与测评文章第 06 章节同源） -->
-            <details class="resource-speed-details" style="margin-top: 8px; margin-bottom: 12px; font-size: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 6px 10px;">
-              <summary style="cursor: pointer; color: #94a3b8; font-weight: 500; display: flex; align-items: center; justify-content: space-between;">
-                <span>⚡ 展开 06 节点测速报告</span>
-                <span style="font-size: 11px; color: #64748b;">实时同步</span>
-              </summary>
-              <div style="margin-top: 8px;">
-                <SpeedTestReportCard brandSlug={b.slug} titleSuffix="实测" />
-              </div>
-            </details>
-
-            <div class="resource-actions" style="margin-top: auto; display: flex; gap: 8px;">
-              <a
-                href={`/reviews/${b.slug}/`}
-                class="button primary"
-                style="flex: 1; text-align: center; font-size: 12px; padding: 9px;"
-              >
-                查看测评文章 →
-              </a>
-              <a
-                href={`/go/${b.slug}/`}
-                target="_blank"
-                rel="nofollow noopener noreferrer sponsored"
-                class="button secondary"
-                style="flex: 1; text-align: center; font-size: 12px; padding: 9px;"
-              >
-                官网 ↗
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
     <!-- 底部收尾引导 -->
     <section class="closing">
       <span class="eyebrow">NEED RECOMMENDATIONS?</span>
-      <h2>需要具体的梯子对比与免费节点测试？</h2>
-      <p class="muted" style="margin-top: 10px; font-size: 13px;">前往梯子推荐专题页，查看品牌 vs 免费节点的对决对比，以及一键复制测试订阅。</p>
+      <h2>想看专线与免费节点的对比？</h2>
+      <p class="muted" style="margin-top: 10px; font-size: 13px;">前往梯子推荐专题页，查看主推品牌与免费公开节点的差别，以及为什么不建议长期使用免费节点。</p>
       <div style="margin-top: 25px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-        <a href="/vpn/" class="button primary">前往【梯子推荐】专题页面 ↗</a>
+        <a href="/tizi/" class="button primary">前往【梯子推荐】专题页面 ↗</a>
         <a href="/brands/" class="button secondary">浏览完整【梯子品牌库】档案 →</a>
       </div>
     </section>

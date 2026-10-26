@@ -21,7 +21,7 @@
 | :--- | :--- | :--- |
 | **海外资源导航** | [`/resources/`](https://guojiban.vip/resources/) | 精选全球顶尖 AI 工具、效率神器、流媒体、开发社区与设计平台的正版官方入口，防止山寨钓鱼。 |
 | **实战使用指南** | [`/blog/`](https://guojiban.vip/blog/) & [`/topics/`](https://guojiban.vip/topics/) | 详尽图文教程，涵盖 ChatGPT/Claude 注册、Google 框架安装、TikTok 国际版使用技巧及“打不开/报错”的快速排查方案。 |
-| **网络加速与梯子推荐** | [`/vpn/`](https://guojiban.vip/vpn/) | 精选主力网络加速服务，客观解析套餐价格、节点覆盖与使用体验，助力读者按需选择。 |
+| **网络加速与梯子推荐** | [`/tizi/`](https://guojiban.vip/tizi/) | 精选主力网络加速服务，客观解析套餐价格、节点覆盖与使用体验，助力读者按需选择。 |
 | **全球品牌档案库** | [`/brands/`](https://guojiban.vip/brands/) | 收录 35+ 主流加速品牌详细档案，提供节点地区、协议支持、退款政策等公开透明的横向指标。 |
 | **第三方客观实测** | [`/reviews/`](https://guojiban.vip/reviews/) | 拒绝商户软文，以真实测试设备与带宽环境为基础，产出客观全面的测评报告与优缺点分析。 |
 | **晚高峰实测监控大盘** | [`/data/`](https://guojiban.vip/data/) & [`/compare/`](https://guojiban.vip/compare/) | 直观监控网络晚高峰吞吐与延迟表现，提供多维度参数对比矩阵，让数据说话。 |

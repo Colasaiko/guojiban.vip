@@ -2,6 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { site } from '../../data/site';
+import { getCollection } from 'astro:content';
+import type { BrandReviewDetail } from '../../types/review';
+import { testSummary } from '../../utils/latestTest';
 
 // 主推品牌详细数据（源自 jichangbuy 严选）
 const brands = {
@@ -21,23 +24,22 @@ const brands = {
       { label: '设备支持', text: '不限制设备同时接入数量，多设备共同消耗套餐流量' },
       { label: '弹性方案', text: '月流量最高 1200GB，并提供 270GB / 570GB 不限时备用包' },
       { label: '客户端要求', text: 'iOS 需 Nextin (15.0+)，Win 10+ / Mac 10.15+ / Android 5.0+' },
-      { label: '优惠折扣', text: '专属优惠码 weifeng90 全场 7 折特惠（乘风月付折后 ¥17.50 起）' },
-      { label: '真实体验', text: '实测部分节点偶有超时波动，建议首选月付体验本地网络' }
+      { label: '优惠折扣', text: '专属优惠码 weifeng90 全场 7 折特惠（乘风月付折后 ¥17.50 起）' }
     ]
   },
   feimao: {
     name: '飞猫云',
     slug: 'feimao',
     tag: '高性价比专线',
-    desc: '老牌口碑专线机场，节点丰富冗余度高，客户端一键导入即用，适合学生与多设备用户。',
+    desc: 'IPLC / IEPL 专线（BGP 多线接入），节点覆盖地区多，客户端登录即用，适合学生与多设备用户。',
     recPrice: '约 ¥25 / 月起',
     recPriceNote: '（首推月付体验）',
-    coupon: 'flycat888',
-    couponDiscount: '8折特惠',
+    coupon: 'fm85',
+    couponDiscount: '85折',
     targetUrl: 'https://flycat1.flycatvipaff.cc/#/?code=UUcH5yh9',
     features: ['低门槛入门', '晚高峰专线', '全平台一键订阅'],
     highlights: [
-      { label: '稳定性', text: '老牌口碑全 IPLC 专线，节点丰富冗余度高' },
+      { label: '稳定性', text: 'IPLC / IEPL 专线（BGP 多线接入），部分地区为直连节点' },
       { label: '流媒体', text: '超高清流媒体秒开，支持 4K 蓝光高速缓冲' },
       { label: 'AI 工具', text: '多国原生 IP 节点，ChatGPT/Claude 交互顺畅' },
       { label: '隐私安全', text: '自建机房端到端加密，有效避免公网劫持风险' },
@@ -68,16 +70,16 @@ const brands = {
   dalao: {
     name: '大佬云',
     slug: 'dalao',
-    tag: '老牌实力派',
-    desc: '长期平稳运营的资深服务商，专注于防封锁与节点高可用性，多国冷门原生节点一网打尽。',
+    tag: '分组专线',
+    desc: '主打企业级 IPLC 专线，客户端节点按日常优选、跨境电商、流媒体、低延迟、商务办公分组，方便按用途选择。',
     recPrice: '约 ¥23 / 月起',
     recPriceNote: '（首推月付体验）',
     coupon: 'dly888',
     couponDiscount: '7折特惠',
     targetUrl: 'https://a01vipaff.dalaoyunaff.com/#/?code=4hRU02Tt',
-    features: ['长期运营口碑', '冷门原生节点', '抗封锁能力强'],
+    features: ['节点按用途分组', '1 倍率计费', '不限设备数量'],
     highlights: [
-      { label: '稳定性', text: '多年资深平稳运营，超强抗封锁与全节点高可用' },
+      { label: '稳定性', text: '企业级 IPLC 国际专线，全节点统一 1 倍率计费' },
       { label: '流媒体', text: '多国冷门原生节点全覆盖，主流流媒体轻松解锁' },
       { label: 'AI 工具', text: '独立原生商用出口 IP，避免共享风控被频繁拦截' },
       { label: '隐私安全', text: '合规安全机房托管，企业级严格数据隔离保护' },
@@ -177,7 +179,7 @@ const brands = {
     targetUrl: 'https://wep01.worryfreeaff.com/#/?code=ydtFVWqU',
     features: ['平价月付试水', '入门教程详尽', '即开即用'],
     highlights: [
-      { label: '稳定性', text: '全 IPLC 专线全节点 x1 倍率，实测平稳无虚高倍率' },
+      { label: '稳定性', text: '全 IPLC 专线全节点 x1 倍率，倍率透明无虚高' },
       { label: '流媒体', text: '常用流媒体顺畅加载，1080P/4K 高清播放无压力' },
       { label: 'AI 工具', text: '支持主流 AI 工具连接，日常搜索问答稳定顺畅' },
       { label: '隐私安全', text: '强加密协议阻断公网嗅探，保障个人账号数据安全' },
@@ -187,14 +189,22 @@ const brands = {
   }
 };
 
-import { freeNodeSources } from '../../data/freeNodes';
 
-// 测试节点链接（全网每日自动更新与测速清洗数据源）
-const testNodes = freeNodeSources;
+// 每张卡片底部的「本站测试」：与评测页同源，读取品牌 md 的 latestTest / testStatus
+const reviewData = Object.fromEntries((await getCollection('reviews')).map(r => [r.data.slug, r.data as unknown as BrandReviewDetail]));
+const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
+  const d = reviewData[slug];
+  const s = testSummary(d?.latestTest);
+  const text = s.tested
+    ? `${s.date} ${s.node}（非晚高峰）：下载 ${s.speed}、延迟 ${s.latency}${s.packetLoss ? `、丢包 ${s.packetLoss}` : ''}`
+    : (d?.testStatus ? '与官方洽谈中，测试账号到位后补充测速数据' : '待测试');
+  return [slug, text];
+})) as Record<keyof typeof brands, string>;
+
 ---
 <BaseLayout
-  title={`梯子推荐指南（2026最新实测）· 稳定高速科学上网机场排行榜 · ${site.name}`}
-  description="2026年好用的梯子推荐与科学上网机场排行榜。精选实测稳定、晚高峰不卡顿、支持一键导入小火箭/Clash的靠谱机场，包含免费节点测试对比与防坑指南。"
+  title={`梯子推荐2026：稳定好用的VPN与翻墙梯子排行榜 · ${site.name}`}
+  description="2026年好用的梯子推荐：精选晚高峰稳定、支持多设备与小火箭、Clash一键导入的翻墙梯子与VPN，按线路、价格和使用场景对比，附专线与免费节点对比和选购避坑指南，建议先月付再长期使用。"
 >
   <div class="container">
     <Breadcrumb items={[{ label: '梯子推荐' }]} />
@@ -202,9 +212,10 @@ const testNodes = freeNodeSources;
     <!-- 【梯子推荐大标题】与【关于梯子推荐副标题】 -->
     <header class="page-heading">
       <span class="eyebrow">2026 SPEED & STABILITY · 科学上网精选</span>
-      <h1>2026 梯子推荐与科学上网机场排行榜：<br />精选稳定高速、防封防卡顿<span class="hero-emphasis">网络工具指南。</span></h1>
-      <p>解决国内无法正常访问网络与加载缓慢的困扰。经过数月持续实测，系统梳理晚高峰不掉线、4K/8K 视频流畅秒开、原生解锁 ChatGPT 与流媒体的高性价比专线梯子与机场方案。</p>
+      <h1>2026梯子推荐：<span class="hero-emphasis">稳定好用的VPN与翻墙梯子</span></h1>
+      <p>解决国内无法正常访问网络与加载缓慢的困扰。持续测评，系统梳理晚高峰不掉线、4K/8K 视频流畅秒开、原生解锁 ChatGPT 与流媒体的高性价比专线梯子与机场方案。</p>
     </header>
+    <p class="compare-entry">想直接比较 9 家主推机场的线路、价格与优惠码？<a class="text-link" href="/compare/#brand-comparison">查看梯子对比 →</a></p>
 
     <!-- 【温馨小提示】（包含佣金说明与月付建议） -->
     <div class="aff-tip-card">
@@ -308,11 +319,11 @@ const testNodes = freeNodeSources;
       <div class="section-heading">
         <div>
           <span class="eyebrow">TEST & BENCHMARK · 梯子与机场精选</span>
-          <h2>梯子品牌推荐与免费测试节点对比</h2>
-          <p class="muted">严选 9 大主推口碑品牌，配套免费测试线路，实测对比见真章。</p>
+          <h2>梯子品牌推荐：专线与免费节点对比</h2>
+          <p class="muted">9 家主推品牌与免费公开节点的差别对比，看清为什么不建议长期使用免费节点。</p>
         </div>
         <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-          <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看品牌深度实测报告 /reviews/ ↗</a>
+          <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看品牌深度测评报告 /reviews/ ↗</a>
           <a href="/brands/" class="text-link" style="font-size: 12px;">全部品牌库 /brands/ ↗</a>
         </div>
       </div>
@@ -323,7 +334,7 @@ const testNodes = freeNodeSources;
         <div class="warning-text">
           <strong>【安全合规与隐私保护须知】</strong>
           <p>
-            免费公开测试节点属于公共共享服务器，未经端到端加密的明文数据理论上存在被监听或中间人记录的风险。<strong>强烈建议严禁用于登录网上银行、移动支付、加密货币钱包或涉密商业邮箱</strong>。如需处理高保密性商务或追求长期稳定体验，建议选用具备自建机房独立加密专网的认证服务商。
+            本站<strong>不提供任何免费节点或免费订阅链接</strong>。免费公开节点的运营者身份不明，可能记录未加密的流量，也随时可能失效。如果你曾在别处使用过免费节点，请不要用它登录网上银行、移动支付、加密货币钱包或工作邮箱。
           </p>
         </div>
       </div>
@@ -341,6 +352,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.weifeng.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.weifeng.desc}</p>
             
             <div class="bp-pricing-row">
@@ -361,6 +373,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.weifeng}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -383,72 +396,41 @@ const testNodes = freeNodeSources;
             <div class="vs-circle">VS</div>
           </div>
 
-          <!-- VS 免费 / 超低价节点对比卡片 1 -->
+          <!-- VS 免费公开节点：本站不提供链接，只说明风险 -->
           <div class="test-node-card">
             <div class="test-card-top">
               <div class="test-badge-row">
-                <span class="test-badge live-update-badge">
-                  <span class="live-dot-green"></span>
-                  {testNodes.test1.badge}
-                </span>
-                <span class="daily-sync-time" data-daily-sync>今日已自动同步</span>
+                <span class="test-badge">本站不提供免费节点</span>
               </div>
-              <h3>{testNodes.test1.name}</h3>
+              <h3>免费公开节点 / 超低价机场</h3>
             </div>
-            <p class="test-desc">{testNodes.test1.description}</p>
-
-            <div class="test-node-meta-grid">
-              <div class="tnm-item">
-                <span class="tnm-k">订阅格式</span>
-                <span class="tnm-v">{testNodes.test1.type}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">更新频率</span>
-                <span class="tnm-v">{testNodes.test1.updateFrequency.split(' · ')[0]}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">节点规模</span>
-                <span class="tnm-v">{testNodes.test1.nodeCountEstimate}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">支持客户端</span>
-                <span class="tnm-v">{testNodes.test1.clientSupport}</span>
-              </div>
-            </div>
+            <p class="test-desc">网上流传的免费节点大多由爬虫从公开渠道抓取，来源和运营者都不明确，节点随时可能失效或被替换成其他内容。</p>
 
             <ul class="test-shortfalls">
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>稳定性：</strong>免费节点公共共享，晚高峰断线丢包率高</div>
+                <div><strong>隐私风险：</strong>运营者身份不明，可能记录未加密的流量，切勿用来登录网银、支付和重要账号</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>流媒体解锁：</strong>公共 IP 普遍被 Netflix/Disney+ 拦截封禁</div>
+                <div><strong>稳定性：</strong>大量用户共用同一批节点，经常断线、超时，随时失效</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>AI 访问：</strong>ChatGPT / Claude 频繁遇到 1020 报错拦截</div>
+                <div><strong>流媒体：</strong>公共 IP 常被 Netflix 等平台识别为代理</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>隐私风险：</strong>节点来源分散，绝不可用于登录网银支付账号</div>
+                <div><strong>AI 工具：</strong>ChatGPT、Claude 等容易出现人机验证或访问拦截</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>长期可用性：</strong>随时可能失效，仅适合紧急备用与临时测速</div>
+                <div><strong>账号风险：</strong>用多人共用的 IP 注册或登录社交账号，容易触发风控</div>
               </li>
             </ul>
 
-            <div class="unlock-action-area" data-url={testNodes.test1.url}>
-              <button type="button" class="unlock-node-btn">
-                <span class="btn-icon">📋</span>
-                <span class="btn-text">复制今日免费订阅链接</span>
-              </button>
-              <p class="unlock-footnote">点击后 10 秒可解密复制全网每日自动维护的公开订阅链接，无需注册。</p>
-              <div class="copy-success-tip" style="display: none;">
-                <strong>✅ 今日最新订阅链接已成功复制到剪贴板！</strong>
-                <p>请直接打开 Shadowrocket（小火箭）、Clash 或 v2rayN 客户端，选择“从剪贴板导入”即可直接使用。</p>
-              </div>
+            <div class="free-node-advice">
+              <strong>更稳妥的做法：</strong>先花十几元买一个月月付套餐测试，满意再续费。已经有订阅链接的话，可以看 <a href="/blog/clash-verge-guide/">Clash 教程</a> 和 <a href="/blog/shadowrocket-guide/">小火箭教程</a>。
             </div>
           </div>
         </div>
@@ -467,6 +449,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.feimao.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.feimao.desc}</p>
             
             <div class="bp-pricing-row">
@@ -487,6 +470,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.feimao}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -513,6 +497,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.muguang.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.muguang.desc}</p>
             
             <div class="bp-pricing-row">
@@ -533,6 +518,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.muguang}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -559,6 +545,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.dalao.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.dalao.desc}</p>
             
             <div class="bp-pricing-row">
@@ -579,6 +566,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.dalao}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -611,6 +599,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.firefly.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.firefly.desc}</p>
             
             <div class="bp-pricing-row">
@@ -631,6 +620,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.firefly}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -653,72 +643,41 @@ const testNodes = freeNodeSources;
             <div class="vs-circle">VS</div>
           </div>
 
-          <!-- VS 免费 / 超低价节点对比卡片 2 -->
+          <!-- VS 免费公开节点：本站不提供链接，只说明风险 -->
           <div class="test-node-card">
             <div class="test-card-top">
               <div class="test-badge-row">
-                <span class="test-badge live-update-badge">
-                  <span class="live-dot-green"></span>
-                  {testNodes.test2.badge}
-                </span>
-                <span class="daily-sync-time" data-daily-sync>今日已自动同步</span>
+                <span class="test-badge">本站不提供免费节点</span>
               </div>
-              <h3>{testNodes.test2.name}</h3>
+              <h3>免费公开节点 / 超低价机场</h3>
             </div>
-            <p class="test-desc">{testNodes.test2.description}</p>
-
-            <div class="test-node-meta-grid">
-              <div class="tnm-item">
-                <span class="tnm-k">订阅格式</span>
-                <span class="tnm-v">{testNodes.test2.type}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">更新频率</span>
-                <span class="tnm-v">{testNodes.test2.updateFrequency.split(' · ')[0]}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">节点规模</span>
-                <span class="tnm-v">{testNodes.test2.nodeCountEstimate}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">支持客户端</span>
-                <span class="tnm-v">{testNodes.test2.clientSupport}</span>
-              </div>
-            </div>
+            <p class="test-desc">网上流传的免费节点大多由爬虫从公开渠道抓取，来源和运营者都不明确，节点随时可能失效或被替换成其他内容。</p>
 
             <ul class="test-shortfalls">
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>稳定性：</strong>免费节点公共共享，晚高峰断线丢包率高</div>
+                <div><strong>隐私风险：</strong>运营者身份不明，可能记录未加密的流量，切勿用来登录网银、支付和重要账号</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>流媒体解锁：</strong>公共 IP 普遍被 Netflix/Disney+ 拦截封禁</div>
+                <div><strong>稳定性：</strong>大量用户共用同一批节点，经常断线、超时，随时失效</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>AI 访问：</strong>ChatGPT / Claude 频繁遇到 1020 报错拦截</div>
+                <div><strong>流媒体：</strong>公共 IP 常被 Netflix 等平台识别为代理</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>隐私风险：</strong>节点来源分散，绝不可用于登录网银支付账号</div>
+                <div><strong>AI 工具：</strong>ChatGPT、Claude 等容易出现人机验证或访问拦截</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>长期可用性：</strong>随时可能失效，仅适合紧急备用与临时测速</div>
+                <div><strong>账号风险：</strong>用多人共用的 IP 注册或登录社交账号，容易触发风控</div>
               </li>
             </ul>
 
-            <div class="unlock-action-area" data-url={testNodes.test2.url}>
-              <button type="button" class="unlock-node-btn">
-                <span class="btn-icon">📋</span>
-                <span class="btn-text">复制今日免费订阅链接</span>
-              </button>
-              <p class="unlock-footnote">点击后 10 秒可解密复制每日自动维护的 AI 测速优选订阅链接，无需注册。</p>
-              <div class="copy-success-tip" style="display: none;">
-                <strong>✅ 今日最新订阅链接已成功复制到剪贴板！</strong>
-                <p>请直接打开 Shadowrocket（小火箭）、Clash 或 v2rayN 客户端，选择“从剪贴板导入”即可直接使用。</p>
-              </div>
+            <div class="free-node-advice">
+              <strong>更稳妥的做法：</strong>先花十几元买一个月月付套餐测试，满意再续费。已经有订阅链接的话，可以看 <a href="/blog/clash-verge-guide/">Clash 教程</a> 和 <a href="/blog/shadowrocket-guide/">小火箭教程</a>。
             </div>
           </div>
         </div>
@@ -737,6 +696,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.lingmao.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.lingmao.desc}</p>
             
             <div class="bp-pricing-row">
@@ -757,6 +717,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.lingmao}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -783,6 +744,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.shanyue.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.shanyue.desc}</p>
             
             <div class="bp-pricing-row">
@@ -803,6 +765,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.shanyue}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -829,6 +792,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.kuajie.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.kuajie.desc}</p>
             
             <div class="bp-pricing-row">
@@ -849,6 +813,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.kuajie}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -881,6 +846,7 @@ const testNodes = freeNodeSources;
               </div>
               <span class="bp-tag">{brands.wuyou.tag}</span>
             </div>
+            <span class="bp-src-label">官方介绍</span>
             <p class="bp-desc">{brands.wuyou.desc}</p>
             
             <div class="bp-pricing-row">
@@ -901,6 +867,7 @@ const testNodes = freeNodeSources;
                 </li>
               ))}
             </ul>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.wuyou}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
@@ -923,72 +890,41 @@ const testNodes = freeNodeSources;
             <div class="vs-circle">VS</div>
           </div>
 
-          <!-- VS 免费 / 超低价节点对比卡片 3 -->
+          <!-- VS 免费公开节点：本站不提供链接，只说明风险 -->
           <div class="test-node-card">
             <div class="test-card-top">
               <div class="test-badge-row">
-                <span class="test-badge live-update-badge">
-                  <span class="live-dot-green"></span>
-                  {testNodes.test3.badge}
-                </span>
-                <span class="daily-sync-time" data-daily-sync>今日已自动同步</span>
+                <span class="test-badge">本站不提供免费节点</span>
               </div>
-              <h3>{testNodes.test3.name}</h3>
+              <h3>免费公开节点 / 超低价机场</h3>
             </div>
-            <p class="test-desc">{testNodes.test3.description}</p>
-
-            <div class="test-node-meta-grid">
-              <div class="tnm-item">
-                <span class="tnm-k">订阅格式</span>
-                <span class="tnm-v">{testNodes.test3.type}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">更新频率</span>
-                <span class="tnm-v">{testNodes.test3.updateFrequency.split(' · ')[0]}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">节点规模</span>
-                <span class="tnm-v">{testNodes.test3.nodeCountEstimate}</span>
-              </div>
-              <div class="tnm-item">
-                <span class="tnm-k">支持客户端</span>
-                <span class="tnm-v">{testNodes.test3.clientSupport}</span>
-              </div>
-            </div>
+            <p class="test-desc">网上流传的免费节点大多由爬虫从公开渠道抓取，来源和运营者都不明确，节点随时可能失效或被替换成其他内容。</p>
 
             <ul class="test-shortfalls">
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>稳定性：</strong>免费节点公共共享，晚高峰断线丢包率高</div>
+                <div><strong>隐私风险：</strong>运营者身份不明，可能记录未加密的流量，切勿用来登录网银、支付和重要账号</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>流媒体解锁：</strong>公共 IP 普遍被 Netflix/Disney+ 拦截封禁</div>
+                <div><strong>稳定性：</strong>大量用户共用同一批节点，经常断线、超时，随时失效</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>AI 访问：</strong>ChatGPT / Claude 频繁遇到 1020 报错拦截</div>
+                <div><strong>流媒体：</strong>公共 IP 常被 Netflix 等平台识别为代理</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>隐私风险：</strong>节点来源分散，绝不可用于登录网银支付账号</div>
+                <div><strong>AI 工具：</strong>ChatGPT、Claude 等容易出现人机验证或访问拦截</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>长期可用性：</strong>随时可能失效，仅适合紧急备用与临时测速</div>
+                <div><strong>账号风险：</strong>用多人共用的 IP 注册或登录社交账号，容易触发风控</div>
               </li>
             </ul>
 
-            <div class="unlock-action-area" data-url={testNodes.test3.url}>
-              <button type="button" class="unlock-node-btn">
-                <span class="btn-icon">📋</span>
-                <span class="btn-text">复制今日免费订阅链接</span>
-              </button>
-              <p class="unlock-footnote">点击后 10 秒可解密复制每日自动清洗的 Base64 通用订阅链接，无需注册。</p>
-              <div class="copy-success-tip" style="display: none;">
-                <strong>✅ 今日最新订阅链接已成功复制到剪贴板！</strong>
-                <p>请直接打开 Shadowrocket（小火箭）、Clash 或 v2rayN 客户端，选择“从剪贴板导入”即可直接使用。</p>
-              </div>
+            <div class="free-node-advice">
+              <strong>更稳妥的做法：</strong>先花十几元买一个月月付套餐测试，满意再续费。已经有订阅链接的话，可以看 <a href="/blog/clash-verge-guide/">Clash 教程</a> 和 <a href="/blog/shadowrocket-guide/">小火箭教程</a>。
             </div>
           </div>
         </div>
@@ -1046,14 +982,14 @@ const testNodes = freeNodeSources;
         <details>
           <summary>什么是 IPLC / IEPL 专线？为什么专线比普通中转更好？<span aria-hidden="true">+</span></summary>
           <p>
-            IPLC / IEPL 是国际点对点专用内网物理链路，数据在深圳、上海等境内机房直接通过专用光纤传输到香港、日本或美国，<strong>全程根本不经过公网防火墙（GFW）</strong>，因此不会被封锁端口，延迟极低且极度稳定。即使特殊时期或公网拥堵，专线依然能够稳定跑满带宽。
+            IPLC / IEPL 是运营商出租的跨境专用线路：数据先到境内入口机房，跨境这一段走专线到香港、日本或美国，<strong>不经过拥挤的公网国际出口</strong>，所以晚高峰受拥堵影响较小、延迟更稳定。但专线也会受线路维护、故障或特殊时期影响，并不是永远不断线。名词解释可以看 <a href="/blog/what-is-mofa-shangwang/">什么是魔法上网</a>。
           </p>
         </details>
 
         <details>
-          <summary>免费测试节点怎么使用？有什么安全风险？<span aria-hidden="true">+</span></summary>
+          <summary>免费节点能用吗？有什么风险？<span aria-hidden="true">+</span></summary>
           <p>
-            复制上方的测试订阅链接，粘贴到客户端的“从 URL 导入”即可加载节点。<strong>特别提醒</strong>：免费公开节点由于所有人都可以查看甚至架设探针，节点的运营者或中间人理论上可以看到你未经 HTTPS 加密的明文网络请求。因此仅用于浏览公开网页或测速排查，<strong>严禁登录银行、邮箱、社交账号等涉及隐私财产的平台</strong>！
+            不建议长期使用，本站也不提供免费节点链接。<strong>原因</strong>：免费公开节点由于所有人都可以查看甚至架设探针，节点的运营者或中间人理论上可以看到你未经 HTTPS 加密的明文网络请求。而且大量用户共用，稳定性差、随时失效。真的需要临时用一下，也只用来浏览公开网页，<strong>不要登录银行、邮箱、社交账号等涉及隐私和财产的平台</strong>。
           </p>
         </details>
       </div>
@@ -1070,190 +1006,4 @@ const testNodes = freeNodeSources;
     </section>
   </div>
 
-  <!-- 点击复制免费订阅时触发的【重要使用提醒】专属交互弹窗 -->
-  <div id="security-reminder-modal" class="reminder-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="reminder-modal-title">
-    <div class="reminder-modal-card">
-      <div class="reminder-modal-header">
-        <div class="rmh-left">
-          <span class="rm-warning-badge">🛡️ 安全合规须知 · 官方风险声明</span>
-          <h3 id="reminder-modal-title">免费公开测试节点使用规范与建议</h3>
-        </div>
-        <button type="button" class="rm-close-x" id="close-reminder-x" aria-label="关闭提醒">✕</button>
-      </div>
-
-      <div class="reminder-modal-body">
-        <div class="rm-copy-status">
-          <span class="rm-status-icon">✅</span>
-          <div class="rm-status-info">
-            <strong>免费测试订阅链接已成功写入您的剪贴板！</strong>
-            <p>可直接在 Shadowrocket（小火箭）、Clash Verge 或 sing-box 客户端中粘贴添加使用。</p>
-          </div>
-        </div>
-
-        <div class="rm-points-box">
-          <div class="rm-point-item danger">
-            <div class="rmp-head">❌ 严禁敏感账号与资金交易</div>
-            <p>
-              免费公开节点属于公共共享服务器，节点管理者理论上能够捕获所有未经 TLS 加密的明文数据流量。<strong>绝不要用来登录网上银行、移动支付、加密货币钱包或商业机密邮箱！</strong>
-            </p>
-          </div>
-
-          <div class="rm-point-item warning">
-            <div class="rmp-head">⚠️ 仅供临时应急与网络测速</div>
-            <p>
-              免费线路带宽由海量公共用户挤占，在晚高峰（20:00~23:00）极易出现断连、高延迟或被防火墙直接阻断。请仅将其作为临时备用或测试本地连通性的工具。
-            </p>
-          </div>
-
-          <div class="rm-point-item safe">
-            <div class="rmp-head">💡 长期主力与生产力建议</div>
-            <p>
-              如果您有日常学术科研、ChatGPT 长期会话、跨国出海商务或 4K/8K 视频畅看需求，<strong>强烈建议选用前文实测推荐的优质月付专线</strong>（建议先买一个月月付实测）。
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="reminder-modal-footer">
-        <button type="button" class="button secondary" id="close-reminder-btn">
-          我知道了，继续使用免费订阅
-        </button>
-        <button type="button" class="button primary" id="jump-to-brands-btn">
-          前往优质专线品牌推荐 ↗
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script is:inline>
-    // 弹窗控制逻辑
-    const modal = document.getElementById('security-reminder-modal');
-    const closeX = document.getElementById('close-reminder-x');
-    const closeBtn = document.getElementById('close-reminder-btn');
-    const jumpBtn = document.getElementById('jump-to-brands-btn');
-
-    function openSecurityReminderModal() {
-      if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // 防止底层滚动穿透
-      }
-    }
-
-    function closeSecurityReminderModal() {
-      if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-    }
-
-    if (closeX) closeX.addEventListener('click', closeSecurityReminderModal);
-    if (closeBtn) closeBtn.addEventListener('click', closeSecurityReminderModal);
-    if (jumpBtn) {
-      jumpBtn.addEventListener('click', () => {
-        closeSecurityReminderModal();
-        const target = document.getElementById('brands-comparison');
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    }
-
-    if (modal) {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          closeSecurityReminderModal();
-        }
-      });
-    }
-
-    // 隐藏测试订阅链接，点击后 10 秒倒计时解锁，直接复制到剪贴板并主动弹出【重要使用提醒】
-    document.querySelectorAll('.unlock-action-area').forEach(area => {
-      const btn = area.querySelector('.unlock-node-btn');
-      const tipBox = area.querySelector('.copy-success-tip');
-      const footnote = area.querySelector('.unlock-footnote');
-      const url = area.dataset.url;
-
-      async function silentCopy(text) {
-        if (!text) return false;
-        try {
-          if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(text);
-            return true;
-          }
-        } catch (e) {
-          // ignore
-        }
-        try {
-          const ta = document.createElement('textarea');
-          ta.value = text;
-          ta.style.position = 'fixed';
-          ta.style.left = '-9999px';
-          ta.style.top = '-9999px';
-          ta.setAttribute('readonly', '');
-          document.body.appendChild(ta);
-          ta.select();
-          const ok = document.execCommand('copy');
-          document.body.removeChild(ta);
-          return ok;
-        } catch (err) {
-          return false;
-        }
-      }
-
-      if (btn) {
-        btn.addEventListener('click', () => {
-          const iconSpan = btn.querySelector('.btn-icon');
-          const textSpan = btn.querySelector('.btn-text');
-
-          // 若已经解锁，直接再次复制并弹出【重要使用提醒】
-          if (btn.classList.contains('unlocked')) {
-            silentCopy(url);
-            openSecurityReminderModal();
-            const originalText = textSpan.textContent;
-            textSpan.textContent = '✅ 已再次复制！请查阅重要提醒';
-            setTimeout(() => {
-              textSpan.textContent = originalText;
-            }, 2500);
-            return;
-          }
-
-          // 尚未解锁：启动 10 秒倒计时
-          btn.disabled = true;
-          let remaining = 10;
-          if (iconSpan) iconSpan.textContent = '⏳';
-          if (textSpan) textSpan.textContent = `正在生成加密配置，请稍候 (${remaining}s)...`;
-
-          const timer = setInterval(() => {
-            remaining--;
-            if (remaining > 0) {
-              if (textSpan) textSpan.textContent = `正在生成加密配置，请稍候 (${remaining}s)...`;
-            } else {
-              clearInterval(timer);
-              btn.disabled = false;
-              btn.classList.add('unlocked');
-              if (iconSpan) iconSpan.textContent = '✅';
-              if (textSpan) textSpan.textContent = '已复制免费订阅！点击可再次复制';
-              if (tipBox) tipBox.style.display = 'block';
-              if (footnote) footnote.textContent = '💡 订阅链接已写入剪贴板，请牢记安全须知，直接在客户端粘贴即可。';
-              
-              // 复制订阅，并立刻弹出【重要使用提醒】
-              silentCopy(url);
-              openSecurityReminderModal();
-            }
-          }, 1000);
-        });
-      }
-    });
-
-    // 动态注入当日实时日期到免费节点每日更新徽章
-    try {
-      const now = new Date();
-      const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
-      document.querySelectorAll('[data-daily-sync]').forEach(el => {
-        el.textContent = `今日已自动同步（${dateStr}）`;
-      });
-    } catch (e) {
-      // ignore
-    }
-  </script>
 </BaseLayout>

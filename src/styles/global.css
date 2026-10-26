@@ -400,6 +400,8 @@ button.light:hover,
 .category-card p { font-size: 11px; color: var(--muted); margin-top: 9px; }
 .text-link { font-size: 12px; color: #f1f5f9; white-space: nowrap; }
 .text-link:hover { color: #ffffff; text-decoration: underline; }
+.compare-entry { margin: -8px 0 26px; font-size: 13px; color: var(--muted); }
+.compare-entry .text-link { font-size: 13px; color: #38bdf8; margin-left: 6px; }
 
 /* Editorial & Article Cards */
 .editorial-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 26px; }
@@ -1326,6 +1328,47 @@ tr:last-child td, tr:last-child th { border-bottom: 0; }
 }
 .bp-highlights-list strong {
   color: #ffffff;
+}
+/* /tizi/ 卡片：区分官方介绍与本站测试 */
+.bp-src-label {
+  align-self: flex-start;
+  font-size: 11px;
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-bottom: 6px;
+}
+.bp-test {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #a5f3fc;
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: -6px 0 14px;
+}
+.bp-test strong {
+  color: #ffffff;
+}
+/* /tizi/ 免费节点对比卡：只给建议，不提供任何订阅链接 */
+.free-node-advice {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #cbd5e1;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: auto;
+}
+.free-node-advice strong {
+  color: #ffffff;
+}
+.free-node-advice a {
+  color: #6ee7b7;
+  text-decoration: underline;
 }
 .bp-coupon-row {
   display: flex;

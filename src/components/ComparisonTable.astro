@@ -20,11 +20,13 @@ import { coreResourceCompares } from '../data/comparisons';
         {coreResourceCompares.map((res) => (
           <tr>
             <th class="res-th">
-              <span class="res-icon">{res.icon}</span>
-              <div class="res-meta-wrap">
-                <strong class="res-title">{res.name}</strong>
-                <span class="res-badge">{res.category}</span>
-                <a href={res.guideUrl} class="res-guide-link">实操指南 ↗</a>
+              <div class="res-th-inner">
+                <span class="res-icon">{res.icon}</span>
+                <div class="res-meta-wrap">
+                  <strong class="res-title">{res.name}</strong>
+                  <span class="res-badge">{res.category}</span>
+                  <a href={res.guideUrl} class="res-guide-link">实操指南 ↗</a>
+                </div>
               </div>
             </th>
             <td>
@@ -135,7 +137,12 @@ import { coreResourceCompares } from '../data/comparisons';
     letter-spacing: 0.03em;
     border-bottom: 2px solid rgba(255, 255, 255, 0.15);
   }
+  /* th 保持表格单元格，才能和同一行的 td 等高、底线对齐；横向排版放在内层 */
   .res-th {
+    text-align: left;
+    min-width: 150px;
+  }
+  .res-th-inner {
     display: flex;
     align-items: flex-start;
     gap: 10px;

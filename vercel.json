@@ -1,0 +1,7 @@
+{
+  "redirects": [
+    { "source": "/vpn", "destination": "/tizi/", "permanent": true },
+    { "source": "/vpn/", "destination": "/tizi/", "permanent": true },
+    { "source": "/vpn/(.*)", "destination": "/tizi/$1", "permanent": true }
+  ]
+}

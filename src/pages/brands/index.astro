@@ -3,10 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { site } from '../../data/site';
 import { allBrands } from '../../data/brands';
+import { getBrandTests } from '../../utils/latestTest';
 
 // 站长主推核心 9 大品牌与全网扩展品牌（严格源自 jichangbuy 数据库）
 const primaryBrands = allBrands.filter(b => b.category === 'primary');
 const extendedBrands = allBrands.filter(b => b.category === 'extended');
+const brandTests = await getBrandTests();
 
 const auditPillars = [
   { icon: '🏛️', title: '运营年限与口碑信誉', desc: '坚决过滤上线不足两周的跑路黑机场，优选有长期运营历史、社群反馈真实的技术团队。' },
@@ -16,21 +18,21 @@ const auditPillars = [
 ];
 ---
 <BaseLayout
-  title={`梯子品牌库 · 全球主流服务商档案与推荐 · ${site.name}`}
+  title={`梯子品牌大全：35家机场品牌档案、优惠码与官网入口 · ${site.name}`}
   description="国际版VIP 梯子品牌大全，收录微风网络、FireFly 萤火虫、飞猫云、无忧链接、大佬云、暮光加速等主力品牌与全网主流服务商，提供详尽品牌档案、专属优惠码、专线评测与避坑指南。"
 >
   <div class="container">
-    <Breadcrumb items={[{ label: '梯子推荐', href: '/vpn/' }, { label: '梯子品牌' }]} />
+    <Breadcrumb items={[{ label: '梯子推荐', href: '/tizi/' }, { label: '梯子品牌' }]} />
 
     <header class="page-heading">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
         <span class="eyebrow" style="margin-bottom: 0;">GLOBAL PROVIDERS DIRECTORY · 梯子品牌库</span>
         <span class="last-updated-badge" style="font-size: 12px; color: var(--text-muted); background: rgba(255, 255, 255, 0.04); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          ⚡ 数据已同步：2026年10月20日最新归档
+          ⚡ 资料更新：2026年10月26日
         </span>
       </div>
-      <h1>全球知名梯子与网络服务品牌库</h1>
-      <p>市面上网络工具良莠不齐，如何避免遭遇虚标与跑路风险？国际版VIP 建立深度服务商品牌档案，每个品牌均收录真实背景、专线架构、套餐价格范围与优惠码限制，提供第三方客观视角与独立实测指引。</p>
+      <h1>梯子品牌大全：机场品牌档案与专属优惠码</h1>
+      <p>市面上网络工具良莠不齐，如何避免遭遇虚标与跑路风险？国际版VIP 建立深度服务商品牌档案，每个品牌均收录真实背景、专线架构、套餐价格范围与优惠码限制，提供套餐、功能与使用方法的详细分析。</p>
     </header>
 
     <!-- 站长温馨提示 -->
@@ -82,16 +84,16 @@ const auditPillars = [
                 <span class="spec-v">{b.lineType} 专线架构</span>
               </div>
               <div class="bc-spec-item">
-                <span class="spec-k">速率表现</span>
-                <span class="spec-v">{b.speed}</span>
+                <span class="spec-k">本站测试（非晚高峰）</span>
+                <span class="spec-v">{brandTests[b.slug]?.tested ? `下载 ${brandTests[b.slug].speed} · ${brandTests[b.slug].node}` : (brandTests[b.slug]?.pendingText ?? '待测试')}</span>
               </div>
               <div class="bc-spec-item">
                 <span class="spec-k">设备连接</span>
                 <span class="spec-v">{b.devices}</span>
               </div>
               <div class="bc-spec-item">
-                <span class="spec-k">流媒体/AI</span>
-                <span class="spec-v">Netflix · ChatGPT 原生解锁</span>
+                <span class="spec-k">网站连通（当次测试）</span>
+                <span class="spec-v">{!brandTests[b.slug]?.tested ? '待测试' : brandTests[b.slug].unavailable.length ? `${brandTests[b.slug].unavailable.join('、')} 不可用` : '常用网站全部可用'}</span>
               </div>
             </div>
 
@@ -232,12 +234,6 @@ const auditPillars = [
               >
                 前往该品牌官网 ↗
               </a>
-              <a
-                href={`/reviews/${item.slug}/`}
-                class="button secondary bc-btn-sub"
-              >
-                查看深度评测报告 📊
-              </a>
             </div>
           </article>
         ))}
@@ -289,9 +285,9 @@ const auditPillars = [
           </div>
         </details>
         <details>
-          <summary>免费测试节点与付费品牌专线究竟有何核心区别？</summary>
+          <summary>免费节点与付费专线有什么区别？</summary>
           <div class="faq-answer">
-            免费节点通常由公网爬虫抓取自公开代理，所有未加密流量均可能被节点宿主嗅探，极度不安全，且极易随时失效；而正规付费品牌采用企业级 IPLC/IEPL 专线，不经过公网 GFW 防火墙过滤，流量传输经过严格端到端加密，兼顾高速率与个人隐私安全。
+            免费节点大多由爬虫从公开渠道抓取，运营者身份不明，可能记录未加密的流量，而且很多人共用、随时失效，本站不提供也不建议使用。付费专线由服务商长期运营，跨境段走专线、不经过拥挤的公网国际出口，稳定性更好，出问题时也有客服和公告可以查。
           </div>
         </details>
       </div>
@@ -301,9 +297,9 @@ const auditPillars = [
     <section class="closing">
       <span class="eyebrow">NEED RECOMMENDATIONS?</span>
       <h2>需要更具体的梯子选购对比与免费测试？</h2>
-      <p class="muted" style="margin-top: 10px; font-size: 13px;">前往梯子推荐专题页，查看实测对比、免费节点测试订阅及详细避坑说明。</p>
+      <p class="muted" style="margin-top: 10px; font-size: 13px;">前往梯子推荐专题页，查看主推品牌的测试结果、专线与免费节点对比，以及详细避坑说明。</p>
       <div style="margin-top: 20px;">
-        <a href="/vpn/" class="button primary">前往【梯子推荐】专题页面 →</a>
+        <a href="/tizi/" class="button primary">前往【梯子推荐】专题页面 →</a>
       </div>
     </section>
   </div>

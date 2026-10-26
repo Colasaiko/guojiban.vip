@@ -1,173 +1,158 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import { speedTestDataset, testEnvironmentMeta } from '../../data/speedTestData';
+import { allBrands } from '../../data/brands';
 import { site } from '../../data/site';
+import type { ReviewLatestTest } from '../../types/review';
 
-const title = `全球节点实测大盘 · 2026晚高峰真实测速、延迟与丢包公开数据库 · ${site.name}`;
-const description = `拒绝0%虚假数据与测速虚标！国际版VIP 建立三网（电信/联通/移动）千兆晚高峰（20:30~22:30）真实测速大盘，公开全品牌核心专线真实下行速率、物理往返延迟、0.3%~2.8%自然丢包率及YouTube 4K真实连接速度。`;
+const title = `梯子节点测速数据：下载速度、延迟与丢包记录 · ${site.name}`;
+const description = `公开记录主推梯子品牌的节点测速数据，包括下载与上传速度、延迟、丢包率、Netflix与YouTube连接速度，并注明测试时间、环境与工具，附原始截图。目前已收录微风网络，其他品牌陆续补充。`;
+
+// 测速数据与评测页同源：读取 src/content/reviews/*.md 里的 latestTest
+const reviews = await getCollection('reviews');
+const rows = allBrands
+  .filter(b => b.category === 'primary')
+  .map(b => {
+    const data = reviews.find(r => r.data.slug === b.slug)?.data as { latestTest?: ReviewLatestTest; testStatus?: string } | undefined;
+    const test = data?.latestTest;
+    const metric = (label: string) => test?.metrics.find(m => m.label === label)?.value ?? '—';
+    return { brand: b, test, metric, testStatus: data?.testStatus };
+  });
+const tested = rows.filter(r => r.test);
+const latest = [...tested].sort((a, b) => b.test!.date.localeCompare(a.test!.date))[0];
 ---
 
 <BaseLayout title={title} description={description}>
   <div class="container speedtest-data-page">
     <Breadcrumb items={[
-      { label: '梯子推荐', href: '/vpn/' },
+      { label: '梯子推荐', href: '/tizi/' },
       { label: '品牌测评', href: '/reviews/' },
-      { label: '全网节点实测大盘' }
+      { label: '梯子节点测速数据' }
     ]} />
 
     <header class="page-heading">
       <div class="telemetry-pill">
         <span class="pulse-indicator"></span>
-        <span>NETWORK TELEMETRY · 晚高峰真实网络性能大盘</span>
+        <span>NETWORK TESTS · 梯子节点测速记录</span>
       </div>
-      <h1>全球节点实测大盘与晚高峰抗拥堵档案</h1>
+      <h1>梯子节点测速数据：速度、延迟与丢包记录</h1>
       <p>
-        拒绝“0.0% 零丢包”与实验室假跑分！国际版VIP 搭建全国三大运营商（电信/联通/移动）晚高峰（20:30~22:30）压力测试环境，采用 Speedtest CLI 多线程与 YouTube 4K 真实连接速度（Stats for Nerds）双轨测试，客观展示各大品牌真实物理网络质量。
+        这里汇总 9 家主推梯子品牌的节点测速记录。每条记录都注明测试日期、节点、测试环境与所用工具，并附上原始截图，可以点进对应的测评页查看。目前已完成 {tested.length} / {rows.length} 家，其余品牌陆续补充。
       </p>
     </header>
 
-    <!-- 顶部四项核心指标概览 -->
+    <!-- 顶部概览 -->
     <div class="kpi-grid">
       <div class="kpi-card">
-        <span class="kpi-label">主流专线晚高峰平均下行</span>
+        <span class="kpi-label">已完成测速</span>
         <div class="kpi-num-row">
-          <span class="kpi-num">435</span>
-          <span class="kpi-unit">Mbps</span>
+          <span class="kpi-num">{tested.length} / {rows.length}</span>
+          <span class="kpi-unit">家</span>
         </div>
-        <span class="kpi-sub">三网千兆宽带多线程实测均值</span>
+        <span class="kpi-sub">主推品牌测速进度</span>
       </div>
-
-      <div class="kpi-card">
-        <span class="kpi-label">香港/亚太专线核心延迟</span>
-        <div class="kpi-num-row">
-          <span class="kpi-num">28~36</span>
-          <span class="kpi-unit">ms</span>
-        </div>
-        <span class="kpi-sub">广东/华东/华北往返物理 Ping</span>
-      </div>
-
-      <div class="kpi-card">
-        <span class="kpi-label">晚高峰真实物理丢包区间</span>
-        <div class="kpi-num-row">
-          <span class="kpi-num" style="color: #34d399;">0.4% ~ 1.5%</span>
-        </div>
-        <span class="kpi-sub">拒绝虚假 0%，符合自然网络损耗</span>
-      </div>
-
-      <div class="kpi-card">
-        <span class="kpi-label">YouTube 4K 实际缓冲连接速率</span>
-        <div class="kpi-num-row">
-          <span class="kpi-num">95,000+</span>
-          <span class="kpi-unit">Kbps</span>
-        </div>
-        <span class="kpi-sub">Stats for nerds 实机拖拽无缓冲</span>
-      </div>
+      {latest && (
+        <>
+          <div class="kpi-card">
+            <span class="kpi-label">最新一次测试</span>
+            <div class="kpi-num-row">
+              <span class="kpi-num" style="font-size: 22px;">{latest.test!.date}</span>
+            </div>
+            <span class="kpi-sub">{latest.brand.name} · {latest.test!.node}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">下载 / 上传</span>
+            <div class="kpi-num-row">
+              <span class="kpi-num" style="font-size: 22px;">{latest.metric('下载速度')} / {latest.metric('上传速度')}</span>
+            </div>
+            <span class="kpi-sub">{latest.brand.name} · Cloudflare Speed Test</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">延迟 / 丢包</span>
+            <div class="kpi-num-row">
+              <span class="kpi-num" style="font-size: 22px; color: #34d399;">{latest.metric('延迟')} / {latest.metric('丢包率')}</span>
+            </div>
+            <span class="kpi-sub">{latest.brand.name} · Cloudflare Speed Test</span>
+          </div>
+        </>
+      )}
     </div>
 
-    <!-- 真实性声明与测速避坑方法论 -->
+    <!-- 测试方法说明 -->
     <div class="methodology-card">
       <div class="mc-header">
         <span class="icon">🔬</span>
-        <strong>国际版VIP 实测准则：为什么我们坚决拒绝“0.0% 零丢包”等虚标数据？</strong>
+        <strong>我们怎么测：多个工具交叉验证，并附上截图</strong>
       </div>
       <div class="mc-body">
         <div class="mc-column">
-          <h4>1. 真实物理网络不可能长年“0.0% 丢包”</h4>
+          <h4>1. 为什么用多个测速工具？</h4>
           <p>
-            即使是造价昂贵的顶级 IPLC/IEPL 企业级内网专线，在跨越数千公里的长途传输中，光纤折射损耗、骨干机房交换机队列拥塞，以及用户本地“最后一公里”的家庭 WiFi 干扰和运营商本地光猫握手，<strong>都会产生 0.2% ~ 1.5% 左右的极轻微物理丢包</strong>。宣称“全天候 0 丢包”的测评往往是本地局域网测速或人为美化假数据。
+            不同工具连接的测速服务器不同，结果会有差异。我们同时使用 <strong>Cloudflare Speed Test、Fast.com（Netflix 官方）、IPCheck.ing、YouTube 详细统计信息与 Whoer</strong>，分别看网速、连接 Netflix 与 YouTube 的实际速度、常用网站连通性，以及 IP 与 DNS 是否泄露。
           </p>
         </div>
         <div class="mc-column">
-          <h4>2. 为什么不能只看单一的 Speedtest 跑分？</h4>
+          <h4>2. 测速结果怎么看？</h4>
           <p>
-            Speedtest 往往默认选择离机房最近的局域网节点，且部分厂商会对 Speedtest 测速端口开设定向带宽优化通道。因此，我们引入 <strong>YouTube “详细统计信息（Stats for nerds）” 中的实际 Connection Speed</strong> 作为核心参照：只要该数值在晚高峰稳定超过 50,000 Kbps，就足以证明 4K 60fps 蓝光视频可以随意拖拽进度条不卡顿。
+            每条记录都写明测试日期与节点。<strong>每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同</strong>，建议购买月付后按下方方法自行复测。
           </p>
         </div>
       </div>
-
-      <div class="mc-footer">
-        <span>📍 当前测试基准环境：{testEnvironmentMeta.telecomLocation} · 客户端工具：{testEnvironmentMeta.tools}</span>
-      </div>
+      {latest && (
+        <div class="mc-footer">
+          <span>📍 最新测试环境：{latest.test!.environment} · 测试时间：{latest.test!.date}{latest.test!.time && ` ${latest.test!.time}`}</span>
+        </div>
+      )}
     </div>
 
-    <!-- 核心实测数据大盘 -->
+    <!-- 测速记录表 -->
     <section class="section" style="padding-top: 20px;">
       <div class="section-heading">
         <div>
-          <span class="eyebrow">LIVE TELEMETRY LOGS</span>
-          <h2>全网主流品牌晚高峰三网测速大盘</h2>
-          <p class="muted">数据采集于晚高峰 20:30~22:30 黄金拥堵时段，每项数据均经多轮复测求取中位数。</p>
-        </div>
-        <div class="filter-pills">
-          <button type="button" class="f-pill active" data-filter="all">全部节点</button>
-          <button type="button" class="f-pill" data-filter="HK">香港专线</button>
-          <button type="button" class="f-pill" data-filter="JP">日本东京</button>
-          <button type="button" class="f-pill" data-filter="SG">新加坡</button>
-          <button type="button" class="f-pill" data-filter="US">美西节点</button>
+          <span class="eyebrow">SPEED TEST RECORDS</span>
+          <h2>主推品牌节点测速记录</h2>
+          <p class="muted">数值来源见每行备注，点击「查看截图」可在测评页看到原始测试截图。</p>
         </div>
       </div>
 
       <div class="table-container">
-        <table class="telemetry-table" id="speed-table">
+        <table class="telemetry-table">
           <thead>
             <tr>
-              <th>品牌与节点名称</th>
-              <th>线路类型</th>
-              <th>测试时段</th>
-              <th>电信实测 (延迟/丢包/下行)</th>
-              <th>联通实测 (延迟/丢包/下行)</th>
-              <th>移动实测 (延迟/丢包/下行)</th>
-              <th>YouTube 4K 实际速率</th>
+              <th>品牌与测试节点</th>
+              <th>测试日期</th>
+              <th>下载 / 上传</th>
+              <th>延迟 / 丢包</th>
+              <th>Netflix（Fast.com）</th>
+              <th>YouTube 连接速度</th>
               <th>测评与直达</th>
             </tr>
           </thead>
           <tbody>
-            {speedTestDataset.map(row => (
-              <tr data-region={row.region}>
+            {rows.map(({ brand, test, metric, testStatus }) => (
+              <tr class:list={[{ 'row-pending': !test }]}>
                 <td>
                   <div class="brand-cell">
-                    <a href={`/reviews/${row.brandSlug}/`} class="bc-name">{row.brandName}</a>
-                    <span class="bc-node">{row.nodeName}</span>
+                    <a href={`/reviews/${brand.slug}/`} class="bc-name">{brand.name}</a>
+                    <span class="bc-node">{test ? test.node : brand.lineType}</span>
                   </div>
                 </td>
-                <td>
-                  <span class="badge-line">{row.lineType}</span>
-                </td>
-                <td>
-                  <span class="time-cell">{row.testTime}</span>
-                </td>
-                <td>
-                  <div class="isp-metric">
-                    <span class="isp-ping">{row.ispTelecom.latency} ms</span>
-                    <span class="isp-loss">丢包 {row.ispTelecom.loss}%</span>
-                    <span class="isp-speed">⚡ {row.ispTelecom.speed} M</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="isp-metric">
-                    <span class="isp-ping">{row.ispUnicom.latency} ms</span>
-                    <span class="isp-loss">丢包 {row.ispUnicom.loss}%</span>
-                    <span class="isp-speed">⚡ {row.ispUnicom.speed} M</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="isp-metric">
-                    <span class="isp-ping">{row.ispMobile.latency} ms</span>
-                    <span class="isp-loss" style={row.ispMobile.loss > 1.5 ? 'color: #f87171;' : ''}>丢包 {row.ispMobile.loss}%</span>
-                    <span class="isp-speed">⚡ {row.ispMobile.speed} M</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="ytb-metric">
-                    <strong class="ytb-speed">{row.youtube4kSpeed.toLocaleString()} Kbps</strong>
-                    <span class="ytb-status">{row.streamingStatus}</span>
-                  </div>
-                </td>
+                {test ? (
+                  <>
+                    <td><span class="time-cell">{test.date}</span></td>
+                    <td><div class="isp-metric"><span class="isp-speed">↓ {metric('下载速度')}</span><span class="isp-ping">↑ {metric('上传速度')}</span></div></td>
+                    <td><div class="isp-metric"><span class="isp-ping">{metric('延迟')}</span><span class="isp-loss">丢包 {metric('丢包率')}</span></div></td>
+                    <td><strong class="ytb-speed">{metric('Netflix 测速')}</strong></td>
+                    <td><strong class="ytb-speed">{metric('YouTube 连接速度')}</strong></td>
+                  </>
+                ) : (
+                  <td colspan="5"><span class="pending-text">{testStatus ?? '待测试 · 测速数据陆续补充'}</span></td>
+                )}
                 <td>
                   <div class="action-cell">
-                    <a href={`/reviews/${row.brandSlug}/`} class="btn-table review">测评</a>
-                    <a href={`/go/${row.brandSlug}/`} target="_blank" rel="nofollow noopener sponsored" class="btn-table go">官网 ↗</a>
+                    <a href={test ? `/reviews/${brand.slug}/#module-experience` : `/reviews/${brand.slug}/`} class="btn-table review">{test ? '查看截图' : '测评'}</a>
+                    <a href={`/go/${brand.slug}/`} target="_blank" rel="nofollow noopener sponsored" class="btn-table go">官网 ↗</a>
                   </div>
                 </td>
               </tr>
@@ -175,9 +160,10 @@ const description = `拒绝0%虚假数据与测速虚标！国际版VIP 建立�
           </tbody>
         </table>
       </div>
+      {latest && <p class="table-note">下载、上传、延迟、丢包来自 Cloudflare Speed Test；Netflix 一栏来自 Fast.com；YouTube 一栏来自 YouTube 详细统计信息。</p>}
     </section>
 
-    <!-- 底部选购建议与自测指南 -->
+    <!-- 底部自测指南 -->
     <div class="self-test-guide">
       <span class="eyebrow">DIY SPEEDTEST GUIDE</span>
       <h3>如何在自己的电脑上进行客观真实测速？</h3>
@@ -192,48 +178,24 @@ const description = `拒绝0%虚假数据与测速虚标！国际版VIP 建立�
         </div>
         <div class="diy-card">
           <div class="diy-num">02</div>
-          <div class="diy-title">打开 YouTube 4K 统计信息</div>
-          <div class="diy-desc">在播放画面上右键点击【详细统计信息 (Stats for nerds)】，观察 Connection Speed 是否稳定在 50,000 Kbps 以上。</div>
+          <div class="diy-title">打开 YouTube 统计信息</div>
+          <div class="diy-desc">在播放画面上右键点击【详细统计信息 (Stats for nerds)】，观察 Connection Speed：1080p 一般需要稳定 10,000 Kbps 以上，4K 需要更高。</div>
         </div>
         <div class="diy-card">
           <div class="diy-num">03</div>
-          <div class="diy-title">终端持续 Ping 测试丢包</div>
-          <div class="diy-desc">在终端运行 <code>ping -c 100 节点域名</code>，观察丢包率是否稳定在 2% 以内，若出现连续 5 个以上超时说明有断流现象。</div>
+          <div class="diy-title">用 Cloudflare 与 Fast.com 测速</div>
+          <div class="diy-desc">打开 speed.cloudflare.com 和 fast.com 各测一次，对比下载、上传、延迟与丢包；若频繁出现丢包或延迟大幅跳动，说明线路不稳定。</div>
         </div>
       </div>
 
       <div class="guide-actions">
-        <a href="/vpn/" class="button primary">查看推荐品牌库与免费测试节点 ↗</a>
+        <a href="/tizi/" class="button primary">查看梯子推荐与选购指南 ↗</a>
         <a href="/reviews/" class="button secondary">返回全部品牌深度测评目录 →</a>
       </div>
     </div>
   </div>
-
-  <script is:inline>
-    // 节点地区筛选逻辑
-    document.addEventListener('DOMContentLoaded', () => {
-      const pills = document.querySelectorAll('.f-pill');
-      const tableRows = document.querySelectorAll('#speed-table tbody tr');
-
-      pills.forEach(pill => {
-        pill.addEventListener('click', () => {
-          pills.forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
-
-          const filter = pill.getAttribute('data-filter');
-          tableRows.forEach(row => {
-            const region = row.getAttribute('data-region');
-            if (filter === 'all' || region === filter) {
-              row.style.display = '';
-            } else {
-              row.style.display = 'none';
-            }
-          });
-        });
-      });
-    });
-  </script>
 </BaseLayout>
+
 
 <style>
   .speedtest-data-page {
@@ -592,4 +554,7 @@ const description = `拒绝0%虚假数据与测速虚标！国际版VIP 建立�
     gap: 12px;
     flex-wrap: wrap;
   }
+  .row-pending td { opacity: 0.7; }
+  .pending-text { font-size: 12.5px; color: #94a3b8; }
+  .table-note { margin-top: 10px; font-size: 12px; color: #94a3b8; }
 </style>

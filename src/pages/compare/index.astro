@@ -5,10 +5,14 @@ import ComparisonTable from '../../components/ComparisonTable.astro';
 import FAQ from '../../components/FAQ.astro';
 import { site } from '../../data/site';
 import { primaryBrandCompares } from '../../data/comparisons';
+import { getBrandTests } from '../../utils/latestTest';
+
+// 本站测试列：与评测页、/data/ 同源
+const brandTests = await getBrandTests();
 ---
 <BaseLayout
-  title={`2026好用的梯子对比与科学上网机场排行榜 · 海外网站与App对比指南 · ${site.name}`}
-  description="2026最新科学上网梯子对比与海外资源使用指南。权威评测微风网络、飞猫云、暮光加速、firefly等9大主推专线机场，系统对比ChatGPT、TikTok、YouTube等海外热门应用的网页版与App差异，助你看清差异，先月付试水再做选择。"
+  title={`梯子怎么选？主推机场对比与海外App网页版对比 · ${site.name}`}
+  description="对比微风网络、飞猫云、暮光加速、萤火虫等9家主推机场的线路类型、套餐价格、优惠码与设备限制，并整理ChatGPT、TikTok、YouTube等海外应用网页版与App的使用差异，帮你看清再选择。"
 >
   <div class="container">
     <Breadcrumb items={[{ label: '使用对比' }]} />
@@ -16,8 +20,8 @@ import { primaryBrandCompares } from '../../data/comparisons';
     <!-- 页面大标题：高流量提示词强化 -->
     <header class="page-heading">
       <span class="eyebrow">2026 SPEED & BENCHMARK · 梯子对比与海外资源全景</span>
-      <h1>2026 好用的梯子对比与科学上网机场排行榜：<br />看清专线与海外资源差异，<span class="hero-emphasis">做出最适合你的高效选择。</span></h1>
-      <p>面对国内直连打不开海外网站、App 一直转圈加载的困扰，究竟哪个梯子好用？翻墙机场该怎么选？国际版VIP 实测梳理 <strong>9 大主推口碑专线梯子品牌</strong>核心参数对比（专线架构、月付资费、专属优惠码与优势场景），并配套 ChatGPT、TikTok、YouTube 等海外主流资源的平台使用差异，助你花最少的钱、选对最稳的专线工具。</p>
+      <h1>梯子与机场对比：<span class="hero-emphasis">9家主推品牌套餐差异</span></h1>
+      <p>面对国内直连打不开海外网站、App 一直转圈加载的困扰，究竟哪个梯子好用？翻墙机场该怎么选？国际版VIP 整理 <strong>9 大主推口碑专线梯子品牌</strong>核心参数对比（专线架构、月付资费、专属优惠码与优势场景），并配套 ChatGPT、TikTok、YouTube 等海外主流资源的平台使用差异，助你花最少的钱、选对最稳的专线工具。</p>
     </header>
 
     <!-- 顶部导流转化卡片：网络环境门槛提示 -->
@@ -27,7 +31,7 @@ import { primaryBrandCompares } from '../../data/comparisons';
         <p>文中所对比的所有海外正版服务服务器均位于境外。国内直连时普遍存在域名污染与网络阻断。想稳定体验网页版秒开或 App 顺畅登录，建议先配置稳定高速专线，或前往我们的精选梯子推荐选购月付品牌试水。</p>
       </div>
       <div class="cvn-btn">
-        <a href="/vpn/" class="button primary" style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 13px; font-weight: 700; padding: 11px 18px; white-space: nowrap;">
+        <a href="/tizi/" class="button primary" style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 13px; font-weight: 700; padding: 11px 18px; white-space: nowrap;">
           按不进去？前往【梯子推荐】选购 ↗
         </a>
       </div>
@@ -51,11 +55,11 @@ import { primaryBrandCompares } from '../../data/comparisons';
         <div>
           <span class="eyebrow">MODULE 01 · TOP PROMOTED BRANDS</span>
           <h2>梯子推荐对比：9 大口碑主推专线机场核心参数横评</h2>
-          <p class="muted">拒绝虚标与跑路风险。精选微风网络、飞猫云、暮光加速、firefly 等实测口碑专线，直观对比线路类型、入门月付门槛、优惠码与擅长场景。</p>
+          <p class="muted">拒绝虚标与跑路风险。精选微风网络、飞猫云、暮光加速、firefly 等主推专线，直观对比线路类型、入门月付门槛、优惠码与擅长场景。</p>
         </div>
         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看深度实测报告 /reviews/ ↗</a>
-          <a href="/vpn/" class="text-link" style="font-size: 12px;">梯子推荐精选 /vpn/ ↗</a>
+          <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看深度测评报告 /reviews/ ↗</a>
+          <a href="/tizi/" class="text-link" style="font-size: 12px;">梯子推荐精选 /tizi/ ↗</a>
         </div>
       </div>
 
@@ -72,11 +76,12 @@ import { primaryBrandCompares } from '../../data/comparisons';
         <table class="brand-compare-table">
           <thead>
             <tr>
-              <th style="width: 15%;">主推梯子品牌</th>
-              <th style="width: 16%;">物理专线类型</th>
-              <th style="width: 16%;">推荐入门方案</th>
-              <th style="width: 13%;">专属优惠码</th>
-              <th style="width: 18%;">晚高峰实测亮点</th>
+              <th style="width: 13%;">主推梯子品牌</th>
+              <th style="width: 12%;">物理专线类型</th>
+              <th style="width: 13%;">推荐入门方案</th>
+              <th style="width: 10%;">专属优惠码</th>
+              <th style="width: 14%;">本站测试（非晚高峰）</th>
+              <th style="width: 16%;">主要亮点（官方介绍）</th>
               <th style="width: 12%;">适合人群</th>
               <th style="width: 10%;">直达操作</th>
             </tr>
@@ -104,6 +109,18 @@ import { primaryBrandCompares } from '../../data/comparisons';
                   <div class="coupon-box">
                     <code class="coupon-code">{b.coupon}</code>
                     <span class="coupon-discount">{b.couponDiscount}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="test-cell">
+                    {brandTests[b.slug]?.tested ? (
+                      <>
+                        <strong class="test-speed">↓ {brandTests[b.slug].speed}</strong>
+                        <span class="test-meta">延迟 {brandTests[b.slug].latency}{brandTests[b.slug].packetLoss ? ' · 丢包 ' + brandTests[b.slug].packetLoss : ''}</span>
+                        <span class="test-meta">{brandTests[b.slug].date} {brandTests[b.slug].node}</span>
+                        {brandTests[b.slug].unavailable.length > 0 && <span class="test-warn">{brandTests[b.slug].unavailable.join('、')} 当次不可用</span>}
+                      </>
+                    ) : <span class="test-pending">{brandTests[b.slug]?.pendingText ?? '待测试'}</span>}
                   </div>
                 </td>
                 <td>
@@ -165,7 +182,21 @@ import { primaryBrandCompares } from '../../data/comparisons';
             </div>
 
             <div class="bci-feature-box">
-              <span class="bfb-label">晚高峰实测亮点：</span>
+              <span class="bfb-label">本站测试（非晚高峰）：</span>
+              <div class="test-cell">
+                    {brandTests[b.slug]?.tested ? (
+                      <>
+                        <strong class="test-speed">↓ {brandTests[b.slug].speed}</strong>
+                        <span class="test-meta">延迟 {brandTests[b.slug].latency}{brandTests[b.slug].packetLoss ? ' · 丢包 ' + brandTests[b.slug].packetLoss : ''}</span>
+                        <span class="test-meta">{brandTests[b.slug].date} {brandTests[b.slug].node}</span>
+                        {brandTests[b.slug].unavailable.length > 0 && <span class="test-warn">{brandTests[b.slug].unavailable.join('、')} 当次不可用</span>}
+                      </>
+                    ) : <span class="test-pending">{brandTests[b.slug]?.pendingText ?? '待测试'}</span>}
+                  </div>
+            </div>
+
+            <div class="bci-feature-box">
+              <span class="bfb-label">主要亮点（官方介绍）：</span>
               <ul class="strength-list">
                 {b.strengths.map((s) => <li>{s}</li>)}
               </ul>
@@ -200,7 +231,7 @@ import { primaryBrandCompares } from '../../data/comparisons';
           <span class="vs-badge-pro">为什么推荐主推专线梯子？</span>
           <h3>IPLC / IEPL 物理专线保障</h3>
           <ul>
-            <li>✓ 数据走内网专用物理光纤出境，<strong>全程根本不经过公网防火墙 (GFW)</strong>；</li>
+            <li>✓ 跨境段走专用线路，<strong>不和公网用户挤同一个国际出口</strong>；</li>
             <li>✓ 晚高峰（20:00~23:00）骨干网不塞车，延迟极低，看 4K/8K 视频不转圈；</li>
             <li>✓ 分配高纯净度原生 IP，稳定支持 ChatGPT、Claude 交互与 Netflix 全量解锁。</li>
           </ul>
@@ -238,11 +269,11 @@ import { primaryBrandCompares } from '../../data/comparisons';
         <div class="kt-grid">
           <div class="kt-item">
             <strong>优先选网页版 (Web) 的场景：</strong>
-            <p>日常办公、复杂代码编写与长文本研究（ChatGPT Canvas）、免去海外 Apple ID 与安卓谷歌框架的繁琐安装门槛，电脑浏览器秒开。</p>
+            <p>日常办公、复杂代码编写与长文本研究（如 ChatGPT 的 Canvas 分栏）、免去海外 Apple ID 与安卓谷歌框架的繁琐安装门槛，电脑浏览器秒开。</p>
           </div>
           <div class="kt-item">
             <strong>必须选移动 App 的场景：</strong>
-            <p>ChatGPT 独占高级自然语音对话（口语陪练）、TikTok 完整全球短视频与直播出海（需免拔卡与纯净原生 IP）、电视大屏 4K 杜比观影。</p>
+            <p>ChatGPT 语音对话练口语、TikTok 完整全球短视频与直播出海（需免拔卡与纯净原生 IP）、电视大屏 4K 杜比观影。</p>
           </div>
         </div>
       </div>
@@ -256,7 +287,7 @@ import { primaryBrandCompares } from '../../data/comparisons';
         <p>无论是使用 ChatGPT 生产力、刷 TikTok 国际版，还是看 4K YouTube 与 Netflix，一条低延迟、高可用的 IPLC 专线都是不可或缺的基础底座。强烈建议在上方品牌对比中先选购一个月的月付套餐实测，满意再续费。</p>
       </div>
       <div class="bridge-right">
-        <a href="/vpn/" class="button primary" style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 14px; font-weight: 700; padding: 13px 26px;">
+        <a href="/tizi/" class="button primary" style="color: #090a0f !important; background: #ffffff !important; text-decoration: none !important; font-size: 14px; font-weight: 700; padding: 13px 26px;">
           前往【梯子推荐】选购品牌专线 ↗
         </a>
         <a href="/resources/" class="button secondary" style="font-size: 13px; padding: 11px 20px;">
@@ -482,6 +513,26 @@ import { primaryBrandCompares } from '../../data/comparisons';
     font-size: 10.5px;
     color: #34d399;
     font-weight: 600;
+  }
+  .test-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+  }
+  .test-speed {
+    color: #67e8f9;
+    font-size: 14px;
+  }
+  .test-meta {
+    color: #94a3b8;
+  }
+  .test-warn {
+    color: #fca5a5;
+  }
+  .test-pending {
+    color: #94a3b8;
+    font-style: italic;
   }
   .strength-list {
     margin: 0;

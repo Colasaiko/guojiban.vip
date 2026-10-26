@@ -60,31 +60,31 @@ export const allBrands: BrandInfo[] = [
   {
     "slug": "feimao",
     "name": "飞猫云",
-    "tag": "站长核心主推 · 全IPLC专线",
+    "tag": "站长核心主推 · IPLC/IEPL专线",
     "category": "primary",
     "score": "9.8",
     "speed": "待测试",
     "latency": "待测试",
     "packetLoss": "待测试",
-    "lineType": "IPLC",
+    "lineType": "IPLC/IEPL",
     "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
     "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
     "devices": "不限制设备连接数量",
-    "minMonthly": "¥20 起",
-    "coupon": "flycat888",
-    "couponDiscount": "8折特惠",
+    "minMonthly": "¥21.25 起",
+    "coupon": "fm85",
+    "couponDiscount": "85折",
     "targetUrl": "https://flycat1.flycatvipaff.cc/#/?code=UUcH5yh9",
-    "summary": "飞猫云采用全 IPLC 专线出口与原生 IP 架构，单节点峰值带宽标称最高达 2.5Gbps，支持主流流媒体与 ChatGPT 智能工具。套餐覆盖 100GB 至 1000GB 多档月流量方案以及不限时固定总量包，且不限制设备连接数量。结算页输入专属优惠码 flycat888 可为符合条件的常规月付套餐提供 8 折优惠（飞猫·星耀版月付折后 ¥20.00 起，学生版年付折合约 ¥7.00/月）。",
+    "summary": "飞猫云采用 IPLC / IEPL 专线（BGP 多线接入，部分地区为直连节点）与原生 IP 架构，单节点峰值带宽标称最高达 2.5Gbps，支持主流流媒体与 ChatGPT 智能工具。套餐覆盖 100GB 至 1000GB 多档月流量方案以及不限时固定总量包，且不限制设备连接数量。结算页输入专属优惠码 fm85 可享全站 85 折优惠（飞猫·星耀版月付折后 ¥21.25 起，学生版年付折合约 ¥5.95/月）。",
     "features": [
-      "IPLC 专线",
+      "IPLC/IEPL 专线",
       "最高 2.5Gbps",
       "原生 IP 解锁",
       "不限制设备数",
       "券后 ¥20 起"
     ],
     "pros": [
-      "全 IPLC 专线 + 原生 IP，标称最高 2.5Gbps，不限制设备连接数量",
-      "支持专属特惠券 flycat888（8折），提供学生版轻量年付方案"
+      "IPLC / IEPL 专线 + 原生 IP，标称最高 2.5Gbps，不限制设备连接数量",
+      "支持专属特惠券 fm85（全站85折），提供学生版轻量年付方案"
     ],
     "cons": [
       "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"

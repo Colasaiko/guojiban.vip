@@ -78,7 +78,7 @@ const untested = !report || report.nodes.length === 0;
                 <span class="spc-speed-val">↓ {node.speed}</span>
               )}
               {isTimeout ? (
-                <span class="spc-tag-timeout">部分 Timeout</span>
+                <span class="spc-tag-timeout">{node.status?.includes('当次') ? '当次 Timeout' : '部分 Timeout'}</span>
               ) : (
                 <span class="spc-tag-ok">正常连通</span>
               )}

@@ -1,0 +1,4 @@
+# 301 Redirects for Cloudflare Pages / Netlify
+/vpn/* /tizi/:splat 301
+/vpn /tizi/ 301
+/vpn/ /tizi/ 301

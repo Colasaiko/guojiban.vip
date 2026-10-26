@@ -4,14 +4,534 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import FAQ from '../components/FAQ.astro';
 import { categories, categoryHref, site } from '../data/site';
-const posts = await getCollection('blog', ({data}) => !data.draft);
+import { allBrands } from '../data/brands';
+import { getBrandTests } from '../utils/latestTest';
+
+// 首页「机场推荐」区块：9 个主推品牌
+const primaryBrands = allBrands.filter(b => b.category === 'primary');
+const brandTests = await getBrandTests();
+
+const posts = (await getCollection('blog', ({data}) => !data.draft))
+  .sort((a, b) => b.data.updatedDate.getTime() - a.data.updatedDate.getTime());
 ---
-<BaseLayout title={`${site.name} · 国外好用App推荐与海外AI工具使用指南`}><div class="container">
-<section class="hero"><div class="hero-copy"><span class="pill"><span class="status-dot"></span> 国外好用App · 海外热门AI工具 · 中文使用指南</span><h1>想要国外好用的 App 与 AI 神器？<br />上国际版VIP，<span class="hero-emphasis">海外优质软件一站搞定。</span></h1><p>许多国外主流 App 与前沿 AI 工具在国内无法直接访问？<br />国际版VIP 专为解决国内使用难点而生，精选 ChatGPT、Claude 等海外热门 AI 及高口碑应用，<br class="desktop-break" />提供清晰的使用指南、平台差异与入门常识，让你身在国内也能轻松畅享世界级优质资源。</p><div class="hero-actions"><a class="button primary" href="/blog/">发现海外好用工具 <span>↗</span></a><a class="button secondary" href="#categories">按场景找 App / AI <span>↓</span></a></div><div class="hero-footnote"><span>国外好用 App 推荐</span><i></i><span>海外热门 AI 工具</span><i></i><span>国内使用与账号常识</span></div></div>
-<div class="explore-board"><div class="board-top"><span><span class="status-dot"></span> DISCOVERY BOARD</span><span>01 / 海外资源雷达</span></div><div class="board-globe"><div class="globe"><div class="globe-longitude"></div><div class="globe-latitude"></div><span>↗</span></div><span class="float-label label-one">◎ 国外社媒 App</span><span class="float-label label-two">✳ 海外热门 AI</span><span class="float-label label-three">▷ 海外影音流媒体</span></div><div class="board-bottom"><div><small>GLOBAL APPS & AI</small><strong>国外好用的软件与前沿 AI，从这里开启。</strong></div><a href="/topics/" aria-label="探索内容专题">↗</a></div></div></section>
-<div class="info-strip"><div><strong>06</strong><span>内容场景分类</span></div><div><strong>Web + App</strong><span>覆盖不同使用平台</span></div><div><strong>中文指南</strong><span>让信息更容易理解</span></div><div><strong class="small-stat">正在搭建</strong><span>条目内容将逐步补充</span></div></div>
-<section id="categories" class="section"><div class="section-heading"><div><span class="eyebrow">EXPLORE BY INTEREST</span><h2>从你的兴趣出发</h2><p class="muted">不必漫无目的，从一个熟悉的场景开始。</p></div><span class="section-index">01 — 分类探索</span></div><div class="category-grid">{categories.map((category, i) => <a class="category-card" href={categoryHref(category.slug)}><div class="category-top"><span class="category-icon">{category.icon}</span><span class="category-number">0{i+1}</span></div><h3>{category.name}<span>↗</span></h3><p>{category.description}</p></a>)}</div></section>
-<section class="section"><div class="section-heading"><div><span class="eyebrow">THE READING ROOM</span><h2>值得开始的阅读</h2><p class="muted">先了解，再选择。这里是未来内容的起点。</p></div><a class="text-link" href="/blog/">全部文章 ↗</a></div><div class="editorial-grid">{posts.slice(0,1).map(post => <ArticleCard post={post} />)}<div class="up-next"><span class="eyebrow">ON THE HORIZON</span><h3>更多内容，<br />正在路上。</h3><p>接下来，我们将逐步补齐这些内容方向。</p><div class="up-next-row"><span>01</span><div><strong>网站与 App 介绍</strong><small>用途、场景与使用条件</small></div><span>待更新</span></div><div class="up-next-row"><span>02</span><div><strong>平台差异与对比</strong><small>网页端、移动端与设备支持</small></div><span>待更新</span></div><div class="up-next-row"><span>03</span><div><strong>访问情况与常见问题</strong><small>核实时间、环境与来源说明</small></div><span>待更新</span></div></div></div></section>
-<section class="topic-banner"><div><span class="eyebrow">A LITTLE GUIDANCE</span><h2>第一次探索？<br />从一份入门指南开始。</h2><p>把零散的信息连成线，建立属于自己的认知地图。</p><a class="button light" href="/topics/download-overseas-apps/">国外 App 下载指南 ↗</a></div><div class="topic-steps"><div><span>01</span><strong>认识用途</strong><small>它能帮你完成什么</small></div><div><span>02</span><strong>了解差异</strong><small>不同平台，如何选择</small></div><div><span>03</span><strong>做好准备</strong><small>提前了解使用条件</small></div></div></section>
-<FAQ /><section class="closing"><span class="eyebrow">STAY CURIOUS</span><h2>世界很大，从这里打开一页。</h2><a class="text-link" href="/blog/">发现你的下一篇阅读 ↗</a></section>
-</div></BaseLayout>
+
+<BaseLayout
+  title="国际版VIP：2026稳定机场推荐、海外App与AI工具使用指南"
+  description="国际版VIP整理2026年稳定好用的机场推荐，逐家介绍线路、套餐价格与优惠码，并提供ChatGPT、TikTok、YouTube等海外App与AI工具的下载方法、打不开排查与使用教程。"
+>
+  <div class="container">
+    <!-- Hero 主视觉区：强化 2026 梯子推荐与机场推荐定位 -->
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="pill">
+          <span class="status-dot"></span> 2026 稳定机场推荐 · 梯子测速测评 · 全球网络指南
+        </span>
+        <h1>2026稳定机场推荐<br /><span class="hero-emphasis">与海外App使用指南</span></h1>
+        <p>
+          许多国外主流网站与前沿 AI 工具在国内无法直接稳定访问？<br />
+          国际版VIP 整理 35+ 机场与梯子品牌的套餐、线路与优惠码，详细测评主推品牌并持续补充测速数据；<br class="desktop-break" />
+          同时精选 ChatGPT、Claude 等海外热门工具的使用指南，助你打破信息差，安全高效连接全球网络。
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="/tizi/">2026 梯子推荐精选 <span>↗</span></a>
+          <a class="button secondary" href="#tizi-decision">如何挑选适合的梯子 <span>↓</span></a>
+        </div>
+        <div class="hero-footnote">
+          <span>35+ 品牌档案</span><i></i><span>主推品牌测评与测速</span><i></i><span>海外热门 AI 与 App 指南</span>
+        </div>
+      </div>
+
+      <div class="explore-board">
+        <div class="board-top">
+          <span><span class="status-dot"></span> RADAR & METRICS</span>
+          <span>01 / 全球加速与资源雷达</span>
+        </div>
+        <div class="board-globe">
+          <div class="globe">
+            <div class="globe-longitude"></div>
+            <div class="globe-latitude"></div>
+            <span>↗</span>
+          </div>
+          <span class="float-label label-one">✈️ 优质专线机场</span>
+          <span class="float-label label-two">✳ 海外热门 AI</span>
+          <span class="float-label label-three">▷ 4K 流媒体秒开</span>
+        </div>
+        <div class="board-bottom">
+          <div>
+            <small>GLOBAL NETWORK & TOOLS</small>
+            <strong>稳定机场与海外资源，从这里开启。</strong>
+          </div>
+          <a href="/tizi/" aria-label="查看梯子推荐精选">↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 关键数据条 -->
+    <div class="info-strip">
+      <div><strong>35+</strong><span>品牌档案与优惠码</span></div>
+      <div><strong>IPLC/IEPL</strong><span>主流物理专线覆盖</span></div>
+      <div><strong>测速记录</strong><span>附截图与测试环境</span></div>
+      <div><strong>排查指南</strong><span>覆盖常见连不上痛点</span></div>
+    </div>
+
+    <!-- 2026 机场推荐：9 个主推品牌一览 -->
+    <section id="jichang-tuijian" class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">AIRPORT PICKS · 机场推荐</span>
+          <h2>2026 机场推荐：9 家主推机场一览</h2>
+          <p class="muted">按线路、起步价与优惠码整理，点击查看每家的套餐详情与使用方法，建议先月付再长期使用。</p>
+        </div>
+        <a class="text-link" href="/reviews/">查看全部测评 ↗</a>
+      </div>
+      <div class="airport-picks">
+        {primaryBrands.map((b, i) => (
+          <div class="pick-card">
+            <div class="pick-top">
+              <span class="pick-rank">{String(i + 1).padStart(2, '0')}</span>
+              <strong class="pick-name">{b.name}</strong>
+              <span class="pick-line">{b.lineType}</span>
+            </div>
+            <dl class="pick-specs">
+              <div><dt>起步价</dt><dd>{b.minMonthly}</dd></div>
+              <div><dt>优惠码</dt><dd><code>{b.coupon}</code> {b.couponDiscount}</dd></div>
+              <div><dt>设备</dt><dd>{b.devices}</dd></div>
+              <div><dt>本站测试</dt><dd>{brandTests[b.slug]?.tested ? `${brandTests[b.slug].speed} · ${brandTests[b.slug].node}` : (brandTests[b.slug]?.pendingText ?? '待测试')}</dd></div>
+            </dl>
+            <div class="pick-actions">
+              <a href={`/reviews/${b.slug}/`} class="pick-btn">查看测评</a>
+              <a href={`/go/${b.slug}/`} class="pick-btn primary" target="_blank" rel="nofollow sponsored noopener">前往官网 ↗</a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 核心业务板块：为什么需要选对梯子与机场？怎么选？ -->
+    <section id="tizi-decision" class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">CORE SERVICES & DECISION GUIDE</span>
+          <h2>为什么需要选对适合自己的机场与梯子？</h2>
+          <p class="muted">市面网络加速服务良莠不齐、线路协议各异。通过测评与参数对比，助你理智决策不踩坑。</p>
+        </div>
+        <a class="text-link" href="/tizi/">进入梯子推荐专区 ↗</a>
+      </div>
+
+      <div class="decision-grid">
+        <div class="decision-card">
+          <div class="dc-icon">🤖</div>
+          <h3>前沿 AI 生产力赋能</h3>
+          <p>顺畅使用 ChatGPT Plus、Claude 3.5 Sonnet、Midjourney 与 Cursor 等智能工具。精选低风控住宅原生 IP 节点，避免频繁报错或拦截封号。</p>
+          <div class="dc-tag">AI 生产力必备</div>
+        </div>
+
+        <div class="decision-card">
+          <div class="dc-icon">🎬</div>
+          <h3>4K/8K 影音与社交畅享</h3>
+          <p>解决 YouTube 高码率缓冲、Netflix 全球剧集解锁、TikTok 国际版与 Spotify 音乐加载缓慢。严选拥有高带宽冗余与低丢包的专线服务商。</p>
+          <div class="dc-tag">超高清流媒体</div>
+        </div>
+
+        <div class="decision-card">
+          <div class="dc-icon">🛡️</div>
+          <h3>拒绝虚标与跑路避坑</h3>
+          <p>市面小作坊机场超卖严重、客服失联频发。国际版VIP 建立 35+ 品牌档案与独立口碑库，坚决倡导“首选月付试水”，保护读者资金安全。</p>
+          <div class="dc-tag">避坑消费常识</div>
+        </div>
+
+        <div class="decision-card">
+          <div class="dc-icon">📊</div>
+          <h3>节点测速记录</h3>
+          <p>主推品牌的下载速度、延迟、丢包与网站连通情况逐家补充，每次测试都附截图并注明日期、节点与网络环境，方便你横向比对。</p>
+          <div class="dc-tag">真实测速档案</div>
+        </div>
+      </div>
+
+      <!-- 核心导航矩阵入口 -->
+      <div class="hub-nav-matrix">
+        <a href="/tizi/" class="hub-pill primary">
+          <span class="hp-icon">🚀</span>
+          <div>
+            <strong>梯子推荐精选</strong>
+            <small>主力严选专线 · 支持月付</small>
+          </div>
+          <span class="hp-arrow">→</span>
+        </a>
+        <a href="/brands/" class="hub-pill">
+          <span class="hp-icon">📁</span>
+          <div>
+            <strong>35+ 品牌档案库</strong>
+            <small>主流服务商参数与优惠码</small>
+          </div>
+          <span class="hp-arrow">→</span>
+        </a>
+        <a href="/compare/" class="hub-pill">
+          <span class="hp-icon">⚖️</span>
+          <div>
+            <strong>横向参数对比</strong>
+            <small>线路、价格与场景横评</small>
+          </div>
+          <span class="hp-arrow">→</span>
+        </a>
+        <a href="/data/" class="hub-pill">
+          <span class="hp-icon">📈</span>
+          <div>
+            <strong>梯子测速数据</strong>
+            <small>下载速度、延迟与丢包记录</small>
+          </div>
+          <span class="hp-arrow">→</span>
+        </a>
+        <a href="/jichang/" class="hub-pill">
+          <span class="hp-icon">✈️</span>
+          <div>
+            <strong>机场测评大全</strong>
+            <small>口碑点评与跑路风险警示</small>
+          </div>
+          <span class="hp-arrow">→</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 场景探索板块：海外资源与 App 导航（辅助流量入口） -->
+    <section id="categories" class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">EXPLORE BY INTEREST · 场景导航</span>
+          <h2>探索全球优质海外数字资源</h2>
+          <p class="muted">精选海外正版官方入口、热门 AI 与效率应用，按场景快速检索。</p>
+        </div>
+        <a class="text-link" href="/resources/">100+ 资源导航 ↗</a>
+      </div>
+      <div class="category-grid">
+        {categories.map((category, i) => (
+          <a class="category-card" href={categoryHref(category.slug)}>
+            <div class="category-top">
+              <span class="category-icon">{category.icon}</span>
+              <span class="category-number">0{i+1}</span>
+            </div>
+            <h3>{category.name}<span>↗</span></h3>
+            <p>{category.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- 实战使用指南与阅读板块 -->
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">THE READING ROOM · 实战指南</span>
+          <h2>最新精选使用教程与技巧</h2>
+          <p class="muted">从注册安装到网络配置，逐步整理成系统易懂的中文指南。</p>
+        </div>
+        <a class="text-link" href="/blog/">全部文章 ↗</a>
+      </div>
+      <div class="article-grid">
+        {posts.slice(0, 4).map(post => <ArticleCard post={post} />)}
+      </div>
+    </section>
+
+    <!-- 网络异常与排查引导板块（理性引导，非所有问题都归咎于梯子） -->
+    <section class="section trouble-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">TROUBLESHOOTING GUIDE · 故障排查</span>
+          <h2>海外网站打不开？如何分步排查网络与账号问题</h2>
+          <p class="muted">无法访问海外服务往往由多重因素造成。理性分析故障点，避免盲目更换或重复消费。</p>
+        </div>
+        <a class="text-link" href="/topics/vpn-still-not-working/">查看排查合集 ↗</a>
+      </div>
+
+      <div class="trouble-grid">
+        <div class="trouble-card">
+          <div class="tc-num">01</div>
+          <div class="tc-body">
+            <strong>本地代理客户端与分流规则</strong>
+            <p>检查 Clash/小火箭等客户端是否开启 TUN 模式或系统代理；检查分流规则（Rule/Global）是否正确匹配目标域名，避免流量绕过节点走直连。</p>
+          </div>
+        </div>
+        <div class="trouble-card">
+          <div class="tc-num">02</div>
+          <div class="tc-body">
+            <strong>服务地区政策与限制</strong>
+            <p>部分海外服务（如 ChatGPT、TikTok、Gemini）对特定国家开放。需核对目标平台支持列表，并在节点列表中选用对应地区的出口 IP。</p>
+          </div>
+        </div>
+        <div class="trouble-card">
+          <div class="tc-num">03</div>
+          <div class="tc-body">
+            <strong>账号安全与风控策略</strong>
+            <p>大模型服务商会对机房共享 IP 进行速率限制或拦截，这属于平台风控问题而非单纯网络断开。建议使用原生住宅节点或避免频繁切换不同国别 IP。</p>
+          </div>
+        </div>
+        <div class="trouble-card">
+          <div class="tc-num">04</div>
+          <div class="tc-body">
+            <strong>专线带宽与晚高峰拥堵</strong>
+            <p>普通公网中转容易在晚 20:00 - 23:00 发生跨境拥堵丢包。若频繁遇到断流转圈，建议参考测速指标选择具备物理专线（IPLC/IEPL）保障的服务。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-actions">
+        <a class="button primary" href="/tizi/">前往【梯子推荐】挑选高可用专线 ↗</a>
+        <a class="button secondary" href="/topics/vpn-still-not-working/">阅读完整《打不开排查专题》 →</a>
+      </div>
+    </section>
+
+    <!-- 入门指南 Banner -->
+    <section class="topic-banner">
+      <div>
+        <span class="eyebrow">GETTING STARTED</span>
+        <h2>第一次探索海外网络生态？<br />从一份入门指南开始。</h2>
+        <p>理清网络加速与软件下载的底层逻辑，轻松建立属于自己的认知地图。</p>
+        <a class="button light" href="/topics/download-overseas-apps/">海外 App 下载指南 ↗</a>
+      </div>
+      <div class="topic-steps">
+        <div><span>01</span><strong>认识用途</strong><small>它能帮你完成什么工作</small></div>
+        <div><span>02</span><strong>配置网络</strong><small>选用合适节点保障访问</small></div>
+        <div><span>03</span><strong>安全合规</strong><small>做好账号与隐私防护准备</small></div>
+      </div>
+    </section>
+
+    <!-- 常见问题解答 -->
+    <FAQ />
+
+    <!-- 底部行动号召 -->
+    <section class="closing">
+      <span class="eyebrow">START EXPLORING</span>
+      <h2>真实资料 · 透明测评 · 伴你跨越信息差</h2>
+      <p class="muted" style="margin-top: 10px; font-size: 14px;">从挑选一条稳定靠谱的专线开始，开启更广阔的数字世界视野。</p>
+      <div style="margin-top: 24px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <a class="button primary" href="/tizi/">查看 2026 梯子推荐精选 ↗</a>
+        <a class="button secondary" href="/resources/">100+ 海外精选资源直达 →</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* 决策引导卡片 */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .decision-card {
+    background: #12141d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .decision-card:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(18, 20, 29, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.6);
+  }
+  .dc-icon {
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .decision-card h3 {
+    font-size: 17px;
+    font-weight: 650;
+    color: #ffffff;
+    margin: 0;
+  }
+  .decision-card p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #94a3b8;
+    margin: 0;
+    flex-grow: 1;
+  }
+  .dc-tag {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 600;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 2px 9px;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+
+  /* 核心入口药丸导航 */
+  .hub-nav-matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+  /* 2026 机场推荐区块 */
+  .airport-picks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .pick-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--line-gold);
+    border-radius: var(--radius);
+  }
+  .pick-card:hover { border-color: rgba(255, 255, 255, 0.28); }
+  .pick-top { display: flex; align-items: center; gap: 10px; }
+  .pick-rank { font-size: 12px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .pick-name { font-size: 17px; color: #ffffff; }
+  .pick-line {
+    margin-left: auto;
+    font-size: 11px;
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    padding: 1px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pick-specs { margin: 0; display: grid; gap: 6px; }
+  .pick-specs div { display: flex; gap: 10px; font-size: 13px; }
+  .pick-specs dt { color: var(--muted); flex: 0 0 48px; }
+  .pick-specs dd { margin: 0; color: #e2e8f0; }
+  .pick-specs code { color: #fbbf24; font-weight: 600; }
+  .pick-actions { display: flex; gap: 8px; margin-top: auto; }
+  .pick-btn {
+    flex: 1;
+    text-align: center;
+    padding: 9px 0;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--line-gold);
+  }
+  .pick-btn:hover { background: var(--card-hover); }
+  .pick-btn.primary { background: #ffffff; color: #090a0f !important; border-color: #ffffff; }
+  .pick-btn.primary:hover { background: #f1f5f9; }
+  @media (max-width: 900px) { .airport-picks { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .airport-picks { grid-template-columns: 1fr; } }
+
+  .hub-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #0f1118;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    text-decoration: none !important;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+  .hub-pill.primary {
+    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(56, 189, 248, 0.06);
+  }
+  .hub-pill:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: #171a25;
+    transform: translateY(-2px);
+  }
+  .hub-pill.primary:hover {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+  }
+  .hp-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .hub-pill div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex-grow: 1;
+  }
+  .hub-pill strong {
+    font-size: 13px;
+    font-weight: 650;
+    color: #ffffff;
+    line-height: 1.3;
+  }
+  .hub-pill small {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hp-arrow {
+    color: #94a3b8;
+    font-size: 14px;
+    transition: transform 0.2s ease;
+  }
+  .hub-pill:hover .hp-arrow {
+    transform: translateX(3px);
+    color: #ffffff;
+  }
+
+  /* 网络故障排查板块 */
+  .trouble-section {
+    padding-top: 30px;
+  }
+  .trouble-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .trouble-card {
+    display: flex;
+    gap: 14px;
+    padding: 20px 18px;
+    border-radius: 12px;
+    background: #0f1118;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .tc-num {
+    font-size: 20px;
+    font-weight: 700;
+    color: #38bdf8;
+    opacity: 0.8;
+    line-height: 1;
+    font-family: monospace;
+    flex-shrink: 0;
+  }
+  .tc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tc-body strong {
+    font-size: 14px;
+    font-weight: 650;
+    color: #ffffff;
+  }
+  .tc-body p {
+    font-size: 12px;
+    line-height: 1.75;
+    color: #94a3b8;
+    margin: 0;
+  }
+  .trouble-actions {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+</style>
