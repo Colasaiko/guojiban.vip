@@ -49,7 +49,7 @@ export const allBrands: BrandInfo[] = [
       "支持不限时套餐"
     ],
     "pros": [
-      "严格源自 jichangbuy 数据库，全 IPLC 专线 + VLESS 协议，全场 7 折优惠码 weifeng90",
+      "全 IPLC 专线 + VLESS 协议，全场 7 折优惠码 weifeng90",
       "不限制设备同时接入数量，提供 270G 与 570G 不限时备用流量包"
     ],
     "cons": [
@@ -117,7 +117,6 @@ export const allBrands: BrandInfo[] = [
       "支持不限时套餐"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 mm88（8折）"
     ],
     "cons": [
@@ -219,7 +218,6 @@ export const allBrands: BrandInfo[] = [
       "支持不限时套餐"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 lingmao（8折）"
     ],
     "cons": [
@@ -253,7 +251,6 @@ export const allBrands: BrandInfo[] = [
       "不限制设备数"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 shanyue（8折）"
     ],
     "cons": [
@@ -287,7 +284,7 @@ export const allBrands: BrandInfo[] = [
       "永久流量包"
     ],
     "pros": [
-      "严格源自 jichangbuy 数据库，全 IPLC 专线 + 四平台自研客户端，支持 8 折券 wuyou666",
+      "全 IPLC 专线 + 四平台自研客户端，支持 8 折券 wuyou666",
       "不限制客户端及设备数量，提供 100GB 与 300GB 永久不限时备用包"
     ],
     "cons": [
@@ -321,7 +318,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥16 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 kuajie（8折）"
     ],
     "cons": [
@@ -355,7 +351,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥20 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 fly20（8折）"
     ],
     "cons": [
@@ -389,7 +384,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥14.4 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "官方直发平民资费"
     ],
     "cons": [
@@ -423,7 +417,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥16 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "官方直发平民资费"
     ],
     "cons": [
@@ -457,7 +450,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥19.2 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 yxr888（8折）"
     ],
     "cons": [
@@ -491,7 +483,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥18.4 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 AMM（8折）"
     ],
     "cons": [
@@ -525,7 +516,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥18 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 1FLYYUN（9折）"
     ],
     "cons": [
@@ -559,7 +549,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥11.92 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 rabbit（8折）"
     ],
     "cons": [
@@ -593,7 +582,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥15 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 xk808（8折）"
     ],
     "cons": [
@@ -627,7 +615,6 @@ export const allBrands: BrandInfo[] = [
       "微信/支付宝支付"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 9yun（8折）"
     ],
     "cons": [
@@ -661,7 +648,6 @@ export const allBrands: BrandInfo[] = [
       "首购专享 9 折"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "官方直发平民资费"
     ],
     "cons": [
@@ -695,7 +681,6 @@ export const allBrands: BrandInfo[] = [
       "专属优惠码 8 折"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 baoyun（8折）"
     ],
     "cons": [
@@ -729,7 +714,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥16 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 U1S1（8折）"
     ],
     "cons": [
@@ -763,7 +747,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥20 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 tiziyun（8折）"
     ],
     "cons": [
@@ -797,7 +780,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥15 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "官方直发平民资费"
     ],
     "cons": [
@@ -831,7 +813,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥16 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "官方直发平民资费"
     ],
     "cons": [
@@ -865,7 +846,6 @@ export const allBrands: BrandInfo[] = [
       "超高性价比"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "官方直发平民资费"
     ],
     "cons": [
@@ -899,7 +879,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥16.1 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 sx0077（7折）"
     ],
     "cons": [
@@ -933,7 +912,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥1 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "官方直发平民资费"
     ],
     "cons": [
@@ -967,7 +945,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥20 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 sujie888（8折）"
     ],
     "cons": [
@@ -1001,7 +978,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥14.4 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 JLY888（8折）"
     ],
     "cons": [
@@ -1035,7 +1011,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥20 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 YUZHOU553（8折）"
     ],
     "cons": [
@@ -1069,7 +1044,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥24 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 lw888（8折）"
     ],
     "cons": [
@@ -1103,7 +1077,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥22.5 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 nmw888（9折）"
     ],
     "cons": [
@@ -1137,7 +1110,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥22.5 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 sogo10000（9折）"
     ],
     "cons": [
@@ -1171,7 +1143,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥12 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 uufly888（8折）"
     ],
     "cons": [
@@ -1205,7 +1176,6 @@ export const allBrands: BrandInfo[] = [
       "券后 ¥17 起"
     ],
     "pros": [
-      "严格源自 jichangbuy 官方数据库，AFF 通道与优惠码核验无误",
       "支持专属特惠券 ermao888（85折）"
     ],
     "cons": [

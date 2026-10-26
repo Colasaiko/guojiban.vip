@@ -5,7 +5,7 @@ import { site } from '../../data/site';
 import { allBrands } from '../../data/brands';
 import { getBrandTests } from '../../utils/latestTest';
 
-// 站长主推核心 9 大品牌与全网扩展品牌（严格源自 jichangbuy 数据库）
+// 站长主推的 9 个品牌与扩展品牌（数据见 src/data/brands.ts）
 const primaryBrands = allBrands.filter(b => b.category === 'primary');
 const extendedBrands = allBrands.filter(b => b.category === 'extended');
 const brandTests = await getBrandTests();

@@ -31,7 +31,7 @@ const pageSubtitle = detail?.subtitle || `深度测评 · 全面评测【${brand
 const pageTitle = detail?.seoTitle || `${brand.name}怎么样？2026最新测评、套餐价格与优惠码指南 · ${site.name}`;
 const pageDescription = detail?.seoDescription || detail?.leadSummary || `2026年最新${brand.name}深度测评：涵盖${brand.lineType}专线架构、晚高峰${brand.speed}实测速率、延迟表现、套餐方案价格与选购避坑指南。`;
 
-// 提取最低套餐名、价格、流量、协议、支付方式与使用方式（100% 严格采信 jichangbuy 数据库）
+// 提取最低套餐名、价格、流量、协议、支付方式与使用方式（数据来自 src/content/reviews/*.md）
 const lowestSummary = detail?.pricing?.lowestPlanSummary;
 const lowestPlan = detail?.pricing?.plans?.[0];
 const lowestPlanName = lowestSummary?.name || lowestPlan?.name || '基础月付方案';
