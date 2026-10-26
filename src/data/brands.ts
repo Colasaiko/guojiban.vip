@@ -889,35 +889,35 @@ export const allBrands: BrandInfo[] = [
   {
     "slug": "phantom",
     "name": "Phantom 幻影",
-    "tag": "精选品牌 · 直连线路",
+    "tag": "低价入门 · 直连线路",
     "category": "extended",
-    "score": "9.0",
+    "score": "—",
     "speed": "待测试",
     "latency": "待测试",
     "packetLoss": "待测试",
-    "lineType": "前沿协议直连",
-    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
-    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "多端通用订阅",
+    "lineType": "直连线路",
+    "streaming": "官方未说明，待测试",
+    "aiSupport": "官方未说明；香港节点无法使用 ChatGPT、Claude",
+    "devices": "官方未说明",
     "minMonthly": "¥1 起",
     "coupon": "无需优惠码",
-    "couponDiscount": "官方正价",
+    "couponDiscount": "暂无公开优惠码",
     "targetUrl": "https://pin.dianping.men/auth/register?code=Cv2pH8HA",
-    "summary": "Phantom 成立于 2025 年，是一家主打高性价比直连线路的新晋服务商。采用 VLESS、TUIC 与 Hysteria2 等前沿协议矩阵，节点涵盖香港、日本、台湾、新加坡、美国等核心地区，并提供专有定制客户端。全面支持主流流媒体与 AI 应用，支持支付宝与微信便捷支付。",
+    "summary": "Phantom 于 2025 年上线，主打低价直连线路，支持 VLESS、TUIC、Hysteria2 协议，节点覆盖香港、日本、台湾、新加坡、美国，并提供官方定制客户端，支持支付宝与微信付款。入门「天蝎座」套餐 100GB/月，月付 ¥1、年付 ¥12；另有 300GB/月（¥10/月）与 650GB/月（¥20/月）两档。",
     "features": [
       "VLESS/TUIC/Hy2",
       "前沿多协议矩阵",
       "官方定制客户端",
       "微信/支付宝支持",
-      "券后 ¥1 起"
+      "月付 ¥1 起"
     ],
     "pros": [
-      "官方直发平民资费"
+      "入门套餐月付 ¥1（100GB/月），试用成本很低"
     ],
     "cons": [
-      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
+      "直连线路不走专线，晚高峰可能受公网国际出口拥堵影响；本站尚未测试"
     ],
-    "updatedAt": "2026-10-20"
+    "updatedAt": "2026-10-26"
   },
   {
     "slug": "sujie",
