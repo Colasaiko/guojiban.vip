@@ -6,6 +6,7 @@ import FAQ from '../components/FAQ.astro';
 import { categories, categoryHref, site } from '../data/site';
 import { allBrands } from '../data/brands';
 import { getBrandTests } from '../utils/latestTest';
+import { websiteSchema } from '../utils/schema';
 
 // 首页「机场推荐」区块：9 个主推品牌
 const primaryBrands = allBrands.filter(b => b.category === 'primary');
@@ -19,6 +20,7 @@ const posts = (await getCollection('blog', ({data}) => !data.draft))
   title="国际版VIP：2026稳定机场推荐、海外App与AI工具使用指南"
   description="国际版VIP整理2026年稳定好用的机场推荐，逐家介绍线路、套餐价格与优惠码，并提供ChatGPT、TikTok、YouTube等海外App与AI工具的下载方法、打不开排查与使用教程。"
 >
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   <div class="container">
     <!-- Hero 主视觉区：强化 2026 梯子推荐与机场推荐定位 -->
     <section class="hero">

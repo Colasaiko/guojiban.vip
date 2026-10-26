@@ -1,5 +1,18 @@
 ---
+import { site } from '../data/site';
 interface Props { items: { label: string; href?: string }[]; }
 const { items } = Astro.props;
+// 结构化数据：与页面上显示的面包屑一致，最后一项（当前页）用当前地址
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [{ label: '首页', href: '/' }, ...items].map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.label,
+    item: new URL(item.href ?? Astro.url.pathname, site.url).href,
+  })),
+};
 ---
 <nav class="breadcrumb" aria-label="面包屑"><a href="/">首页</a>{items.map(item => <><span aria-hidden="true">/</span>{item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}</>)}</nav>
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

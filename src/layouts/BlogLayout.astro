@@ -5,12 +5,15 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 import AirportStickyCta from '../components/AirportStickyCta.astro';
 import { categories, categoryHref } from '../data/site';
 import { tagsWithPages } from '../utils/tags';
+import { articleSchema } from '../utils/schema';
 interface Props { post: CollectionEntry<'blog'>; headings: { depth: number; slug: string; text: string }[]; }
 const { post, headings } = Astro.props;
 const { data } = post;
 const tagPages = tagsWithPages(await getCollection('blog', ({data}) => !data.draft));
+const schema = articleSchema({ title: data.title, description: data.description, path: `/blog/${post.id}/`, published: data.pubDate, modified: data.updatedDate, author: data.author });
 ---
 <BaseLayout title={data.title} description={data.description} type="article">
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   <div class="container">
     <Breadcrumb items={[{label:'全部文章',href:'/blog/'},{label:data.title}]} />
     <header class="page-heading article-heading">
