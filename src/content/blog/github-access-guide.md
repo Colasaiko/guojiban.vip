@@ -1,5 +1,5 @@
 ---
-title: 'GitHub国内打不开怎么办？克隆超慢一直超时？挂了梯子还是fatal unable to access排查（2026）'
+title: 'GitHub国内打不开怎么办？克隆超时、挂了梯子仍很慢'
 description: 'GitHub 官网入口与国内访问慢、经常打不开的原因，以及挂了梯子后 git clone 仍然报错 OpenSSL SSL_read、Connection reset、Failed to connect 的终端代理配置与加速全指南。'
 pubDate: 2026-10-23
 updatedDate: 2026-10-23
@@ -94,7 +94,7 @@ Host github.com
 2. **长连接心跳稳定性**：大型项目 `git push` 上传时需要维持长时间双向连接，频繁丢包会导致 `fatal: sha1 file '<file>' write error` 报错；
 3. **支持开启 TUN 虚拟网卡**：选购梯子客户端时，优先选择支持 TUN 模式的优质服务，一键接管全部命令行流量，免去繁琐的手动配置命令。
 
-👉 建议查阅我们整理的 [梯子推荐与选购指南](/vpn/) 与 [品牌测速性能大盘](/data/)，挑选具备高带宽与低丢包率的物理专线。
+👉 建议查阅我们整理的 [梯子推荐与选购指南](/tizi/) 与 [品牌测速性能大盘](/data/)，挑选具备高带宽与低丢包率的物理专线。
 
 ---
 

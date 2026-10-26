@@ -119,6 +119,8 @@ AmyTelecom 有独立的状态页，按地区（HK、US、JP、TW、SG）、接�
 | iOS | Shadowrocket、Stash、Quantumult X、Loon、sing-box |
 | 路由器 | OpenClash 等支持 Clash 或 SS 格式的插件 |
 
+导入订阅的详细步骤可以看：[Clash Verge Rev 电脑教程](/blog/clash-verge-guide/)、[安卓 Clash 教程](/blog/clash-android-guide/)、[Shadowrocket（小火箭）教程](/blog/shadowrocket-guide/)。
+
 ### 5. 连不上时
 
 依次检查：套餐是否到期、流量是否用完 → 看状态页和 Telegram 频道有没有故障公告 → 重新获取订阅链接 → 切换节点或地区。官方曾在弃用旧协议后提示用户更新客户端并重新拉取订阅。

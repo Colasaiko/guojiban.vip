@@ -1,5 +1,5 @@
 ---
-title: '国外 App 怎么下载？iPhone 外区 Apple ID 与安卓 Google Play 完整指南'
+title: '国外App怎么下载？外区Apple ID与Google Play指南'
 description: '国区 App Store 和国产手机应用商店搜不到 ChatGPT、TikTok、Telegram 等国外 App 怎么办？本专题讲清 iPhone 切换外区 Apple ID、安卓安装 Google Play 与谷歌服务的方法，以及常见 App 的下载入口。'
 featured: true
 updatedDate: 2026-10-23
@@ -83,4 +83,4 @@ ChatGPT、TikTok、Telegram、Instagram、YouTube 等 App，没有在中国大�
 
 国外 App 的服务器在境外，国内网络无法直接连接，装好后打开一直转圈、提示网络错误都很常见。另外，部分 App 还有额外限制，比如 TikTok 会检测国内 SIM 卡，ChatGPT 不支持香港节点。
 
-具体排查方法见专题：[挂了梯子还是打不开？排查合集](/topics/vpn-still-not-working/)。还没有梯子的话，可以参考 [梯子推荐与选购指南](/vpn/)，先买月付测试。
+具体排查方法见专题：[挂了梯子还是打不开？排查合集](/topics/vpn-still-not-working/)。还没有梯子的话，可以参考 [梯子推荐与选购指南](/tizi/)，先买月付测试。

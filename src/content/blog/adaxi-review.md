@@ -119,7 +119,7 @@ example: false
 
 - **Windows**：下载 GBox，用账户 UID 和网站密码登录即可，不需要手动导入；也可以用 v2rayN 导入订阅；
 - **macOS**：按教程下载 v2rayN，添加订阅后开启系统代理；
-- **iPhone**：用 Shadowrocket 或 sing-box，通过一键导入或复制订阅链接；
+- **iPhone**：用 Shadowrocket 或 sing-box，通过一键导入或复制订阅链接（小火箭的详细步骤见 [Shadowrocket 教程](/blog/shadowrocket-guide/)）；
 - **安卓**：用 Flyer，可以一键导入，手动导入时选择 FLCLASH 格式。
 
 ### 4. 选择节点并测试
