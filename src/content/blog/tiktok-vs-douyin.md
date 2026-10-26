@@ -42,7 +42,7 @@ TikTok 会综合多项信息判断你所在的地区：
 
 ## 四、iPhone 使用步骤
 
-1. 在 App Store 切换到外区 Apple ID（不要用港区），搜索下载 TikTok，认准开发者 **TikTok Ltd.**；
+1. 在 App Store 切换到外区 Apple ID（不要用港区，注册方法见 [美区 Apple ID 注册教程](/blog/apple-id-register-guide/)），搜索下载 TikTok，认准开发者 **TikTok Ltd.**；
 2. 取出国内 SIM 卡，或使用没有插卡的设备；
 3. 打开代理客户端，选择固定地区的节点；
 4. 打开 TikTok，用邮箱或 Google / Apple 账号注册。

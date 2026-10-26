@@ -20,7 +20,7 @@ Shadowrocket 是一个代理客户端，本身**不提供节点**，需要导入
 
 ## 二、怎么下载小火箭？
 
-1. 准备一个**非中国大陆地区**的 Apple ID（美区、日区、新加坡区等）；
+1. 准备一个**非中国大陆地区**的 Apple ID（美区、日区、新加坡区等），注册方法见 [美区 Apple ID 注册教程](/blog/apple-id-register-guide/)；
 2. 打开 App Store，点右上角头像，退出当前账号，**只在 App Store 里**登录外区 Apple ID；
 3. 搜索「Shadowrocket」，认准开发者 **Shadow Launch Technology Limited**；
 4. 付款购买（美区 2.99 美元，可以用外区礼品卡或当地支付方式）；
@@ -34,7 +34,7 @@ Shadowrocket 是一个代理客户端，本身**不提供节点**，需要导入
 
 ### 方法 1：手动添加（推荐）
 
-1. 在机场后台复制订阅链接（有 Shadowrocket 专用格式时优先选它）；
+1. 在机场后台复制订阅链接（有 Shadowrocket 专用格式时优先选它，格式区别见 [订阅链接怎么用](/blog/subscription-link-guide/)）；
 2. 打开小火箭，点击右上角「**+**」；
 3. 「类型」选择 **Subscribe**；
 4. 在「URL」中粘贴订阅链接，「备注」可以填机场名称；
