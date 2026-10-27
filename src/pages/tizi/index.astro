@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { site } from '../../data/site';
 import { getCollection } from 'astro:content';
-import { freeNodeSources } from '../../data/freeNodes';
+import { freeNodeSources, fetchLastUpdated } from '../../data/freeNodes';
 import type { BrandReviewDetail } from '../../types/review';
 import { testSummary } from '../../utils/latestTest';
 
@@ -194,6 +194,12 @@ const brands = {
 // 每张卡片底部的「本站测试」：与评测页同源，读取品牌 md 的 latestTest / testStatus
 // 免费公开节点（GitHub 开源项目），供读者与主推品牌对比体验
 const testNodes = freeNodeSources;
+// 「最近更新」：构建时先读一次 GitHub 提交时间（北京时间），页面打开后脚本会再刷新为最新
+const fmtBeijing = (iso: string) => new Date(iso).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(/\//g, '-');
+const lastUpdated = Object.fromEntries(await Promise.all(Object.entries(testNodes).map(async ([k, s]) => {
+  const iso = await fetchLastUpdated(s);
+  return [k, iso ? fmtBeijing(iso) : null];
+}))) as Record<keyof typeof testNodes, string | null>;
 
 const reviewData = Object.fromEntries((await getCollection('reviews')).map(r => [r.data.slug, r.data as unknown as BrandReviewDetail]));
 const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
@@ -422,6 +428,10 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               <div class="tnm-item">
                 <span class="tnm-k">更新频率</span>
                 <span class="tnm-v">{testNodes.test1.updateFrequency}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">最近更新</span>
+                <span class="tnm-v" data-last-updated data-repo={testNodes.test1.repoName} data-path={testNodes.test1.filePath}>{lastUpdated.test1 ? `${lastUpdated.test1}（北京时间）` : '见来源项目的提交记录'}</span>
               </div>
               <div class="tnm-item">
                 <span class="tnm-k">支持客户端</span>
@@ -696,6 +706,10 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
                 <span class="tnm-v">{testNodes.test2.updateFrequency}</span>
               </div>
               <div class="tnm-item">
+                <span class="tnm-k">最近更新</span>
+                <span class="tnm-v" data-last-updated data-repo={testNodes.test2.repoName} data-path={testNodes.test2.filePath}>{lastUpdated.test2 ? `${lastUpdated.test2}（北京时间）` : '见来源项目的提交记录'}</span>
+              </div>
+              <div class="tnm-item">
                 <span class="tnm-k">支持客户端</span>
                 <span class="tnm-v">{testNodes.test2.clientSupport}</span>
               </div>
@@ -968,6 +982,10 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
                 <span class="tnm-v">{testNodes.test3.updateFrequency}</span>
               </div>
               <div class="tnm-item">
+                <span class="tnm-k">最近更新</span>
+                <span class="tnm-v" data-last-updated data-repo={testNodes.test3.repoName} data-path={testNodes.test3.filePath}>{lastUpdated.test3 ? `${lastUpdated.test3}（北京时间）` : '见来源项目的提交记录'}</span>
+              </div>
+              <div class="tnm-item">
                 <span class="tnm-k">支持客户端</span>
                 <span class="tnm-v">{testNodes.test3.clientSupport}</span>
               </div>
@@ -1182,6 +1200,20 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
         modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
       }
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+      // 最近更新：读取 GitHub 提交记录，显示为北京时间
+      document.querySelectorAll('[data-last-updated]').forEach(function (el) {
+        var api = 'https://api.github.com/repos/' + el.dataset.repo + '/commits?path=' + encodeURIComponent(el.dataset.path) + '&per_page=1';
+        fetch(api, { headers: { Accept: 'application/vnd.github+json' } })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (commits) {
+            var iso = commits && commits[0] && commits[0].commit && commits[0].commit.committer && commits[0].commit.committer.date;
+            if (!iso) return;
+            var s = new Date(iso).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(/\//g, '-');
+            el.textContent = s + '（北京时间）';
+          })
+          .catch(function () {});
+      });
     })();
   </script>
 </BaseLayout>
