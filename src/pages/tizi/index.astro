@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { site } from '../../data/site';
 import { getCollection } from 'astro:content';
+import { freeNodeSources } from '../../data/freeNodes';
 import type { BrandReviewDetail } from '../../types/review';
 import { testSummary } from '../../utils/latestTest';
 
@@ -191,6 +192,9 @@ const brands = {
 
 
 // 每张卡片底部的「本站测试」：与评测页同源，读取品牌 md 的 latestTest / testStatus
+// 免费公开节点（GitHub 开源项目），供读者与主推品牌对比体验
+const testNodes = freeNodeSources;
+
 const reviewData = Object.fromEntries((await getCollection('reviews')).map(r => [r.data.slug, r.data as unknown as BrandReviewDetail]));
 const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
   const d = reviewData[slug];
@@ -320,7 +324,7 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
         <div>
           <span class="eyebrow">TEST & BENCHMARK · 梯子与机场精选</span>
           <h2>梯子品牌推荐：专线与免费节点对比</h2>
-          <p class="muted">9 家主推品牌与免费公开节点的差别对比，看清为什么不建议长期使用免费节点。</p>
+          <p class="muted">9 家主推品牌与免费公开节点并排对比。免费节点可以直接复制试用，亲自体验两者的差别。</p>
         </div>
         <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
           <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看品牌深度测评报告 /reviews/ ↗</a>
@@ -334,7 +338,7 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
         <div class="warning-text">
           <strong>【安全合规与隐私保护须知】</strong>
           <p>
-            本站<strong>不提供任何免费节点或免费订阅链接</strong>。免费公开节点的运营者身份不明，可能记录未加密的流量，也随时可能失效。如果你曾在别处使用过免费节点，请不要用它登录网上银行、移动支付、加密货币钱包或工作邮箱。
+            下方的免费节点来自 GitHub 上的公开开源项目，<strong>不是本站运营，本站也无法保证它们的安全与可用性</strong>。免费节点的运营者身份不明，可能记录未加密的流量，也随时可能失效。我们已经把风险写清楚，<strong>是否使用由你自己决定</strong>；如果使用，请不要用它登录网上银行、移动支付、加密货币钱包或工作邮箱。
           </p>
         </div>
       </div>
@@ -396,15 +400,34 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
             <div class="vs-circle">VS</div>
           </div>
 
-          <!-- VS 免费公开节点：本站不提供链接，只说明风险 -->
+          <!-- VS 免费公开节点：可复制订阅，复制前先确认风险；也可自行查看来源项目 -->
           <div class="test-node-card">
             <div class="test-card-top">
               <div class="test-badge-row">
-                <span class="test-badge">本站不提供免费节点</span>
+                <span class="test-badge">{testNodes.test1.badge}</span>
               </div>
-              <h3>免费公开节点 / 超低价机场</h3>
+              <h3>{testNodes.test1.name}</h3>
             </div>
-            <p class="test-desc">网上流传的免费节点大多由爬虫从公开渠道抓取，来源和运营者都不明确，节点随时可能失效或被替换成其他内容。</p>
+            <p class="test-desc">{testNodes.test1.description}</p>
+
+            <div class="test-node-meta-grid">
+              <div class="tnm-item">
+                <span class="tnm-k">订阅格式</span>
+                <span class="tnm-v">{testNodes.test1.type}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">来源项目</span>
+                <span class="tnm-v">{testNodes.test1.repoName}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">更新频率</span>
+                <span class="tnm-v">{testNodes.test1.updateFrequency}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">支持客户端</span>
+                <span class="tnm-v">{testNodes.test1.clientSupport}</span>
+              </div>
+            </div>
 
             <ul class="test-shortfalls">
               <li>
@@ -413,15 +436,11 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>稳定性：</strong>大量用户共用同一批节点，经常断线、超时，随时失效</div>
+                <div><strong>稳定性：</strong>大量用户共用，经常断线、超时，随时失效</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>流媒体：</strong>公共 IP 常被 Netflix 等平台识别为代理</div>
-              </li>
-              <li>
-                <span class="warn-symbol">⚠️</span>
-                <div><strong>AI 工具：</strong>ChatGPT、Claude 等容易出现人机验证或访问拦截</div>
+                <div><strong>流媒体与 AI：</strong>公共 IP 常被 Netflix 识别为代理，ChatGPT、Claude 容易出现验证或拦截</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
@@ -429,8 +448,18 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               </li>
             </ul>
 
-            <div class="free-node-advice">
-              <strong>更稳妥的做法：</strong>先花十几元买一个月月付套餐测试，满意再续费。已经有订阅链接的话，可以看 <a href="/blog/clash-verge-guide/">Clash 教程</a> 和 <a href="/blog/shadowrocket-guide/">小火箭教程</a>。
+            <div class="unlock-action-area" data-url={testNodes.test1.url}>
+              <button type="button" class="unlock-node-btn">
+                <span class="btn-icon">📋</span>
+                <span class="btn-text">复制免费订阅链接</span>
+              </button>
+              <p class="unlock-footnote">
+                想先自己看看？<a href={testNodes.test1.repoUrl} target="_blank" rel="nofollow noopener noreferrer">查看来源项目 {testNodes.test1.repoName} ↗</a>，了解更新记录后再决定是否使用。
+              </p>
+              <div class="copy-success-tip" style="display: none;">
+                <strong>✅ 订阅链接已复制到剪贴板</strong>
+                <p>打开 Clash、v2rayN 或小火箭，从剪贴板或 URL 导入即可。用法见 <a href="/blog/subscription-link-guide/">订阅链接怎么用</a>。</p>
+              </div>
             </div>
           </div>
         </div>
@@ -643,15 +672,34 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
             <div class="vs-circle">VS</div>
           </div>
 
-          <!-- VS 免费公开节点：本站不提供链接，只说明风险 -->
+          <!-- VS 免费公开节点：可复制订阅，复制前先确认风险；也可自行查看来源项目 -->
           <div class="test-node-card">
             <div class="test-card-top">
               <div class="test-badge-row">
-                <span class="test-badge">本站不提供免费节点</span>
+                <span class="test-badge">{testNodes.test2.badge}</span>
               </div>
-              <h3>免费公开节点 / 超低价机场</h3>
+              <h3>{testNodes.test2.name}</h3>
             </div>
-            <p class="test-desc">网上流传的免费节点大多由爬虫从公开渠道抓取，来源和运营者都不明确，节点随时可能失效或被替换成其他内容。</p>
+            <p class="test-desc">{testNodes.test2.description}</p>
+
+            <div class="test-node-meta-grid">
+              <div class="tnm-item">
+                <span class="tnm-k">订阅格式</span>
+                <span class="tnm-v">{testNodes.test2.type}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">来源项目</span>
+                <span class="tnm-v">{testNodes.test2.repoName}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">更新频率</span>
+                <span class="tnm-v">{testNodes.test2.updateFrequency}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">支持客户端</span>
+                <span class="tnm-v">{testNodes.test2.clientSupport}</span>
+              </div>
+            </div>
 
             <ul class="test-shortfalls">
               <li>
@@ -660,15 +708,11 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>稳定性：</strong>大量用户共用同一批节点，经常断线、超时，随时失效</div>
+                <div><strong>稳定性：</strong>大量用户共用，经常断线、超时，随时失效</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>流媒体：</strong>公共 IP 常被 Netflix 等平台识别为代理</div>
-              </li>
-              <li>
-                <span class="warn-symbol">⚠️</span>
-                <div><strong>AI 工具：</strong>ChatGPT、Claude 等容易出现人机验证或访问拦截</div>
+                <div><strong>流媒体与 AI：</strong>公共 IP 常被 Netflix 识别为代理，ChatGPT、Claude 容易出现验证或拦截</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
@@ -676,8 +720,18 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               </li>
             </ul>
 
-            <div class="free-node-advice">
-              <strong>更稳妥的做法：</strong>先花十几元买一个月月付套餐测试，满意再续费。已经有订阅链接的话，可以看 <a href="/blog/clash-verge-guide/">Clash 教程</a> 和 <a href="/blog/shadowrocket-guide/">小火箭教程</a>。
+            <div class="unlock-action-area" data-url={testNodes.test2.url}>
+              <button type="button" class="unlock-node-btn">
+                <span class="btn-icon">📋</span>
+                <span class="btn-text">复制免费订阅链接</span>
+              </button>
+              <p class="unlock-footnote">
+                想先自己看看？<a href={testNodes.test2.repoUrl} target="_blank" rel="nofollow noopener noreferrer">查看来源项目 {testNodes.test2.repoName} ↗</a>，了解更新记录后再决定是否使用。
+              </p>
+              <div class="copy-success-tip" style="display: none;">
+                <strong>✅ 订阅链接已复制到剪贴板</strong>
+                <p>打开 Clash、v2rayN 或小火箭，从剪贴板或 URL 导入即可。用法见 <a href="/blog/subscription-link-guide/">订阅链接怎么用</a>。</p>
+              </div>
             </div>
           </div>
         </div>
@@ -890,15 +944,34 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
             <div class="vs-circle">VS</div>
           </div>
 
-          <!-- VS 免费公开节点：本站不提供链接，只说明风险 -->
+          <!-- VS 免费公开节点：可复制订阅，复制前先确认风险；也可自行查看来源项目 -->
           <div class="test-node-card">
             <div class="test-card-top">
               <div class="test-badge-row">
-                <span class="test-badge">本站不提供免费节点</span>
+                <span class="test-badge">{testNodes.test3.badge}</span>
               </div>
-              <h3>免费公开节点 / 超低价机场</h3>
+              <h3>{testNodes.test3.name}</h3>
             </div>
-            <p class="test-desc">网上流传的免费节点大多由爬虫从公开渠道抓取，来源和运营者都不明确，节点随时可能失效或被替换成其他内容。</p>
+            <p class="test-desc">{testNodes.test3.description}</p>
+
+            <div class="test-node-meta-grid">
+              <div class="tnm-item">
+                <span class="tnm-k">订阅格式</span>
+                <span class="tnm-v">{testNodes.test3.type}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">来源项目</span>
+                <span class="tnm-v">{testNodes.test3.repoName}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">更新频率</span>
+                <span class="tnm-v">{testNodes.test3.updateFrequency}</span>
+              </div>
+              <div class="tnm-item">
+                <span class="tnm-k">支持客户端</span>
+                <span class="tnm-v">{testNodes.test3.clientSupport}</span>
+              </div>
+            </div>
 
             <ul class="test-shortfalls">
               <li>
@@ -907,15 +980,11 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>稳定性：</strong>大量用户共用同一批节点，经常断线、超时，随时失效</div>
+                <div><strong>稳定性：</strong>大量用户共用，经常断线、超时，随时失效</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
-                <div><strong>流媒体：</strong>公共 IP 常被 Netflix 等平台识别为代理</div>
-              </li>
-              <li>
-                <span class="warn-symbol">⚠️</span>
-                <div><strong>AI 工具：</strong>ChatGPT、Claude 等容易出现人机验证或访问拦截</div>
+                <div><strong>流媒体与 AI：</strong>公共 IP 常被 Netflix 识别为代理，ChatGPT、Claude 容易出现验证或拦截</div>
               </li>
               <li>
                 <span class="warn-symbol">⚠️</span>
@@ -923,8 +992,18 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               </li>
             </ul>
 
-            <div class="free-node-advice">
-              <strong>更稳妥的做法：</strong>先花十几元买一个月月付套餐测试，满意再续费。已经有订阅链接的话，可以看 <a href="/blog/clash-verge-guide/">Clash 教程</a> 和 <a href="/blog/shadowrocket-guide/">小火箭教程</a>。
+            <div class="unlock-action-area" data-url={testNodes.test3.url}>
+              <button type="button" class="unlock-node-btn">
+                <span class="btn-icon">📋</span>
+                <span class="btn-text">复制免费订阅链接</span>
+              </button>
+              <p class="unlock-footnote">
+                想先自己看看？<a href={testNodes.test3.repoUrl} target="_blank" rel="nofollow noopener noreferrer">查看来源项目 {testNodes.test3.repoName} ↗</a>，了解更新记录后再决定是否使用。
+              </p>
+              <div class="copy-success-tip" style="display: none;">
+                <strong>✅ 订阅链接已复制到剪贴板</strong>
+                <p>打开 Clash、v2rayN 或小火箭，从剪贴板或 URL 导入即可。用法见 <a href="/blog/subscription-link-guide/">订阅链接怎么用</a>。</p>
+              </div>
             </div>
           </div>
         </div>
@@ -989,7 +1068,7 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
         <details>
           <summary>免费节点能用吗？有什么风险？<span aria-hidden="true">+</span></summary>
           <p>
-            不建议长期使用，本站也不提供免费节点链接。<strong>原因</strong>：免费公开节点由于所有人都可以查看甚至架设探针，节点的运营者或中间人理论上可以看到你未经 HTTPS 加密的明文网络请求。而且大量用户共用，稳定性差、随时失效。真的需要临时用一下，也只用来浏览公开网页，<strong>不要登录银行、邮箱、社交账号等涉及隐私和财产的平台</strong>。
+            可以用来临时试用或和付费专线对比，但不建议长期使用。本页列出的免费节点来自 GitHub 公开项目，复制前会再次提示风险，是否使用由你决定。<strong>需要注意</strong>：免费公开节点由于所有人都可以查看甚至架设探针，节点的运营者或中间人理论上可以看到你未经 HTTPS 加密的明文网络请求。而且大量用户共用，稳定性差、随时失效。真的需要临时用一下，也只用来浏览公开网页，<strong>不要登录银行、邮箱、社交账号等涉及隐私和财产的平台</strong>。
           </p>
         </details>
       </div>
@@ -1006,4 +1085,103 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
     </section>
   </div>
 
+  <!-- 复制免费订阅前的风险确认：读者确认后才写入剪贴板 -->
+  <div id="free-node-modal" class="reminder-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="free-node-modal-title">
+    <div class="reminder-modal-card">
+      <div class="reminder-modal-header">
+        <div class="rmh-left">
+          <span class="rm-warning-badge">🛡️ 使用免费节点前请确认</span>
+          <h3 id="free-node-modal-title">免费公开节点的风险提示</h3>
+        </div>
+        <button type="button" class="rm-close-x" data-close aria-label="关闭">✕</button>
+      </div>
+      <div class="reminder-modal-body">
+        <div class="rm-points-box">
+          <div class="rm-point-item danger">
+            <div class="rmp-head">❌ 不要登录重要账号</div>
+            <p>节点由第三方提供，运营者身份不明，可能记录未加密的流量。<strong>不要用来登录网上银行、支付、加密货币钱包或工作邮箱。</strong></p>
+          </div>
+          <div class="rm-point-item warning">
+            <div class="rmp-head">⚠️ 只适合临时试用与对比</div>
+            <p>大量用户共用，晚上用网高峰时容易断线或超时，节点随时可能失效。</p>
+          </div>
+          <div class="rm-point-item safe">
+            <div class="rmp-head">💡 需要稳定使用</div>
+            <p>日常办公、AI 长对话、看高清视频，建议选用上方的主推品牌，先买一个月月付测试。</p>
+          </div>
+        </div>
+      </div>
+      <div class="reminder-modal-footer">
+        <button type="button" class="button secondary" data-close>取消</button>
+        <button type="button" class="button primary" id="free-node-confirm">我已了解风险，复制链接</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var modal = document.getElementById('free-node-modal');
+      var confirmBtn = document.getElementById('free-node-confirm');
+      var pending = null;
+
+      function closeModal() { if (modal) { modal.style.display = 'none'; document.body.style.overflow = ''; } pending = null; }
+      // 旧式复制：剪贴板 API 不可用或被浏览器拒绝时使用
+      function legacyCopy(text) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.left = '-9999px';
+          document.body.appendChild(ta); ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch (e) { return false; }
+      }
+      // 返回是否复制成功；失败时由调用方显示链接让读者手动复制
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return legacyCopy(text); });
+        }
+        return Promise.resolve(legacyCopy(text));
+      }
+
+      document.querySelectorAll('.unlock-action-area').forEach(function (area) {
+        var btn = area.querySelector('.unlock-node-btn');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          pending = area;
+          if (modal) { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        });
+      });
+
+      if (confirmBtn) confirmBtn.addEventListener('click', function () {
+        var area = pending;
+        closeModal();
+        if (!area) return;
+        copyText(area.dataset.url).then(function (ok) {
+          var tip = area.querySelector('.copy-success-tip');
+          var text = area.querySelector('.btn-text');
+          if (tip) {
+            tip.style.display = 'block';
+            if (!ok) {
+              // 浏览器不允许自动复制时，直接显示链接供手动复制
+              var strong = tip.querySelector('strong');
+              if (strong) strong.textContent = '请手动复制下面的订阅链接：';
+              var code = tip.querySelector('.manual-url') || document.createElement('code');
+              code.className = 'manual-url';
+              code.textContent = area.dataset.url;
+              code.style.cssText = 'display:block;word-break:break-all;margin:6px 0;user-select:all;';
+              if (!code.parentNode) tip.insertBefore(code, strong.nextSibling);
+            }
+          }
+          if (text) text.textContent = ok ? '已复制，点击可再次复制' : '点击可再次尝试复制';
+        });
+      });
+
+      if (modal) {
+        modal.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', closeModal); });
+        modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+      }
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+    })();
+  </script>
 </BaseLayout>
