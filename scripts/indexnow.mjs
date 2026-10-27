@@ -21,7 +21,8 @@ if (!keyFile) throw new Error('public/ 下没有找到 IndexNow key 文件（32 
 const key = path.basename(keyFile, '.txt');
 
 const sitemap = fs.readFileSync('dist/sitemap.xml', 'utf8');
-const entries = [...sitemap.matchAll(/<url><loc>([^<]+)<\/loc>(?:<lastmod>([^<]+)<\/lastmod>)?<\/url>/g)]
+// sitemap 每个 <url> 分行缩进，允许标签之间有空白
+const entries = [...sitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*(?:<lastmod>([^<]+)<\/lastmod>\s*)?<\/url>/g)]
   .map(([, loc, lastmod]) => ({ loc, lastmod }));
 const urls = entries
   .filter(e => !since || (e.lastmod && e.lastmod >= since))
