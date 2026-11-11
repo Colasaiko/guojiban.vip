@@ -24,6 +24,39 @@ export interface BrandInfo {
 
 export const allBrands: BrandInfo[] = [
   {
+    "slug": "flyv",
+    "name": "FlyV",
+    "tag": "站长核心主推 · 多链路BGP调度及专线架构",
+    "category": "primary",
+    "score": "9.5",
+    "speed": "待测试",
+    "latency": "待测试",
+    "packetLoss": "待测试",
+    "lineType": "多链路BGP/专线",
+    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
+    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
+    "devices": "不限在线设备数",
+    "minMonthly": "¥20 起",
+    "coupon": "fly20",
+    "couponDiscount": "8折特惠",
+    "targetUrl": "https://varnexa.flyvaff.com/#/?code=6ae5FH9i",
+    "summary": "FlyV（飞V）提供多链路 BGP 智能调度及 IEPL/IPLC 专线架构，部分套餐采用 Shadowsocks 协议并标示原生 IP，全面解锁 Netflix、Disney+、YouTube 及 ChatGPT 4、Claude Opus 等开发级 AI 场景。全节点统一 1x 计费且不限制在线设备数。新客结算可使用 fly20 享 8 折特惠，年付轻量版与一次性流量包除外。",
+    "features": [
+      "BGP调度专线",
+      "Shadowsocks",
+      "开发级 AI 解锁",
+      "不限制在线设备",
+      "券后 ¥20 起"
+    ],
+    "pros": [
+      "支持专属特惠券 fly20（8折）"
+    ],
+    "cons": [
+      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
+    ],
+    "updatedAt": "2026-10-20"
+  },
+  {
     "slug": "weifeng",
     "name": "微风网络",
     "tag": "站长核心主推 · 全IPLC专线",
@@ -54,6 +87,39 @@ export const allBrands: BrandInfo[] = [
     ],
     "cons": [
       "2026-10-20 实测显示部分节点存在 Timeout 波动，建议先以月付验证本地兼容性"
+    ],
+    "updatedAt": "2026-10-20"
+  },
+  {
+    "slug": "muguang",
+    "name": "暮光加速",
+    "tag": "站长核心主推 · 优质线路",
+    "category": "primary",
+    "score": "9.7",
+    "speed": "待测试",
+    "latency": "待测试",
+    "packetLoss": "待测试",
+    "lineType": "BGP多线专线",
+    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
+    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
+    "devices": "不限制同时在线设备数量",
+    "minMonthly": "¥16 起",
+    "coupon": "mm88",
+    "couponDiscount": "8折特惠",
+    "targetUrl": "https://varnexa.twilightaff.com/#/?code=1eGqV85O",
+    "summary": "暮光加速采用 Shadowsocks 协议、BGP 多线路智能调度与专线级出口架构，提供 70GB 至 1500GB 月流量方案、三档不限时流量包以及独享私人定制节点。官方页面标明全程不限速且不限制同时在线设备数量。全面支持 Netflix、Disney+ 与 AI 工具。当前优惠码 mm88 可享 8 折优惠（暮光·基础版月付折后 ¥16.00 起）。",
+    "features": [
+      "Shadowsocks",
+      "BGP智能多线",
+      "券后 ¥16 起",
+      "支持私人定制节点",
+      "支持不限时套餐"
+    ],
+    "pros": [
+      "支持专属特惠券 mm88（8折）"
+    ],
+    "cons": [
+      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
     ],
     "updatedAt": "2026-10-20"
   },
@@ -92,32 +158,32 @@ export const allBrands: BrandInfo[] = [
     "updatedAt": "2026-10-20"
   },
   {
-    "slug": "muguang",
-    "name": "暮光加速",
-    "tag": "站长核心主推 · 优质线路",
+    "slug": "wavenet",
+    "name": "WaveNet 浪网",
+    "tag": "站长核心主推 · BGP多线智能调度+专线出口",
     "category": "primary",
-    "score": "9.7",
+    "score": "8.9",
     "speed": "待测试",
     "latency": "待测试",
     "packetLoss": "待测试",
-    "lineType": "BGP多线专线",
+    "lineType": "BGP多线+专线出口",
     "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
     "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "不限制同时在线设备数量",
-    "minMonthly": "¥16 起",
-    "coupon": "mm88",
+    "devices": "常规套餐不限同时在线设备数",
+    "minMonthly": "¥24 起",
+    "coupon": "lw888",
     "couponDiscount": "8折特惠",
-    "targetUrl": "https://varnexa.twilightaff.com/#/?code=1eGqV85O",
-    "summary": "暮光加速采用 Shadowsocks 协议、BGP 多线路智能调度与专线级出口架构，提供 70GB 至 1500GB 月流量方案、三档不限时流量包以及独享私人定制节点。官方页面标明全程不限速且不限制同时在线设备数量。全面支持 Netflix、Disney+ 与 AI 工具。当前优惠码 mm88 可享 8 折优惠（暮光·基础版月付折后 ¥16.00 起）。",
+    "targetUrl": "https://varnexa.wavenetaff.com/#/?code=pcFhy7Lb",
+    "summary": "WaveNet（浪网）采用 BGP 多线智能调度结合专线出口，所有节点均为 1x 倍率。无设备并发限制（除部分轻量包），全程不限速，采用 Shadowsocks 协议。流媒体支持卓越，同时完美兼容 ChatGPT 与 Claude 等高阶 AI 生产力工具。常规套餐结算使用优惠码 lw888 即可享 8 折特惠。",
     "features": [
-      "Shadowsocks",
       "BGP智能多线",
-      "券后 ¥16 起",
-      "支持私人定制节点",
-      "支持不限时套餐"
+      "全节点 1x 倍率",
+      "全程不限速",
+      "Shadowsocks",
+      "券后 ¥24 起"
     ],
     "pros": [
-      "支持专属特惠券 mm88（8折）"
+      "支持专属特惠券 lw888（8折）"
     ],
     "cons": [
       "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
@@ -125,33 +191,65 @@ export const allBrands: BrandInfo[] = [
     "updatedAt": "2026-10-20"
   },
   {
-    "slug": "dalao",
-    "name": "大佬云",
-    "tag": "站长核心主推 · 全IPLC专线",
+    "slug": "lingdong",
+    "name": "灵动云",
+    "tag": "站长核心主推 · 纯专线+BGP三网优化",
     "category": "primary",
-    "score": "9.7",
+    "score": "9.5",
     "speed": "待测试",
     "latency": "待测试",
     "packetLoss": "待测试",
-    "lineType": "IPLC",
+    "lineType": "纯专线+BGP三网优化",
     "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
     "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "不限制同时在线设备",
-    "minMonthly": "¥16.1 起",
-    "coupon": "dly888",
-    "couponDiscount": "7折特惠",
-    "targetUrl": "https://a01vipaff.dalaoyunaff.com/#/?code=4hRU02Tt",
-    "summary": "大佬云采用企业级全 IPLC 国际专线与 Shadowsocks 协议，提供年付活动包、月付（120GB 至 1200GB）及季付订阅，以及 200GB 不限时一次性流量包。官方资料标明不限制同时在线设备数量，原生 IP 稳定解锁 Netflix 与 ChatGPT。专属优惠码 dly888 仅限新用户首次购买月付订阅套餐享 7 折优惠（初云入门版月付折后仅 ¥16.10 起，年付包折合 ¥8.00/月）。",
+    "devices": "多设备同时在线",
+    "minMonthly": "¥16 起",
+    "coupon": "zq88",
+    "couponDiscount": "8折特惠",
+    "targetUrl": "https://varnexa.lingdongaff.com/#/?code=TIMwZeIR",
+    "summary": "灵动云凭借纯专线加 BGP 三网优化的强力架构，确保晚高峰期间依然不限速。采用 Shadowsocks 协议，所有节点均为 1x 倍率，提供原生纯净 IP，完美解锁 Netflix、Disney+、HBO 及 ChatGPT、Claude 等应用。多设备同时在线无压力，年付及长周期结算可使用优惠码 zq88 享 8 折优惠。",
     "features": [
-      "IPLC 专线",
+      "纯专线+BGP优化",
+      "晚高峰不限速",
+      "全节点 1x 倍率",
       "Shadowsocks",
-      "不限制在线设备",
-      "券后 ¥16.1 起",
-      "原生 IP 解锁"
+      "券后 ¥16 起"
     ],
     "pros": [
-      "企业级 IPLC 专线，不限制同时在线设备数量，支持 7 折优惠码 dly888",
-      "原生 IP 支持主流流媒体与 AI，提供 200GB 不限时备用包"
+      "官方直发平民资费"
+    ],
+    "cons": [
+      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
+    ],
+    "updatedAt": "2026-10-20"
+  },
+  {
+    "slug": "invisible",
+    "name": "隐形人",
+    "tag": "站长核心主推 · IEPL 专线",
+    "category": "primary",
+    "score": "9.4",
+    "speed": "待测试",
+    "latency": "待测试",
+    "packetLoss": "待测试",
+    "lineType": "IEPL 专线",
+    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
+    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
+    "devices": "不限制在线设备数",
+    "minMonthly": "¥19.2 起",
+    "coupon": "yxr888",
+    "couponDiscount": "8折特惠",
+    "targetUrl": "https://varnexa.invisibleaff.com/#/?code=8jyAXfu3",
+    "summary": "隐形人（Invisible）致力于提供全天候无感极速网络体验，采用高级 IEPL 专线搭配 VLESS 协议，全节点无套路 1x 倍率且全程不限速。节点覆盖港台日新美等 60+ 节点，全面支持 Netflix、Prime Video、Disney+ 与 ChatGPT、Copilot 等工具，不限制在线设备数。常规套餐使用优惠码 yxr888 可享 8 折特惠。",
+    "features": [
+      "IEPL 专线",
+      "VLESS 协议",
+      "全节点 1x 倍率",
+      "全程不限速",
+      "券后 ¥19.2 起"
+    ],
+    "pros": [
+      "支持专属特惠券 yxr888（8折）"
     ],
     "cons": [
       "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
@@ -193,72 +291,6 @@ export const allBrands: BrandInfo[] = [
     "updatedAt": "2026-10-20"
   },
   {
-    "slug": "lingmao",
-    "name": "灵猫",
-    "tag": "站长核心主推 · IPLC",
-    "category": "primary",
-    "score": "9.7",
-    "speed": "待测试",
-    "latency": "待测试",
-    "packetLoss": "待测试",
-    "lineType": "IPLC",
-    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
-    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "不限制客户端及设备数量",
-    "minMonthly": "¥20 起",
-    "coupon": "lingmao",
-    "couponDiscount": "8折特惠",
-    "targetUrl": "https://vip02.civetaff.com/#/?code=2Ai6V6Ub",
-    "summary": "灵猫提供全 IPLC 专线与全节点 x1 计费倍率，官方标称不限速且不限制客户端与设备数量。当前套餐覆盖 45GB 至 300GB 月流量，同时提供 100GB 与 500GB 不限时固定总量包。符合条件的常规月付套餐使用优惠码 lingmao 享 8 折优惠（月付Small折后 ¥20.00 起）。",
-    "features": [
-      "IPLC 专线",
-      "全节点 x1 倍率",
-      "全节点不限速",
-      "券后 ¥20 起",
-      "支持不限时套餐"
-    ],
-    "pros": [
-      "支持专属特惠券 lingmao（8折）"
-    ],
-    "cons": [
-      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
-    ],
-    "updatedAt": "2026-10-20"
-  },
-  {
-    "slug": "shanyue",
-    "name": "闪跃",
-    "tag": "站长核心主推 · IPLC",
-    "category": "primary",
-    "score": "9.6",
-    "speed": "待测试",
-    "latency": "待测试",
-    "packetLoss": "待测试",
-    "lineType": "IPLC",
-    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
-    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "不限制同时使用客户端数量",
-    "minMonthly": "¥19.2 起",
-    "coupon": "shanyue",
-    "couponDiscount": "8折特惠",
-    "targetUrl": "https://vip02.flashleapaff.com/#/?code=hCwClNUi",
-    "summary": "闪跃采用全 IPLC 专线架构与原生 IP，常规节点全为 x1 计费倍率，官方资料标明晚高峰不限速且不限制客户端数量。提供 60GB 至 1000GB 的多档月流量方案，以及 100GB、200GB 不限时固定总量包。使用专属优惠码 shanyue 享 8 折特惠（闪动套餐月付折后 ¥19.20 起）。",
-    "features": [
-      "IPLC 专线",
-      "全节点 x1 倍率",
-      "原生 IP 解锁",
-      "券后 ¥19.2 起",
-      "不限制设备数"
-    ],
-    "pros": [
-      "支持专属特惠券 shanyue（8折）"
-    ],
-    "cons": [
-      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
-    ],
-    "updatedAt": "2026-10-20"
-  },
-  {
     "slug": "wuyou",
     "name": "无忧链接",
     "tag": "站长核心主推 · 全IPLC专线",
@@ -293,10 +325,110 @@ export const allBrands: BrandInfo[] = [
     "updatedAt": "2026-10-20"
   },
   {
+    "slug": "dalao",
+    "name": "大佬云",
+    "tag": "精选品牌 · 全IPLC专线",
+    "category": "extended",
+    "score": "9.7",
+    "speed": "待测试",
+    "latency": "待测试",
+    "packetLoss": "待测试",
+    "lineType": "IPLC",
+    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
+    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
+    "devices": "不限制同时在线设备",
+    "minMonthly": "¥16.1 起",
+    "coupon": "dly888",
+    "couponDiscount": "7折特惠",
+    "targetUrl": "https://a01vipaff.dalaoyunaff.com/#/?code=4hRU02Tt",
+    "summary": "大佬云采用企业级全 IPLC 国际专线与 Shadowsocks 协议，提供年付活动包、月付（120GB 至 1200GB）及季付订阅，以及 200GB 不限时一次性流量包。官方资料标明不限制同时在线设备数量，原生 IP 稳定解锁 Netflix 与 ChatGPT。专属优惠码 dly888 仅限新用户首次购买月付订阅套餐享 7 折优惠（初云入门版月付折后仅 ¥16.10 起，年付包折合 ¥8.00/月）。",
+    "features": [
+      "IPLC 专线",
+      "Shadowsocks",
+      "不限制在线设备",
+      "券后 ¥16.1 起",
+      "原生 IP 解锁"
+    ],
+    "pros": [
+      "企业级 IPLC 专线，不限制同时在线设备数量，支持 7 折优惠码 dly888",
+      "原生 IP 支持主流流媒体与 AI，提供 200GB 不限时备用包"
+    ],
+    "cons": [
+      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
+    ],
+    "updatedAt": "2026-10-20"
+  },
+  {
+    "slug": "lingmao",
+    "name": "灵猫",
+    "tag": "精选品牌 · IPLC",
+    "category": "extended",
+    "score": "9.7",
+    "speed": "待测试",
+    "latency": "待测试",
+    "packetLoss": "待测试",
+    "lineType": "IPLC",
+    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
+    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
+    "devices": "不限制客户端及设备数量",
+    "minMonthly": "¥20 起",
+    "coupon": "lingmao",
+    "couponDiscount": "8折特惠",
+    "targetUrl": "https://vip02.civetaff.com/#/?code=2Ai6V6Ub",
+    "summary": "灵猫提供全 IPLC 专线与全节点 x1 计费倍率，官方标称不限速且不限制客户端与设备数量。当前套餐覆盖 45GB 至 300GB 月流量，同时提供 100GB 与 500GB 不限时固定总量包。符合条件的常规月付套餐使用优惠码 lingmao 享 8 折优惠（月付Small折后 ¥20.00 起）。",
+    "features": [
+      "IPLC 专线",
+      "全节点 x1 倍率",
+      "全节点不限速",
+      "券后 ¥20 起",
+      "支持不限时套餐"
+    ],
+    "pros": [
+      "支持专属特惠券 lingmao（8折）"
+    ],
+    "cons": [
+      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
+    ],
+    "updatedAt": "2026-10-20"
+  },
+  {
+    "slug": "shanyue",
+    "name": "闪跃",
+    "tag": "精选品牌 · IPLC",
+    "category": "extended",
+    "score": "9.6",
+    "speed": "待测试",
+    "latency": "待测试",
+    "packetLoss": "待测试",
+    "lineType": "IPLC",
+    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
+    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
+    "devices": "不限制同时使用客户端数量",
+    "minMonthly": "¥19.2 起",
+    "coupon": "shanyue",
+    "couponDiscount": "8折特惠",
+    "targetUrl": "https://vip02.flashleapaff.com/#/?code=hCwClNUi",
+    "summary": "闪跃采用全 IPLC 专线架构与原生 IP，常规节点全为 x1 计费倍率，官方资料标明晚高峰不限速且不限制客户端数量。提供 60GB 至 1000GB 的多档月流量方案，以及 100GB、200GB 不限时固定总量包。使用专属优惠码 shanyue 享 8 折特惠（闪动套餐月付折后 ¥19.20 起）。",
+    "features": [
+      "IPLC 专线",
+      "全节点 x1 倍率",
+      "原生 IP 解锁",
+      "券后 ¥19.2 起",
+      "不限制设备数"
+    ],
+    "pros": [
+      "支持专属特惠券 shanyue（8折）"
+    ],
+    "cons": [
+      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
+    ],
+    "updatedAt": "2026-10-20"
+  },
+  {
     "slug": "kuajie",
     "name": "跨界云",
-    "tag": "站长核心主推 · IPLC",
-    "category": "primary",
+    "tag": "精选品牌 · IPLC",
+    "category": "extended",
     "score": "9.6",
     "speed": "待测试",
     "latency": "待测试",
@@ -319,39 +451,6 @@ export const allBrands: BrandInfo[] = [
     ],
     "pros": [
       "支持专属特惠券 kuajie（8折）"
-    ],
-    "cons": [
-      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
-    ],
-    "updatedAt": "2026-10-20"
-  },
-  {
-    "slug": "flyv",
-    "name": "FlyV",
-    "tag": "精选品牌 · 多链路BGP调度及专线架构",
-    "category": "extended",
-    "score": "9.5",
-    "speed": "待测试",
-    "latency": "待测试",
-    "packetLoss": "待测试",
-    "lineType": "多链路BGP/专线",
-    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
-    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "不限在线设备数",
-    "minMonthly": "¥20 起",
-    "coupon": "fly20",
-    "couponDiscount": "8折特惠",
-    "targetUrl": "https://varnexa.flyvaff.com/#/?code=6ae5FH9i",
-    "summary": "FlyV（飞V）提供多链路 BGP 智能调度及 IEPL/IPLC 专线架构，部分套餐采用 Shadowsocks 协议并标示原生 IP，全面解锁 Netflix、Disney+、YouTube 及 ChatGPT 4、Claude Opus 等开发级 AI 场景。全节点统一 1x 计费且不限制在线设备数。新客结算可使用 fly20 享 8 折特惠，年付轻量版与一次性流量包除外。",
-    "features": [
-      "BGP调度专线",
-      "Shadowsocks",
-      "开发级 AI 解锁",
-      "不限制在线设备",
-      "券后 ¥20 起"
-    ],
-    "pros": [
-      "支持专属特惠券 fly20（8折）"
     ],
     "cons": [
       "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
@@ -385,72 +484,6 @@ export const allBrands: BrandInfo[] = [
     ],
     "pros": [
       "官方直发平民资费"
-    ],
-    "cons": [
-      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
-    ],
-    "updatedAt": "2026-10-20"
-  },
-  {
-    "slug": "lingdong",
-    "name": "灵动云",
-    "tag": "精选品牌 · 纯专线+BGP三网优化",
-    "category": "extended",
-    "score": "9.5",
-    "speed": "待测试",
-    "latency": "待测试",
-    "packetLoss": "待测试",
-    "lineType": "纯专线+BGP三网优化",
-    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
-    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "多设备同时在线",
-    "minMonthly": "¥16 起",
-    "coupon": "zq88",
-    "couponDiscount": "8折特惠",
-    "targetUrl": "https://varnexa.lingdongaff.com/#/?code=TIMwZeIR",
-    "summary": "灵动云凭借纯专线加 BGP 三网优化的强力架构，确保晚高峰期间依然不限速。采用 Shadowsocks 协议，所有节点均为 1x 倍率，提供原生纯净 IP，完美解锁 Netflix、Disney+、HBO 及 ChatGPT、Claude 等应用。多设备同时在线无压力，年付及长周期结算可使用优惠码 zq88 享 8 折优惠。",
-    "features": [
-      "纯专线+BGP优化",
-      "晚高峰不限速",
-      "全节点 1x 倍率",
-      "Shadowsocks",
-      "券后 ¥16 起"
-    ],
-    "pros": [
-      "官方直发平民资费"
-    ],
-    "cons": [
-      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
-    ],
-    "updatedAt": "2026-10-20"
-  },
-  {
-    "slug": "invisible",
-    "name": "隐形人",
-    "tag": "精选品牌 · IEPL 专线",
-    "category": "extended",
-    "score": "9.4",
-    "speed": "待测试",
-    "latency": "待测试",
-    "packetLoss": "待测试",
-    "lineType": "IEPL 专线",
-    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
-    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "不限制在线设备数",
-    "minMonthly": "¥19.2 起",
-    "coupon": "yxr888",
-    "couponDiscount": "8折特惠",
-    "targetUrl": "https://varnexa.invisibleaff.com/#/?code=8jyAXfu3",
-    "summary": "隐形人（Invisible）致力于提供全天候无感极速网络体验，采用高级 IEPL 专线搭配 VLESS 协议，全节点无套路 1x 倍率且全程不限速。节点覆盖港台日新美等 60+ 节点，全面支持 Netflix、Prime Video、Disney+ 与 ChatGPT、Copilot 等工具，不限制在线设备数。常规套餐使用优惠码 yxr888 可享 8 折特惠。",
-    "features": [
-      "IEPL 专线",
-      "VLESS 协议",
-      "全节点 1x 倍率",
-      "全程不限速",
-      "券后 ¥19.2 起"
-    ],
-    "pros": [
-      "支持专属特惠券 yxr888（8折）"
     ],
     "cons": [
       "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
@@ -1012,39 +1045,6 @@ export const allBrands: BrandInfo[] = [
     ],
     "pros": [
       "支持专属特惠券 YUZHOU553（8折）"
-    ],
-    "cons": [
-      "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"
-    ],
-    "updatedAt": "2026-10-20"
-  },
-  {
-    "slug": "wavenet",
-    "name": "WaveNet 浪网",
-    "tag": "精选品牌 · BGP多线智能调度+专线出口",
-    "category": "extended",
-    "score": "8.9",
-    "speed": "待测试",
-    "latency": "待测试",
-    "packetLoss": "待测试",
-    "lineType": "BGP多线+专线出口",
-    "streaming": "Netflix / YouTube / Disney+ 稳定解锁",
-    "aiSupport": "支持 ChatGPT / Claude 生产力工具交互",
-    "devices": "常规套餐不限同时在线设备数",
-    "minMonthly": "¥24 起",
-    "coupon": "lw888",
-    "couponDiscount": "8折特惠",
-    "targetUrl": "https://varnexa.wavenetaff.com/#/?code=pcFhy7Lb",
-    "summary": "WaveNet（浪网）采用 BGP 多线智能调度结合专线出口，所有节点均为 1x 倍率。无设备并发限制（除部分轻量包），全程不限速，采用 Shadowsocks 协议。流媒体支持卓越，同时完美兼容 ChatGPT 与 Claude 等高阶 AI 生产力工具。常规套餐结算使用优惠码 lw888 即可享 8 折特惠。",
-    "features": [
-      "BGP智能多线",
-      "全节点 1x 倍率",
-      "全程不限速",
-      "Shadowsocks",
-      "券后 ¥24 起"
-    ],
-    "pros": [
-      "支持专属特惠券 lw888（8折）"
     ],
     "cons": [
       "晚高峰各运营商本地网络抖动可能影响实际体感，建议优先月付体验"

@@ -20,6 +20,7 @@ const rows = allBrands
     return { brand: b, test, metric, testStatus: data?.testStatus };
   });
 const tested = rows.filter(r => r.test);
+const reviewSlugs = new Set(reviews.map(r => (r.data as { slug: string }).slug));
 const latest = [...tested].sort((a, b) => b.test!.date.localeCompare(a.test!.date))[0];
 ---
 
@@ -134,7 +135,7 @@ const latest = [...tested].sort((a, b) => b.test!.date.localeCompare(a.test!.dat
               <tr class:list={[{ 'row-pending': !test }]}>
                 <td>
                   <div class="brand-cell">
-                    <a href={`/reviews/${brand.slug}/`} class="bc-name">{brand.name}</a>
+                    {reviewSlugs.has(brand.slug) ? <a href={`/reviews/${brand.slug}/`} class="bc-name">{brand.name}</a> : <span class="bc-name">{brand.name}</span>}
                     <span class="bc-node">{test ? test.node : brand.lineType}</span>
                   </div>
                 </td>
@@ -151,7 +152,7 @@ const latest = [...tested].sort((a, b) => b.test!.date.localeCompare(a.test!.dat
                 )}
                 <td>
                   <div class="action-cell">
-                    <a href={test ? `/reviews/${brand.slug}/#module-experience` : `/reviews/${brand.slug}/`} class="btn-table review">{test ? '查看截图' : '测评'}</a>
+                    {reviewSlugs.has(brand.slug) ? <a href={test ? `/reviews/${brand.slug}/#module-experience` : `/reviews/${brand.slug}/`} class="btn-table review">{test ? '查看截图' : '测评'}</a> : <span class="btn-table review" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
                     <a href={`/go/${brand.slug}/`} target="_blank" rel="nofollow noopener sponsored" class="btn-table go">官网 ↗</a>
                   </div>
                 </td>

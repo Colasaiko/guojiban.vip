@@ -5,14 +5,15 @@ import ComparisonTable from '../../components/ComparisonTable.astro';
 import FAQ from '../../components/FAQ.astro';
 import { site } from '../../data/site';
 import { primaryBrandCompares } from '../../data/comparisons';
-import { getBrandTests } from '../../utils/latestTest';
+import { getBrandTests, getReviewSlugs } from '../../utils/latestTest';
 
 // 本站测试列：与评测页、/data/ 同源
 const brandTests = await getBrandTests();
+const reviewSlugs = await getReviewSlugs();
 ---
 <BaseLayout
   title={`梯子怎么选？主推机场对比与海外App网页版对比 · ${site.name}`}
-  description="对比微风网络、飞猫云、暮光加速、萤火虫等9家主推机场的线路类型、套餐价格、优惠码与设备限制，并整理ChatGPT、TikTok、YouTube等海外应用网页版与App的使用差异，帮你看清再选择。"
+  description="对比飞V、微风网络、暮光加速、飞猫云等9家主推机场的线路类型、套餐价格、优惠码与设备限制，并整理ChatGPT、TikTok、YouTube等海外应用网页版与App的使用差异，帮你看清再选择。"
 >
   <div class="container">
     <Breadcrumb items={[{ label: '使用对比' }]} />
@@ -55,7 +56,7 @@ const brandTests = await getBrandTests();
         <div>
           <span class="eyebrow">MODULE 01 · TOP PROMOTED BRANDS</span>
           <h2>梯子推荐对比：9 大口碑主推专线机场核心参数横评</h2>
-          <p class="muted">拒绝虚标与跑路风险。精选微风网络、飞猫云、暮光加速、firefly 等主推专线，直观对比线路类型、入门月付门槛、优惠码与擅长场景。</p>
+          <p class="muted">拒绝虚标与跑路风险。精选飞V、微风网络、暮光加速、飞猫云等主推专线，直观对比线路类型、入门月付门槛、优惠码与擅长场景。</p>
         </div>
         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
           <a href="/reviews/" class="text-link" style="font-size: 12px; color: var(--gold-light);">查看深度测评报告 /reviews/ ↗</a>
@@ -142,9 +143,7 @@ const brandTests = await getBrandTests();
                     >
                       官网直达 ↗
                     </a>
-                    <a href={b.reviewUrl} class="mini-review-link">
-                      评测报告 📊
-                    </a>
+                    {reviewSlugs.has(b.slug) ? <a href={`/reviews/${b.slug}/`} class="mini-review-link">评测报告 📊</a> : <span class="mini-review-link" style="opacity: 0.6;">测评整理中</span>}
                   </div>
                 </td>
               </tr>
@@ -217,9 +216,7 @@ const brandTests = await getBrandTests();
               >
                 前往官网 ↗
               </a>
-              <a href={b.reviewUrl} class="button secondary bci-sub-btn" style="font-size: 12px; padding: 10px 16px; text-align: center;">
-                查看深度评测报告 📊
-              </a>
+              {reviewSlugs.has(b.slug) ? <a href={`/reviews/${b.slug}/`} class="button secondary bci-sub-btn" style="font-size: 12px; padding: 10px 16px; text-align: center;">查看深度评测报告 📊</a> : <span class="button secondary bci-sub-btn" aria-disabled="true" style="font-size: 12px; padding: 10px 16px; text-align: center; opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
         ))}

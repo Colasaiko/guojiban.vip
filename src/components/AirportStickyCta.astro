@@ -1,8 +1,10 @@
 ---
 import { getBrandBySlug } from '../data/brands';
+import { getReviewSlugs } from '../utils/latestTest';
 
 // 机场评价文章底部通栏推荐横幅
-const brand = getBrandBySlug('weifeng');
+const brand = getBrandBySlug('flyv');
+const hasReview = brand ? (await getReviewSlugs()).has(brand.slug) : false;
 ---
 {brand && (
   <aside class="airport-sticky-cta" id="airport-sticky-cta" aria-label="更多推荐">
@@ -14,7 +16,7 @@ const brand = getBrandBySlug('weifeng');
       </div>
       <div class="asc-actions">
         <a href={`/go/${brand.slug}/`} class="asc-btn primary" target="_blank" rel="nofollow sponsored noopener">购买</a>
-        <a href={`/reviews/${brand.slug}/`} class="asc-btn">测评</a>
+        {hasReview && <a href={`/reviews/${brand.slug}/`} class="asc-btn">测评</a>}
       </div>
       <button type="button" class="asc-close" aria-label="关闭推荐横幅">✕</button>
     </div>

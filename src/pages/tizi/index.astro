@@ -9,6 +9,82 @@ import { testSummary } from '../../utils/latestTest';
 
 // 主推品牌卡片数据（官方介绍；本站测试结果另由品牌 md 读取）
 const brands = {
+  flyv: {
+    name: '飞V（FlyV）',
+    slug: 'flyv',
+    tag: 'BGP 调度专线',
+    desc: '多链路 BGP 智能调度结合 IEPL / IPLC 专线，部分套餐采用 Shadowsocks 协议并标示原生 IP，全节点 1x 计费，不限制在线设备数。',
+    recPrice: '约 ¥20 / 月起',
+    recPriceNote: '（新客 fly20 享 8 折，年付轻量版与一次性流量包除外）',
+    coupon: 'fly20',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://varnexa.flyvaff.com/#/?code=6ae5FH9i',
+    features: ['BGP 调度专线', '全节点 1x 计费', '不限在线设备'],
+    highlights: [
+      { label: '线路架构', text: '多链路 BGP 智能调度，搭配 IEPL / IPLC 专线出口' },
+      { label: '协议', text: '部分套餐采用 Shadowsocks 协议，并标示原生 IP' },
+      { label: '流媒体与 AI', text: '官方称支持 Netflix、Disney+、YouTube 与 ChatGPT、Claude' },
+      { label: '设备支持', text: '不限制在线设备数，全节点统一 1x 计费' },
+      { label: '优惠折扣', text: '新客结算使用 fly20 享 8 折（年付轻量版与一次性流量包除外）' }
+    ]
+  },
+  wavenet: {
+    name: '浪网（WaveNet）',
+    slug: 'wavenet',
+    tag: 'BGP 多线 + 专线出口',
+    desc: 'BGP 多线智能调度结合专线出口，全节点 1x 倍率，采用 Shadowsocks 协议，常规套餐不限同时在线设备数。',
+    recPrice: '约 ¥24 / 月起',
+    recPriceNote: '（常规套餐 lw888 享 8 折）',
+    coupon: 'lw888',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://varnexa.wavenetaff.com/#/?code=pcFhy7',
+    features: ['BGP 智能多线', '全节点 1x 倍率', 'Shadowsocks'],
+    highlights: [
+      { label: '线路架构', text: 'BGP 多线智能调度，搭配专线出口' },
+      { label: '计费', text: '全节点 1x 倍率，官方标称全程不限速' },
+      { label: '流媒体与 AI', text: '官方称支持主流流媒体与 ChatGPT、Claude 等 AI 工具' },
+      { label: '设备支持', text: '常规套餐不限同时在线设备数（部分轻量包除外）' },
+      { label: '优惠折扣', text: '常规套餐结算使用 lw888 享 8 折' }
+    ]
+  },
+  lingdong: {
+    name: '灵动云',
+    slug: 'lingdong',
+    tag: '专线 + BGP 三网优化',
+    desc: '专线结合 BGP 三网优化，采用 Shadowsocks 协议，全节点 1x 倍率，支持多设备同时在线。',
+    recPrice: '约 ¥16 / 月起',
+    recPriceNote: '（年付及长周期 zq88 享 8 折）',
+    coupon: 'zq88',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://varnexa.lingdongaff.com/#/?code=TIMwZ',
+    features: ['专线 + BGP 优化', '全节点 1x 倍率', 'Shadowsocks'],
+    highlights: [
+      { label: '线路架构', text: '专线结合电信、联通、移动三网 BGP 优化' },
+      { label: '计费', text: '全节点 1x 倍率，官方标称晚高峰不限速' },
+      { label: '流媒体与 AI', text: '官方称支持 Netflix、Disney+、HBO 与 ChatGPT、Claude' },
+      { label: '设备支持', text: '支持多设备同时在线' },
+      { label: '优惠折扣', text: '年付及长周期结算使用 zq88 享 8 折' }
+    ]
+  },
+  invisible: {
+    name: '隐形人',
+    slug: 'invisible',
+    tag: 'IEPL 专线 · VLESS',
+    desc: 'IEPL 专线搭配 VLESS 协议，全节点 1x 倍率，节点覆盖港、台、日、新、美等地区，不限制在线设备数。',
+    recPrice: '约 ¥19.2 / 月起',
+    recPriceNote: '（常规套餐 yxr888 享 8 折）',
+    coupon: 'yxr888',
+    couponDiscount: '8折特惠',
+    targetUrl: 'https://varnexa.invisibleaff.com/#/?code=8jyA',
+    features: ['IEPL 专线', 'VLESS 协议', '全节点 1x 倍率'],
+    highlights: [
+      { label: '线路架构', text: 'IEPL 专线搭配 VLESS 协议' },
+      { label: '节点覆盖', text: '官方称覆盖港、台、日、新、美等 60+ 节点' },
+      { label: '流媒体与 AI', text: '官方称支持 Netflix、Prime Video、Disney+ 与 ChatGPT、Copilot' },
+      { label: '设备支持', text: '不限制在线设备数，全节点 1x 倍率、官方标称不限速' },
+      { label: '优惠折扣', text: '常规套餐使用 yxr888 享 8 折' }
+    ]
+  },
   weifeng: {
     name: '微风网络',
     slug: 'weifeng',
@@ -68,26 +144,6 @@ const brands = {
       { label: '服务保障', text: '提供私人独享定制节点，工单秒级专业技术售后' }
     ]
   },
-  dalao: {
-    name: '大佬云',
-    slug: 'dalao',
-    tag: '分组专线',
-    desc: '主打企业级 IPLC 专线，客户端节点按日常优选、跨境电商、流媒体、低延迟、商务办公分组，方便按用途选择。',
-    recPrice: '约 ¥23 / 月起',
-    recPriceNote: '（首推月付体验）',
-    coupon: 'dly888',
-    couponDiscount: '7折特惠',
-    targetUrl: 'https://a01vipaff.dalaoyunaff.com/#/?code=4hRU02Tt',
-    features: ['节点按用途分组', '1 倍率计费', '不限设备数量'],
-    highlights: [
-      { label: '稳定性', text: '企业级 IPLC 国际专线，全节点统一 1 倍率计费' },
-      { label: '流媒体', text: '多国冷门原生节点全覆盖，主流流媒体轻松解锁' },
-      { label: 'AI 工具', text: '独立原生商用出口 IP，避免共享风控被频繁拦截' },
-      { label: '隐私安全', text: '合规安全机房托管，企业级严格数据隔离保护' },
-      { label: '设备支持', text: '全平台客户端无缝兼容，手机与电脑多端畅联' },
-      { label: '服务保障', text: '支持月付周期与不限时固定流量包，选择更灵活' }
-    ]
-  },
   firefly: {
     name: 'firefly',
     slug: 'firefly',
@@ -106,66 +162,6 @@ const brands = {
       { label: '隐私安全', text: 'VLESS 协议点对点加密，杜绝公网流量指纹特征' },
       { label: '设备支持', text: '不限客户端接入数量，家庭与团队多设备通用' },
       { label: '服务保障', text: '专属客服实时保障，支持按月购买灵活试用' }
-    ]
-  },
-  lingmao: {
-    name: '灵猫',
-    slug: 'lingmao',
-    tag: '稳定轻量首选',
-    desc: '为日常浏览、海淘与学术检索打造的轻量机场，流量充足，线路平稳且资费极为亲民。',
-    recPrice: '约 ¥25 / 月起',
-    recPriceNote: '（首推月付体验）',
-    coupon: 'lingmao',
-    couponDiscount: '8折特惠',
-    targetUrl: 'https://vip02.civetaff.com/#/?code=2Ai6V6Ub',
-    features: ['亲民高性价比', '学术查重加速', '简单易上手'],
-    highlights: [
-      { label: '稳定性', text: '全 IPLC 专线配置，全节点均为真实 x1 倍率' },
-      { label: '流媒体', text: '主流海外流媒体平稳解锁，日常追剧影音顺畅' },
-      { label: 'AI 工具', text: '学术查重检索与日常 AI 工具问答加速，轻量首选' },
-      { label: '隐私安全', text: '独立内网隧道转发，有效抵御公网嗅探和劫持' },
-      { label: '设备支持', text: '支持各系统客户端同时在线，配置步骤清晰简单' },
-      { label: '服务保障', text: '提供固定总量不限时备用包，月付资费亲民轻松' }
-    ]
-  },
-  shanyue: {
-    name: '闪跃',
-    slug: 'shanyue',
-    tag: '智能调度专线',
-    desc: '支持全自动智能健康检测与故障秒切，全时段保持连接通畅，告别手动频繁测速切节点。',
-    recPrice: '约 ¥24 / 月起',
-    recPriceNote: '（首推月付体验）',
-    coupon: 'shanyue',
-    couponDiscount: '8折特惠',
-    targetUrl: 'https://vip02.flashleapaff.com/#/?code=hCwClNUi',
-    features: ['智能故障秒切', '高并发承载', '多协议适配'],
-    highlights: [
-      { label: '稳定性', text: '智能健康检测故障秒级切换，全时段网络不掉线' },
-      { label: '流媒体', text: '原生住宅 IP 出口，海外主流流媒体点开秒播' },
-      { label: 'AI 工具', text: '万兆集群调度，AI 生产力大模型高并发承载不卡顿' },
-      { label: '隐私安全', text: '纯 IPLC 专线通道，全链路加密保障跨境业务隐私' },
-      { label: '设备支持', text: '支持多协议全平台适配，一键导入即开即用' },
-      { label: '服务保障', text: '多种流量档位随心选，支持 100G/200G 不限时包' }
-    ]
-  },
-  kuajie: {
-    name: '跨界云',
-    slug: 'kuajie',
-    tag: '商务跨境大带宽',
-    desc: '面向外贸、海外直播推流、跨境电商与重度开发者的企业级专线服务，带宽充沛不挤兑。',
-    recPrice: '约 ¥20 / 月起',
-    recPriceNote: '（首推月付体验）',
-    coupon: 'kuajie',
-    couponDiscount: '8折特惠',
-    targetUrl: 'https://vip02.kuajieaff.com/#/?code=HRzqSLrR',
-    features: ['万兆出口冗余', '跨境电商优选', '大流量无限制'],
-    highlights: [
-      { label: '稳定性', text: '万兆出口高冗余专线，满足企业跨境重度带宽需求' },
-      { label: '流媒体', text: '支持海外电商直播推流与 8K 蓝光级大吞吐流量' },
-      { label: 'AI 工具', text: '纯净商用出口 IP，开发部署与跨境自动化稳定运行' },
-      { label: '隐私安全', text: '高规格物理专线内网隔离，保护商业机密与隐私' },
-      { label: '设备支持', text: '团队多人多设备高并发支持，无严苛连接数限制' },
-      { label: '服务保障', text: '大流量方案充沛不挤兑，支持按月弹性购买扩容' }
     ]
   },
   wuyou: {
@@ -201,7 +197,8 @@ const lastUpdated = Object.fromEntries(await Promise.all(Object.entries(testNode
   return [k, iso ? fmtBeijing(iso) : null];
 }))) as Record<keyof typeof testNodes, string | null>;
 
-const reviewData = Object.fromEntries((await getCollection('reviews')).map(r => [r.data.slug, r.data as unknown as BrandReviewDetail]));
+const reviewData: Record<string, BrandReviewDetail> = Object.fromEntries((await getCollection('reviews')).map(r => [r.data.slug, r.data as unknown as BrandReviewDetail]));
+const reviewSlugs = new Set(Object.keys(reviewData));
 const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
   const d = reviewData[slug];
   const s = testSummary(d?.latestTest);
@@ -349,55 +346,55 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
         </div>
       </div>
 
-      <!-- 第一组：【微风】vs【测试】 -->
+      <!-- 第一组：【飞V】vs【免费节点】 -->
       <div class="pair-block">
-        <div class="pair-label">第一组：【微风网络】vs【免费 / 超低价节点】</div>
+        <div class="pair-label">第一组：【飞V】vs【免费 / 超低价节点】</div>
         <div class="pair-grid">
           <!-- 微风 -->
           <div class="brand-pick-card brand-highlight">
             <div class="bp-top">
               <div>
                 <span class="bp-badge">主推品牌</span>
-                <h3>{brands.weifeng.name}</h3>
+                <h3>{brands.flyv.name}</h3>
               </div>
-              <span class="bp-tag">{brands.weifeng.tag}</span>
+              <span class="bp-tag">{brands.flyv.tag}</span>
             </div>
             <span class="bp-src-label">官方介绍</span>
-            <p class="bp-desc">{brands.weifeng.desc}</p>
+            <p class="bp-desc">{brands.flyv.desc}</p>
             
             <div class="bp-pricing-row">
               <div class="bp-price-left">
                 <span class="bp-price-label">推荐入门方案</span>
-                <span class="bp-price-note">{brands.weifeng.recPriceNote}</span>
+                <span class="bp-price-note">{brands.flyv.recPriceNote}</span>
               </div>
               <div class="bp-price-right">
-                <span class="bp-price-val">{brands.weifeng.recPrice}</span>
+                <span class="bp-price-val">{brands.flyv.recPrice}</span>
               </div>
             </div>
 
             <ul class="bp-highlights-list">
-              {brands.weifeng.highlights.map(item => (
+              {brands.flyv.highlights.map(item => (
                 <li>
                   <span class="check-symbol">✓</span>
                   <div><strong>{item.label}：</strong>{item.text}</div>
                 </li>
               ))}
             </ul>
-            <div class="bp-test"><strong>本站测试：</strong>{testLine.weifeng}</div>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.flyv}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
-              <code class="bp-coupon-code">{brands.weifeng.coupon}</code>
-              <span class="bp-coupon-discount">（{brands.weifeng.couponDiscount}）</span>
+              <code class="bp-coupon-code">{brands.flyv.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.flyv.couponDiscount}）</span>
             </div>
 
             <div class="bp-actions">
-              <a href="/go/weifeng/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+              <a href="/go/flyv/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/weifeng/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('flyv')
+                ? <a href="/reviews/flyv/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
 
@@ -475,55 +472,55 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
         </div>
       </div>
 
-      <!-- 第二组：【飞猫】，【暮光】，【大佬】 -->
+      <!-- 第二组：【微风】，【暮光】，【飞猫】 -->
       <div class="pair-block">
-        <div class="pair-label">第二组：【飞猫云】·【暮光加速】·【大佬云】</div>
+        <div class="pair-label">第二组：【微风网络】·【暮光加速】·【飞猫云】</div>
         <div class="triple-grid">
           <!-- 飞猫 -->
           <div class="brand-pick-card">
             <div class="bp-top">
               <div>
                 <span class="bp-badge">主推品牌</span>
-                <h3>{brands.feimao.name}</h3>
+                <h3>{brands.weifeng.name}</h3>
               </div>
-              <span class="bp-tag">{brands.feimao.tag}</span>
+              <span class="bp-tag">{brands.weifeng.tag}</span>
             </div>
             <span class="bp-src-label">官方介绍</span>
-            <p class="bp-desc">{brands.feimao.desc}</p>
+            <p class="bp-desc">{brands.weifeng.desc}</p>
             
             <div class="bp-pricing-row">
               <div class="bp-price-left">
                 <span class="bp-price-label">推荐入门方案</span>
-                <span class="bp-price-note">{brands.feimao.recPriceNote}</span>
+                <span class="bp-price-note">{brands.weifeng.recPriceNote}</span>
               </div>
               <div class="bp-price-right">
-                <span class="bp-price-val">{brands.feimao.recPrice}</span>
+                <span class="bp-price-val">{brands.weifeng.recPrice}</span>
               </div>
             </div>
 
             <ul class="bp-highlights-list">
-              {brands.feimao.highlights.map(item => (
+              {brands.weifeng.highlights.map(item => (
                 <li>
                   <span class="check-symbol">✓</span>
                   <div><strong>{item.label}：</strong>{item.text}</div>
                 </li>
               ))}
             </ul>
-            <div class="bp-test"><strong>本站测试：</strong>{testLine.feimao}</div>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.weifeng}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
-              <code class="bp-coupon-code">{brands.feimao.coupon}</code>
-              <span class="bp-coupon-discount">（{brands.feimao.couponDiscount}）</span>
+              <code class="bp-coupon-code">{brands.weifeng.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.weifeng.couponDiscount}）</span>
             </div>
 
             <div class="bp-actions">
-              <a href="/go/feimao/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+              <a href="/go/weifeng/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/feimao/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('weifeng')
+                ? <a href="/reviews/weifeng/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
 
@@ -569,9 +566,9 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               <a href="/go/muguang/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/muguang/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('muguang')
+                ? <a href="/reviews/muguang/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
 
@@ -580,100 +577,100 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
             <div class="bp-top">
               <div>
                 <span class="bp-badge">主推品牌</span>
-                <h3>{brands.dalao.name}</h3>
+                <h3>{brands.feimao.name}</h3>
               </div>
-              <span class="bp-tag">{brands.dalao.tag}</span>
+              <span class="bp-tag">{brands.feimao.tag}</span>
             </div>
             <span class="bp-src-label">官方介绍</span>
-            <p class="bp-desc">{brands.dalao.desc}</p>
+            <p class="bp-desc">{brands.feimao.desc}</p>
             
             <div class="bp-pricing-row">
               <div class="bp-price-left">
                 <span class="bp-price-label">推荐入门方案</span>
-                <span class="bp-price-note">{brands.dalao.recPriceNote}</span>
+                <span class="bp-price-note">{brands.feimao.recPriceNote}</span>
               </div>
               <div class="bp-price-right">
-                <span class="bp-price-val">{brands.dalao.recPrice}</span>
+                <span class="bp-price-val">{brands.feimao.recPrice}</span>
               </div>
             </div>
 
             <ul class="bp-highlights-list">
-              {brands.dalao.highlights.map(item => (
+              {brands.feimao.highlights.map(item => (
                 <li>
                   <span class="check-symbol">✓</span>
                   <div><strong>{item.label}：</strong>{item.text}</div>
                 </li>
               ))}
             </ul>
-            <div class="bp-test"><strong>本站测试：</strong>{testLine.dalao}</div>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.feimao}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
-              <code class="bp-coupon-code">{brands.dalao.coupon}</code>
-              <span class="bp-coupon-discount">（{brands.dalao.couponDiscount}）</span>
+              <code class="bp-coupon-code">{brands.feimao.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.feimao.couponDiscount}）</span>
             </div>
 
             <div class="bp-actions">
-              <a href="/go/dalao/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+              <a href="/go/feimao/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/dalao/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('feimao')
+                ? <a href="/reviews/feimao/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 第三组：【firefly】vs【测试】 -->
+      <!-- 第三组：【浪网】vs【免费节点】 -->
       <div class="pair-block">
-        <div class="pair-label">第三组：【firefly】vs【免费 / 超低价节点】</div>
+        <div class="pair-label">第三组：【浪网】vs【免费 / 超低价节点】</div>
         <div class="pair-grid">
           <!-- firefly -->
           <div class="brand-pick-card brand-highlight">
             <div class="bp-top">
               <div>
                 <span class="bp-badge">主推品牌</span>
-                <h3>{brands.firefly.name}</h3>
+                <h3>{brands.wavenet.name}</h3>
               </div>
-              <span class="bp-tag">{brands.firefly.tag}</span>
+              <span class="bp-tag">{brands.wavenet.tag}</span>
             </div>
             <span class="bp-src-label">官方介绍</span>
-            <p class="bp-desc">{brands.firefly.desc}</p>
+            <p class="bp-desc">{brands.wavenet.desc}</p>
             
             <div class="bp-pricing-row">
               <div class="bp-price-left">
                 <span class="bp-price-label">推荐入门方案</span>
-                <span class="bp-price-note">{brands.firefly.recPriceNote}</span>
+                <span class="bp-price-note">{brands.wavenet.recPriceNote}</span>
               </div>
               <div class="bp-price-right">
-                <span class="bp-price-val">{brands.firefly.recPrice}</span>
+                <span class="bp-price-val">{brands.wavenet.recPrice}</span>
               </div>
             </div>
 
             <ul class="bp-highlights-list">
-              {brands.firefly.highlights.map(item => (
+              {brands.wavenet.highlights.map(item => (
                 <li>
                   <span class="check-symbol">✓</span>
                   <div><strong>{item.label}：</strong>{item.text}</div>
                 </li>
               ))}
             </ul>
-            <div class="bp-test"><strong>本站测试：</strong>{testLine.firefly}</div>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.wavenet}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
-              <code class="bp-coupon-code">{brands.firefly.coupon}</code>
-              <span class="bp-coupon-discount">（{brands.firefly.couponDiscount}）</span>
+              <code class="bp-coupon-code">{brands.wavenet.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.wavenet.couponDiscount}）</span>
             </div>
 
             <div class="bp-actions">
-              <a href="/go/firefly/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+              <a href="/go/wavenet/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/firefly/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('wavenet')
+                ? <a href="/reviews/wavenet/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
 
@@ -751,55 +748,55 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
         </div>
       </div>
 
-      <!-- 第四组：【灵猫】，【闪跃】，【跨界】 -->
+      <!-- 第四组：【灵动云】，【隐形人】，【FireFly】 -->
       <div class="pair-block">
-        <div class="pair-label">第四组：【灵猫】·【闪跃】·【跨界云】</div>
+        <div class="pair-label">第四组：【灵动云】·【隐形人】·【FireFly】</div>
         <div class="triple-grid">
           <!-- 灵猫 -->
           <div class="brand-pick-card">
             <div class="bp-top">
               <div>
                 <span class="bp-badge">主推品牌</span>
-                <h3>{brands.lingmao.name}</h3>
+                <h3>{brands.lingdong.name}</h3>
               </div>
-              <span class="bp-tag">{brands.lingmao.tag}</span>
+              <span class="bp-tag">{brands.lingdong.tag}</span>
             </div>
             <span class="bp-src-label">官方介绍</span>
-            <p class="bp-desc">{brands.lingmao.desc}</p>
+            <p class="bp-desc">{brands.lingdong.desc}</p>
             
             <div class="bp-pricing-row">
               <div class="bp-price-left">
                 <span class="bp-price-label">推荐入门方案</span>
-                <span class="bp-price-note">{brands.lingmao.recPriceNote}</span>
+                <span class="bp-price-note">{brands.lingdong.recPriceNote}</span>
               </div>
               <div class="bp-price-right">
-                <span class="bp-price-val">{brands.lingmao.recPrice}</span>
+                <span class="bp-price-val">{brands.lingdong.recPrice}</span>
               </div>
             </div>
 
             <ul class="bp-highlights-list">
-              {brands.lingmao.highlights.map(item => (
+              {brands.lingdong.highlights.map(item => (
                 <li>
                   <span class="check-symbol">✓</span>
                   <div><strong>{item.label}：</strong>{item.text}</div>
                 </li>
               ))}
             </ul>
-            <div class="bp-test"><strong>本站测试：</strong>{testLine.lingmao}</div>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.lingdong}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
-              <code class="bp-coupon-code">{brands.lingmao.coupon}</code>
-              <span class="bp-coupon-discount">（{brands.lingmao.couponDiscount}）</span>
+              <code class="bp-coupon-code">{brands.lingdong.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.lingdong.couponDiscount}）</span>
             </div>
 
             <div class="bp-actions">
-              <a href="/go/lingmao/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+              <a href="/go/lingdong/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/lingmao/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('lingdong')
+                ? <a href="/reviews/lingdong/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
 
@@ -808,46 +805,46 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
             <div class="bp-top">
               <div>
                 <span class="bp-badge">主推品牌</span>
-                <h3>{brands.shanyue.name}</h3>
+                <h3>{brands.invisible.name}</h3>
               </div>
-              <span class="bp-tag">{brands.shanyue.tag}</span>
+              <span class="bp-tag">{brands.invisible.tag}</span>
             </div>
             <span class="bp-src-label">官方介绍</span>
-            <p class="bp-desc">{brands.shanyue.desc}</p>
+            <p class="bp-desc">{brands.invisible.desc}</p>
             
             <div class="bp-pricing-row">
               <div class="bp-price-left">
                 <span class="bp-price-label">推荐入门方案</span>
-                <span class="bp-price-note">{brands.shanyue.recPriceNote}</span>
+                <span class="bp-price-note">{brands.invisible.recPriceNote}</span>
               </div>
               <div class="bp-price-right">
-                <span class="bp-price-val">{brands.shanyue.recPrice}</span>
+                <span class="bp-price-val">{brands.invisible.recPrice}</span>
               </div>
             </div>
 
             <ul class="bp-highlights-list">
-              {brands.shanyue.highlights.map(item => (
+              {brands.invisible.highlights.map(item => (
                 <li>
                   <span class="check-symbol">✓</span>
                   <div><strong>{item.label}：</strong>{item.text}</div>
                 </li>
               ))}
             </ul>
-            <div class="bp-test"><strong>本站测试：</strong>{testLine.shanyue}</div>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.invisible}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
-              <code class="bp-coupon-code">{brands.shanyue.coupon}</code>
-              <span class="bp-coupon-discount">（{brands.shanyue.couponDiscount}）</span>
+              <code class="bp-coupon-code">{brands.invisible.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.invisible.couponDiscount}）</span>
             </div>
 
             <div class="bp-actions">
-              <a href="/go/shanyue/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+              <a href="/go/invisible/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/shanyue/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('invisible')
+                ? <a href="/reviews/invisible/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
 
@@ -856,46 +853,46 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
             <div class="bp-top">
               <div>
                 <span class="bp-badge">主推品牌</span>
-                <h3>{brands.kuajie.name}</h3>
+                <h3>{brands.firefly.name}</h3>
               </div>
-              <span class="bp-tag">{brands.kuajie.tag}</span>
+              <span class="bp-tag">{brands.firefly.tag}</span>
             </div>
             <span class="bp-src-label">官方介绍</span>
-            <p class="bp-desc">{brands.kuajie.desc}</p>
+            <p class="bp-desc">{brands.firefly.desc}</p>
             
             <div class="bp-pricing-row">
               <div class="bp-price-left">
                 <span class="bp-price-label">推荐入门方案</span>
-                <span class="bp-price-note">{brands.kuajie.recPriceNote}</span>
+                <span class="bp-price-note">{brands.firefly.recPriceNote}</span>
               </div>
               <div class="bp-price-right">
-                <span class="bp-price-val">{brands.kuajie.recPrice}</span>
+                <span class="bp-price-val">{brands.firefly.recPrice}</span>
               </div>
             </div>
 
             <ul class="bp-highlights-list">
-              {brands.kuajie.highlights.map(item => (
+              {brands.firefly.highlights.map(item => (
                 <li>
                   <span class="check-symbol">✓</span>
                   <div><strong>{item.label}：</strong>{item.text}</div>
                 </li>
               ))}
             </ul>
-            <div class="bp-test"><strong>本站测试：</strong>{testLine.kuajie}</div>
+            <div class="bp-test"><strong>本站测试：</strong>{testLine.firefly}</div>
 
             <div class="bp-coupon-row">
               <span class="bp-coupon-label">专属优惠券：</span>
-              <code class="bp-coupon-code">{brands.kuajie.coupon}</code>
-              <span class="bp-coupon-discount">（{brands.kuajie.couponDiscount}）</span>
+              <code class="bp-coupon-code">{brands.firefly.coupon}</code>
+              <span class="bp-coupon-discount">（{brands.firefly.couponDiscount}）</span>
             </div>
 
             <div class="bp-actions">
-              <a href="/go/kuajie/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
+              <a href="/go/firefly/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/kuajie/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('firefly')
+                ? <a href="/reviews/firefly/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
         </div>
@@ -947,9 +944,9 @@ const testLine = Object.fromEntries(Object.keys(brands).map(slug => {
               <a href="/go/wuyou/" target="_blank" rel="noopener noreferrer nofollow sponsored" class="button primary">
                 前往官网 ↗
               </a>
-              <a href="/reviews/wuyou/" class="button secondary">
-                品牌测评 📊
-              </a>
+              {reviewSlugs.has('wuyou')
+                ? <a href="/reviews/wuyou/" class="button secondary">品牌测评 📊</a>
+                : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </div>
 

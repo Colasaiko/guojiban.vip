@@ -21,6 +21,11 @@ export type BrandTestInfo = ReturnType<typeof testSummary> & {
   unavailable: string[];
 };
 
+// 已有评测页（src/content/reviews/*.md）的品牌；没有评测页的品牌不能链接到 /reviews/xxx/
+export async function getReviewSlugs(): Promise<Set<string>> {
+  return new Set((await getCollection('reviews')).map(r => (r.data as unknown as BrandReviewDetail).slug));
+}
+
 // 列表页（首页、/brands/、/compare/、/tizi/）共用：按品牌 slug 读取测试摘要，与评测页同源
 export async function getBrandTests(): Promise<Record<string, BrandTestInfo>> {
   const reviews = await getCollection('reviews');

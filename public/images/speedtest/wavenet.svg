@@ -6,7 +6,7 @@
       .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 20px; font-weight: 700; fill: #ffffff; }
       .date { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; fill: #999ca3; text-anchor: end; }
       .node-name { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 15px; fill: #f1f2f4; }
-      .latency { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 14.5px; fill: #cbd5e1; text-anchor: end; }
+      .latency { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 14.5px; text-anchor: end; }
       .speed { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 14.5px; font-weight: 700; fill: #ffffff; text-anchor: end; }
       .line { stroke: #20232a; stroke-width: 1; }
       .notice { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12px; fill: #7b808a; }
@@ -20,40 +20,41 @@
 
   <!-- 头部：品牌标题与实测日期 -->
   <text x="28" y="44" class="title">WaveNet 浪网 测速报告</text>
-  <text x="852" y="44" class="date">2026年10月19日 实测</text>
+  <text x="852" y="44" class="date">2026年10月28日 客户端节点延迟测试</text>
   <line x1="28" y1="62" x2="852" y2="62" class="line" />
 
-  <!-- 节点 1：香港 -->
-  <text x="28" y="104" class="node-name">香港 节点</text>
-  <text x="690" y="104" class="latency">延迟 47ms</text>
-  <text x="852" y="104" class="speed">下载 346Mbps</text>
+  
+  <!-- 节点 1：香港 01–04 节点（极速中转） -->
+  <text x="28" y="104" class="node-name">香港 01–04 节点（极速中转）</text>
+  <text x="690" y="104" class="latency" style="fill: #cbd5e1;">延迟 26–30ms</text>
+  <text x="852" y="104" class="speed">专线出口</text>
   <line x1="28" y1="124" x2="852" y2="124" class="line" />
 
-  <!-- 节点 2：台湾 -->
-  <text x="28" y="162" class="node-name">台湾 节点</text>
-  <text x="690" y="162" class="latency">延迟 59ms</text>
-  <text x="852" y="162" class="speed">下载 103Mbps</text>
+  <!-- 节点 2：台湾 01–03 节点（原生动画） -->
+  <text x="28" y="162" class="node-name">台湾 01–03 节点（原生动画）</text>
+  <text x="690" y="162" class="latency" style="fill: #cbd5e1;">延迟 44–48ms</text>
+  <text x="852" y="162" class="speed">专线出口</text>
   <line x1="28" y1="182" x2="852" y2="182" class="line" />
 
-  <!-- 节点 3：新加坡 -->
-  <text x="28" y="220" class="node-name">新加坡 节点</text>
-  <text x="690" y="220" class="latency">延迟 62ms</text>
-  <text x="852" y="220" class="speed">下载 258Mbps</text>
+  <!-- 节点 3：新加坡 01–03 节点（海外访问） -->
+  <text x="28" y="220" class="node-name">新加坡 01–03 节点（海外访问）</text>
+  <text x="690" y="220" class="latency" style="fill: #cbd5e1;">延迟 42–46ms</text>
+  <text x="852" y="220" class="speed">专线出口</text>
   <line x1="28" y1="240" x2="852" y2="240" class="line" />
 
-  <!-- 节点 4：日本 -->
-  <text x="28" y="278" class="node-name">日本 节点</text>
-  <text x="690" y="278" class="latency">延迟 74ms</text>
-  <text x="852" y="278" class="speed">下载 123Mbps</text>
+  <!-- 节点 4：日本 东京 01–05 节点（亚太骨干） -->
+  <text x="28" y="278" class="node-name">日本 东京 01–05 节点（亚太骨干）</text>
+  <text x="690" y="278" class="latency" style="fill: #cbd5e1;">延迟 54–59ms</text>
+  <text x="852" y="278" class="speed">专线出口</text>
   <line x1="28" y1="298" x2="852" y2="298" class="line" />
 
-  <!-- 节点 5：美国 -->
-  <text x="28" y="336" class="node-name">美国 节点</text>
-  <text x="690" y="336" class="latency">延迟 162ms</text>
-  <text x="852" y="336" class="speed">下载 25Mbps</text>
+  <!-- 节点 5：日本 东京 06 节点 -->
+  <text x="28" y="336" class="node-name">日本 东京 06 节点</text>
+  <text x="690" y="336" class="latency" style="fill: #ef4444;">延迟 Timeout</text>
+  <text x="852" y="336" class="speed">专线出口</text>
   <line x1="28" y1="356" x2="852" y2="356" class="line" />
 
   <!-- 底部说明与来源 -->
-  <text x="28" y="386" class="notice">测试并非在晚高峰时段进行，仅反映测试当时的网络状况，实际晚高峰体验可能有所不同，仅供参考，不代表任何时刻的保证速度。</text>
+  <text x="28" y="386" class="notice">数据来源于 2026-10-28 WaveNet 浪网客户端内的节点延迟测试（家庭宽带，非晚高峰）。当次日本东京 06 节点显示 Timeout，如实记录；每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同。</text>
   <text x="852" y="412" class="brand-src">国际版VIP · 实测数据归档</text>
 </svg>

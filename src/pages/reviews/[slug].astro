@@ -710,7 +710,7 @@ const schemaData = {
                 <div class="lt-head">
                   <span class="lt-badge">最新实测 · {detail.latestTest.date}</span>
                   <h3>{brand.name} {detail.latestTest.node}测试结果</h3>
-                  <p class="lt-env">测试时间：{detail.latestTest.date}{detail.latestTest.time && ` ${detail.latestTest.time}`}<br />测试环境：{detail.latestTest.environment}<br />测试工具：{detail.latestTest.tool}{isPrimary && <><br />测试账号：由 {brand.name} 官方提供（测试结果按实际截图记录，不受账号来源影响）</>}</p>
+                  <p class="lt-env">测试时间：{detail.latestTest.date}{detail.latestTest.time && ` ${detail.latestTest.time}`}<br />测试环境：{detail.latestTest.environment}<br />测试工具：{detail.latestTest.tool}{<><br />测试账号：由 {brand.name} 官方提供（测试结果按实际截图记录，不受账号来源影响）</>}</p>
                 </div>
                 <div class="lt-metrics">
                   {detail.latestTest.metrics.map(m => (
@@ -732,14 +732,16 @@ const schemaData = {
                   {detail.latestTest.servicesNote && <p class="lt-small">{detail.latestTest.servicesNote}</p>}
                   {detail.latestTest.dnsResult && <p class="lt-small">DNS 泄露检测：{detail.latestTest.dnsResult}</p>}
                 </div>
-                <div class="lt-images">
-                  {detail.latestTest.images.map(img => (
-                    <figure>
-                      <a href={img.src} class="lt-zoom" data-caption={img.caption} aria-label={`放大查看：${img.alt}`}><img src={img.src} alt={img.alt} loading="lazy" decoding="async" /></a>
-                      <figcaption>{img.caption}</figcaption>
-                    </figure>
-                  ))}
-                </div>
+                {detail.latestTest.images && detail.latestTest.images.length > 0 && (
+                  <div class="lt-images">
+                    {detail.latestTest.images.map(img => (
+                      <figure>
+                        <a href={img.src} class="lt-zoom" data-caption={img.caption} aria-label={`放大查看：${img.alt}`}><img src={img.src} alt={img.alt} loading="lazy" decoding="async" /></a>
+                        <figcaption>{img.caption}</figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                )}
                 <p class="lt-note">⚠️ {detail.latestTest.note}</p>
               </div>
             )}

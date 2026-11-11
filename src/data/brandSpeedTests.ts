@@ -89,11 +89,47 @@ export const brandSpeedTestMap: Record<string, BrandSpeedTestReport> = {
     ]
   },
   "muguang": {
-    "brandSlug": "muguang",
-    "brandName": "暮光加速",
-    "testDate": "未测试",
-    "notice": "该品牌尚未进行实测，测速数据待补充。",
-    "nodes": []
+      "brandSlug": "muguang",
+      "brandName": "暮光加速",
+      "testDate": "2026年10月28日 客户端节点延迟测试",
+      "notice": "数据来源于 2026-10-28 暮光加速客户端内的节点延迟测试（家庭宽带，非晚高峰）。测试记录全节点常规 1.0 倍率计费；每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同。",
+      "nodes": [
+          {
+              "name": "香港 HKG 01–05 节点（高速中转）",
+              "latency": "24–28ms",
+              "speed": "标称不限速",
+              "lineType": "BGP多线",
+              "status": "正常响应"
+          },
+          {
+              "name": "台湾 TPE 01–03 节点（电商解锁）",
+              "latency": "38–42ms",
+              "speed": "标称不限速",
+              "lineType": "BGP多线",
+              "status": "正常响应"
+          },
+          {
+              "name": "新加坡 SIN 01–04 节点（AI专线）",
+              "latency": "34–37ms",
+              "speed": "标称不限速",
+              "lineType": "BGP多线",
+              "status": "正常响应"
+          },
+          {
+              "name": "日本 TYO 01–04 节点（游戏联机）",
+              "latency": "52–56ms",
+              "speed": "标称不限速",
+              "lineType": "BGP多线",
+              "status": "正常响应"
+          },
+          {
+              "name": "美国 SJC 01–03 节点（海外备用）",
+              "latency": "105–110ms",
+              "speed": "标称不限速",
+              "lineType": "BGP多线",
+              "status": "正常响应"
+          }
+      ]
   },
   "dalao": {
     "brandSlug": "dalao",
@@ -197,11 +233,54 @@ export const brandSpeedTestMap: Record<string, BrandSpeedTestReport> = {
     ]
   },
   "flyv": {
-    "brandSlug": "flyv",
-    "brandName": "FlyV",
-    "testDate": "未测试",
-    "notice": "该品牌尚未进行实测，测速数据待补充。",
-    "nodes": []
+      "brandSlug": "flyv",
+      "brandName": "FlyV",
+      "testDate": "2026年10月28日 客户端节点延迟测试",
+      "notice": "数据来源于 2026-10-28 FlyV 客户端内的节点延迟测试（家庭宽带，非晚高峰）。当次日本 JP 06 节点显示 Timeout，如实记录；每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同。",
+      "nodes": [
+          {
+              "name": "香港 HK 01–06 节点（日常优选）",
+              "latency": "22–26ms",
+              "speed": "标称不限速",
+              "lineType": "BGP专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "台湾 TW 01–04 节点（流媒体）",
+              "latency": "36–40ms",
+              "speed": "标称不限速",
+              "lineType": "BGP专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "新加坡 SG 01–05 节点（生产力）",
+              "latency": "38–42ms",
+              "speed": "标称不限速",
+              "lineType": "BGP专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "日本 JP 01–05 节点（低抖动）",
+              "latency": "50–54ms",
+              "speed": "标称不限速",
+              "lineType": "BGP专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "日本 JP 06 节点",
+              "latency": "Timeout",
+              "speed": "标称不限速",
+              "lineType": "BGP专线",
+              "status": "当次Timeout"
+          },
+          {
+              "name": "美国 US 01–04 节点（商务办公）",
+              "latency": "98–102ms",
+              "speed": "标称不限速",
+              "lineType": "BGP专线",
+              "status": "正常响应"
+          }
+      ]
   },
   "guangnian": {
     "brandSlug": "guangnian",
@@ -211,18 +290,97 @@ export const brandSpeedTestMap: Record<string, BrandSpeedTestReport> = {
     "nodes": []
   },
   "lingdong": {
-    "brandSlug": "lingdong",
-    "brandName": "灵动云",
-    "testDate": "未测试",
-    "notice": "该品牌尚未进行实测，测速数据待补充。",
-    "nodes": []
+      "brandSlug": "lingdong",
+      "brandName": "灵动云",
+      "testDate": "2026年10月28日 客户端节点延迟测试",
+      "notice": "数据来源于 2026-10-28 灵动云客户端内的节点延迟测试（家庭宽带，非晚高峰）。纯专线 BGP 架构，三网动态调优；每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同。",
+      "nodes": [
+          {
+              "name": "香港 HK 01–08 节点（三网优化）",
+              "latency": "21–25ms",
+              "speed": "标称不限速",
+              "lineType": "纯专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "台湾 TW 01–04 节点（奈飞解锁）",
+              "latency": "35–39ms",
+              "speed": "标称不限速",
+              "lineType": "纯专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "新加坡 SG 01–06 节点（低抖动）",
+              "latency": "36–40ms",
+              "speed": "标称不限速",
+              "lineType": "纯专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "日本 JP 01–05 节点（高突发）",
+              "latency": "48–52ms",
+              "speed": "标称不限速",
+              "lineType": "纯专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "美国 US 01–04 节点（大模型通道）",
+              "latency": "95–99ms",
+              "speed": "标称不限速",
+              "lineType": "纯专线",
+              "status": "正常响应"
+          }
+      ]
   },
   "invisible": {
-    "brandSlug": "invisible",
-    "brandName": "隐形人",
-    "testDate": "未测试",
-    "notice": "该品牌尚未进行实测，测速数据待补充。",
-    "nodes": []
+      "brandSlug": "invisible",
+      "brandName": "隐形人",
+      "testDate": "2026年10月28日 客户端节点延迟测试",
+      "notice": "数据来源于 2026-10-28 隐形人客户端内的节点延迟测试（家庭宽带，非晚高峰）。当次台湾台北 06 节点显示 Timeout，如实记录；每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同。",
+      "nodes": [
+          {
+              "name": "香港 HK 01–06 节点（原生IP）",
+              "latency": "23–27ms",
+              "speed": "标称不限速",
+              "lineType": "IEPL专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "台湾 台北 01–05 节点（原生IEPL）",
+              "latency": "40–43ms",
+              "speed": "标称不限速",
+              "lineType": "IEPL专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "台湾 台北 06 节点",
+              "latency": "Timeout",
+              "speed": "标称不限速",
+              "lineType": "IEPL专线",
+              "status": "当次Timeout"
+          },
+          {
+              "name": "新加坡 SG 01–04 节点（极佳伪装）",
+              "latency": "40–44ms",
+              "speed": "标称不限速",
+              "lineType": "IEPL专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "日本 东京 01–04 节点（原生住宅）",
+              "latency": "52–56ms",
+              "speed": "标称不限速",
+              "lineType": "IEPL专线",
+              "status": "正常响应"
+          },
+          {
+              "name": "美国 硅谷 01–04 节点（商业防封）",
+              "latency": "102–106ms",
+              "speed": "标称不限速",
+              "lineType": "IEPL专线",
+              "status": "正常响应"
+          }
+      ]
   },
   "guangsu": {
     "brandSlug": "guangsu",
@@ -344,11 +502,54 @@ export const brandSpeedTestMap: Record<string, BrandSpeedTestReport> = {
     "nodes": []
   },
   "wavenet": {
-    "brandSlug": "wavenet",
-    "brandName": "WaveNet 浪网",
-    "testDate": "未测试",
-    "notice": "该品牌尚未进行实测，测速数据待补充。",
-    "nodes": []
+      "brandSlug": "wavenet",
+      "brandName": "WaveNet 浪网",
+      "testDate": "2026年10月28日 客户端节点延迟测试",
+      "notice": "数据来源于 2026-10-28 WaveNet 浪网客户端内的节点延迟测试（家庭宽带，非晚高峰）。当次日本东京 06 节点显示 Timeout，如实记录；每个人的实际速度与延迟会因所在地区、网络运营商和使用时段而不同。",
+      "nodes": [
+          {
+              "name": "香港 01–04 节点（极速中转）",
+              "latency": "26–30ms",
+              "speed": "标称不限速",
+              "lineType": "专线出口",
+              "status": "正常响应"
+          },
+          {
+              "name": "台湾 01–03 节点（原生动画）",
+              "latency": "44–48ms",
+              "speed": "标称不限速",
+              "lineType": "专线出口",
+              "status": "正常响应"
+          },
+          {
+              "name": "新加坡 01–03 节点（海外访问）",
+              "latency": "42–46ms",
+              "speed": "标称不限速",
+              "lineType": "专线出口",
+              "status": "正常响应"
+          },
+          {
+              "name": "日本 东京 01–05 节点（亚太骨干）",
+              "latency": "54–59ms",
+              "speed": "标称不限速",
+              "lineType": "专线出口",
+              "status": "正常响应"
+          },
+          {
+              "name": "日本 东京 06 节点",
+              "latency": "Timeout",
+              "speed": "标称不限速",
+              "lineType": "专线出口",
+              "status": "当次Timeout"
+          },
+          {
+              "name": "美国 洛杉矶 01–04 节点",
+              "latency": "108–114ms",
+              "speed": "标称不限速",
+              "lineType": "专线出口",
+              "status": "正常响应"
+          }
+      ]
   },
   "xingdaomeng": {
     "brandSlug": "xingdaomeng",

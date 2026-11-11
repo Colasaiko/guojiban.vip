@@ -46,7 +46,8 @@ export const GET: APIRoute = async () => {
       path: `/tag/${tag}/`,
       lastmod: latest(posts.filter(p => p.data.tags.includes(tag)).map(p => day(p.data.updatedDate))),
     })),
-    ...allBrands.filter(b => b.category === 'primary').map(b => ({ path: `/reviews/${b.slug}/`, lastmod: b.updatedAt })),
+    // 所有已有评测页的品牌（含移出主推但保留评测页的品牌）
+    ...reviews.map(r => (r.data as { slug: string }).slug).map(slug => ({ path: `/reviews/${slug}/`, lastmod: allBrands.find(b => b.slug === slug)?.updatedAt })),
   ];
 
   // 每个网址一段、带缩进，方便人工检查；搜索引擎读取不受影响

@@ -20,6 +20,17 @@ type BrandCompareBase = Omit<PromotedBrandCompare, 'recPrice' | 'coupon' | 'coup
 // 价格与优惠码从 brands.ts 读取，与评测页保持一致
 const brandCompareBase: BrandCompareBase[] = [
   {
+    name: '飞V（FlyV）',
+    slug: 'flyv',
+    tag: '多链路 BGP 调度',
+    lineType: '多链路 BGP 调度 + IEPL / IPLC 专线（官方介绍）',
+    recPriceNote: '新客 fly20 享 8 折（年付轻量版与一次性流量包除外），建议先月付',
+    targetUrl: '/go/flyv/',
+    reviewUrl: '/reviews/flyv/',
+    bestFor: '需要多设备同时在线、常用 AI 工具与流媒体、想要专线出口的用户',
+    strengths: ['官方标称 BGP 多线调度', '全节点 1x 计费', '不限在线设备数', '新客 8 折']
+  },
+  {
     name: '微风网络',
     slug: 'weifeng',
     tag: '全场7折特惠',
@@ -29,17 +40,6 @@ const brandCompareBase: BrandCompareBase[] = [
     reviewUrl: '/reviews/weifeng/',
     bestFor: '追求全节点不限速、不限制设备同时在线、需要不限时备用包的用户',
     strengths: ['全 IPLC 物理专线', '不限设备同时接入', '标称全节点不限速', '支持 270G/570G 不限时包']
-  },
-  {
-    name: '飞猫云',
-    slug: 'feimao',
-    tag: '高性价比口碑',
-    lineType: 'IPLC / IEPL 专线（BGP 多线），部分直连',
-    recPriceNote: '首推月付体验，学生与多设备用户首选',
-    targetUrl: '/go/feimao/',
-    reviewUrl: '/reviews/feimao/',
-    bestFor: '追求节点丰富度、全平台一键导入即用、多设备共享套餐的用户',
-    strengths: ['节点冗余度极高', '4K/8K 蓝光秒开', '原生多国 IP 解锁', '全平台一键导入即用']
   },
   {
     name: '暮光加速',
@@ -53,15 +53,48 @@ const brandCompareBase: BrandCompareBase[] = [
     strengths: ['超低延迟专线', '8K 视频秒开无缓冲', 'AI 大模型响应极快', 'Shadowsocks 高强度加密']
   },
   {
-    name: '大佬云',
-    slug: 'dalao',
-    tag: '分组专线',
-    lineType: '全 IPLC 物理专线（全节点 1.0 倍率）',
-    recPriceNote: '首推月付体验，多国冷门原生节点齐备',
-    targetUrl: '/go/dalao/',
-    reviewUrl: '/reviews/dalao/',
-    bestFor: '想按用途（日常、电商、流媒体、办公）选节点、需要多设备共用的用户',
-    strengths: ['节点按用途分组', '全节点 1 倍率计费', '不限设备数量', '支持按月与不限时包']
+    name: '飞猫云',
+    slug: 'feimao',
+    tag: '高性价比口碑',
+    lineType: 'IPLC / IEPL 专线（BGP 多线），部分直连',
+    recPriceNote: '首推月付体验，学生与多设备用户首选',
+    targetUrl: '/go/feimao/',
+    reviewUrl: '/reviews/feimao/',
+    bestFor: '追求节点丰富度、全平台一键导入即用、多设备共享套餐的用户',
+    strengths: ['节点冗余度极高', '4K/8K 蓝光秒开', '原生多国 IP 解锁', '全平台一键导入即用']
+  },
+  {
+    name: '浪网（WaveNet）',
+    slug: 'wavenet',
+    tag: 'BGP 多线 + 专线出口',
+    lineType: 'BGP 多线智能调度 + 专线出口（官方介绍）',
+    recPriceNote: '常规套餐 lw888 享 8 折，建议先月付',
+    targetUrl: '/go/wavenet/',
+    reviewUrl: '/reviews/wavenet/',
+    bestFor: '多设备共用、主要看流媒体与使用 AI 工具的用户',
+    strengths: ['官方标称 BGP 智能调度', '全节点 1x 倍率', '常规套餐不限在线设备', 'Shadowsocks 协议']
+  },
+  {
+    name: '灵动云',
+    slug: 'lingdong',
+    tag: '专线 + BGP 三网优化',
+    lineType: '专线 + BGP 三网优化（官方介绍）',
+    recPriceNote: '年付及长周期 zq88 享 8 折，建议先月付',
+    targetUrl: '/go/lingdong/',
+    reviewUrl: '/reviews/lingdong/',
+    bestFor: '电信、联通、移动用户都有、需要多设备同时在线的家庭或团队',
+    strengths: ['官方标称三网 BGP 优化', '全节点 1x 倍率', '多设备同时在线', 'Shadowsocks 协议']
+  },
+  {
+    name: '隐形人',
+    slug: 'invisible',
+    tag: 'IEPL 专线 · VLESS',
+    lineType: 'IEPL 专线 · VLESS（官方介绍）',
+    recPriceNote: '常规套餐 yxr888 享 8 折，建议先月付',
+    targetUrl: '/go/invisible/',
+    reviewUrl: '/reviews/invisible/',
+    bestFor: '需要港台日新美多地区节点、多设备同时使用的用户',
+    strengths: ['官方标称 IEPL 专线', 'VLESS 协议', '全节点 1x 倍率', '不限制在线设备数']
   },
   {
     name: 'firefly (萤火虫)',
@@ -73,39 +106,6 @@ const brandCompareBase: BrandCompareBase[] = [
     reviewUrl: '/reviews/firefly/',
     bestFor: '晚高峰需要频繁访问 ChatGPT / Claude 生产力与 4K 流媒体的职场人',
     strengths: ['出境避开骨干拥堵', '针对 ChatGPT 深度优化', '全节点满血释放', '不限制多端设备接入']
-  },
-  {
-    name: '灵猫',
-    slug: 'lingmao',
-    tag: '稳定轻量首选',
-    lineType: '全 IPLC 专线（全节点真实 x1 倍率）',
-    recPriceNote: '首推月付体验，日常浏览与学术轻量首选',
-    targetUrl: '/go/lingmao/',
-    reviewUrl: '/reviews/lingmao/',
-    bestFor: '日常学术查重、海淘检索、看 YouTube 的轻量省心用户',
-    strengths: ['真实 x1 倍率无虚标', '资费亲民轻量首选', '学术查重与搜索顺畅', '提供固定总量不限时包']
-  },
-  {
-    name: '闪跃',
-    slug: 'shanyue',
-    tag: '智能故障秒切',
-    lineType: '纯 IPLC 智能健康检测专线',
-    recPriceNote: '首推月付体验，告别手动频繁测速切节点',
-    targetUrl: '/go/shanyue/',
-    reviewUrl: '/reviews/shanyue/',
-    bestFor: '不想自己挑节点、希望客户端自动选择可用线路的用户',
-    strengths: ['官方标称故障自动切换', '支持 100G / 200G 不限时包', '全节点 1 倍率计费', '多协议全平台适配']
-  },
-  {
-    name: '跨界云',
-    slug: 'kuajie',
-    tag: '商务跨境大带宽',
-    lineType: '全 IPLC 物理专线',
-    recPriceNote: '首推月付体验，面向跨境电商与大流量团队',
-    targetUrl: '/go/kuajie/',
-    reviewUrl: '/reviews/kuajie/',
-    bestFor: '跨境电商运营、海外直播推流、外贸团队多人共享大流量的用户',
-    strengths: ['万兆出口极高冗余', '跨境直播推流低卡顿', '纯净商用出口 IP', '团队多人多设备支持']
   },
   {
     name: '无忧链接',

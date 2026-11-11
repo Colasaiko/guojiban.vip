@@ -3,12 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { site } from '../../data/site';
 import { allBrands } from '../../data/brands';
-import { getBrandTests } from '../../utils/latestTest';
+import { getBrandTests, getReviewSlugs } from '../../utils/latestTest';
 
 // 站长主推的 9 个品牌与扩展品牌（数据见 src/data/brands.ts）
 const primaryBrands = allBrands.filter(b => b.category === 'primary');
 const extendedBrands = allBrands.filter(b => b.category === 'extended');
 const brandTests = await getBrandTests();
+const reviewSlugs = await getReviewSlugs();
 
 const auditPillars = [
   { icon: '🏛️', title: '运营年限与口碑信誉', desc: '坚决过滤上线不足两周的跑路黑机场，优选有长期运营历史、社群反馈真实的技术团队。' },
@@ -133,12 +134,9 @@ const auditPillars = [
               >
                 前往官方网站 ↗
               </a>
-              <a
-                href={`/reviews/${b.slug}/`}
-                class="button secondary bc-btn-sub"
-              >
-                查看深度评测报告 📊
-              </a>
+              {reviewSlugs.has(b.slug)
+                ? <a href={`/reviews/${b.slug}/`} class="button secondary bc-btn-sub">查看深度评测报告 📊</a>
+                : <span class="button secondary bc-btn-sub" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
             </div>
           </article>
         ))}

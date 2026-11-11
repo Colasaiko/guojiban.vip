@@ -5,12 +5,14 @@ import { allBrands } from '../../data/brands';
 import { getCollection } from 'astro:content';
 import { site } from '../../data/site';
 import SpeedTestReportCard from '../../components/SpeedTestReportCard.astro';
-import { testSummary } from '../../utils/latestTest';
+import { testSummary, getReviewSlugs } from '../../utils/latestTest';
 import type { BrandReviewDetail } from '../../types/review';
 
 const reviewsDetailMap = Object.fromEntries((await getCollection('reviews')).map(r => [r.data.slug, r.data as unknown as BrandReviewDetail]));
 
 const primaryBrands = allBrands.filter(b => b.category === 'primary');
+// 还没有评测页的主推品牌，标题不加链接、按钮显示「测评整理中」
+const reviewSlugs = await getReviewSlugs();
 
 const auditCriteria = [
   { icon: '⏱️', title: '速度、延迟与丢包', desc: '用 Cloudflare Speed Test、Fast.com 等工具记录下载、上传、延迟与丢包，注明测试日期、节点与网络环境；晚高峰测试会陆续补充。' },
@@ -21,7 +23,7 @@ const auditCriteria = [
 ---
 <BaseLayout
   title={`9大主推梯子品牌测评：套餐价格、优惠码与优缺点 · ${site.name}`}
-  description="国际版VIP 主推梯子品牌测评：微风网络、飞猫云、暮光加速、大佬云、萤火虫、灵猫、闪跃、无忧链接、跨界云，逐家整理套餐价格、优惠码、客户端使用方法、优缺点与常见问题，测速数据持续补充中。"
+  description="国际版VIP 主推梯子品牌测评：飞V、微风网络、暮光加速、飞猫云、浪网、灵动云、隐形人、萤火虫、无忧链接，逐家整理套餐价格、优惠码、客户端使用方法、优缺点与常见问题，测速数据持续补充中。"
 >
   <div class="container">
     <Breadcrumb items={[{ label: '梯子推荐', href: '/tizi/' }, { label: '品牌测评' }]} />
@@ -82,9 +84,9 @@ const auditCriteria = [
                 <span class="review-badge-num">{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
                 <div class="review-brand-title">
                   <h3>
-                    <a href={`/reviews/${b.slug}/`} style="color: #ffffff; text-decoration: none;">
-                      {b.name}
-                    </a>
+                    {reviewSlugs.has(b.slug)
+                      ? <a href={`/reviews/${b.slug}/`} style="color: #ffffff; text-decoration: none;">{b.name}</a>
+                      : b.name}
                     <span class="bp-tag" style="font-size: 11px;">{b.couponDiscount}</span>
                   </h3>
                   <span class="review-tag-line">{reviewsDetailMap[b.slug]?.subtitle || b.tag}</span>
@@ -138,9 +140,9 @@ const auditCriteria = [
 
             <!-- 专属测评大标题与简评 -->
             <h4 style="font-size: 14px; font-weight: 700; color: #60a5fa; margin-bottom: 8px;">
-              <a href={`/reviews/${b.slug}/`} style="color: inherit; text-decoration: none;">
-                {reviewsDetailMap[b.slug]?.h1 || `${b.name}深度测评`}
-              </a>
+              {reviewSlugs.has(b.slug)
+                ? <a href={`/reviews/${b.slug}/`} style="color: inherit; text-decoration: none;">{reviewsDetailMap[b.slug]?.h1 || `${b.name}深度测评`}</a>
+                : `${b.name}：测评整理中`}
             </h4>
             <p class="review-body" style="margin-bottom: 16px;">
               {b.summary}
@@ -169,13 +171,9 @@ const auditCriteria = [
               </div>
 
               <div class="review-actions">
-                <a
-                  href={`/reviews/${b.slug}/`}
-                  class="button primary"
-                  style="font-size: 13px; font-weight: 700; padding: 10px 18px;"
-                >
-                  阅读详细测评文章 →
-                </a>
+                {reviewSlugs.has(b.slug)
+                  ? <a href={`/reviews/${b.slug}/`} class="button primary" style="font-size: 13px; font-weight: 700; padding: 10px 18px;">阅读详细测评文章 →</a>
+                  : <span class="button secondary" aria-disabled="true" style="opacity: 0.6; cursor: default; font-size: 13px; padding: 10px 18px;">测评整理中</span>}
                 <a
                   href={`/go/${b.slug}/`}
                   target="_blank"

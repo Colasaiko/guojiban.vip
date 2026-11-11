@@ -5,12 +5,13 @@ import ArticleCard from '../components/ArticleCard.astro';
 import FAQ from '../components/FAQ.astro';
 import { categories, categoryHref, site } from '../data/site';
 import { allBrands } from '../data/brands';
-import { getBrandTests } from '../utils/latestTest';
+import { getBrandTests, getReviewSlugs } from '../utils/latestTest';
 import { websiteSchema } from '../utils/schema';
 
 // 首页「机场推荐」区块：9 个主推品牌
 const primaryBrands = allBrands.filter(b => b.category === 'primary');
 const brandTests = await getBrandTests();
+const reviewSlugs = await getReviewSlugs();
 
 const posts = (await getCollection('blog', ({data}) => !data.draft))
   .sort((a, b) => b.data.updatedDate.getTime() - a.data.updatedDate.getTime());
@@ -101,7 +102,7 @@ const posts = (await getCollection('blog', ({data}) => !data.draft))
               <div><dt>本站测试</dt><dd>{brandTests[b.slug]?.tested ? `${brandTests[b.slug].speed} · ${brandTests[b.slug].node}` : (brandTests[b.slug]?.pendingText ?? '待测试')}</dd></div>
             </dl>
             <div class="pick-actions">
-              <a href={`/reviews/${b.slug}/`} class="pick-btn">查看测评</a>
+              {reviewSlugs.has(b.slug) ? <a href={`/reviews/${b.slug}/`} class="pick-btn">查看测评</a> : <span class="pick-btn" aria-disabled="true" style="opacity: 0.6; cursor: default;">测评整理中</span>}
               <a href={`/go/${b.slug}/`} class="pick-btn primary" target="_blank" rel="nofollow sponsored noopener">前往官网 ↗</a>
             </div>
           </div>
